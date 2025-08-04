@@ -207,38 +207,59 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="bg-white text-gray-400 py-6 text-center text-sm border-t">
-    <p>&copy; 2025 HexCarb Advanced materials Private Limited</p>
-  </footer>
-
   <!-- Contact Section -->
 <section id="contact" class="bg-white text-black py-16 px-6 md:px-12">
   <div class="max-w-3xl mx-auto text-center">
     <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
     <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
-    
-    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="grid gap-4">
-      <input type="text" name="name" placeholder="Your Name" required class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black" />
-      <input type="email" name="email" placeholder="Your Email" required class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black" />
-      <textarea name="message" rows="5" placeholder="Your Message" required class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black"></textarea>
+
+    <form action="https://formspree.io/f/mayvzqye" method="POST" class="grid gap-4">
+      <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name" class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black" />
+      <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email" class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black" />
+      <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message" class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black"></textarea>
       <button type="submit" class="bg-black text-white rounded-lg p-3 font-semibold hover:bg-gray-900 transition">Send Message</button>
     </form>
   </div>
 </section>
 
-  <!-- JavaScript -->
-  <script>
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute("data-theme");
-      document.documentElement.setAttribute("data-theme", currentTheme === "light" ? "dark" : "light");
-    }
-  </script>
-  <a href="mailto:eldhokurian777@gmail.com" class="floating-inbox" aria-label="Get in Touch">
+<!-- Footer -->
+<footer class="bg-white text-gray-400 py-6 text-center text-sm border-t">
+  <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
+</footer>
+
+<!-- Floating Inbox -->
+<a href="mailto:eldhokurian777@gmail.com" class="floating-inbox" aria-label="Get in Touch">
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4 4h16v16H4z"/>
     <polyline points="22,6 12,13 2,6" />
   </svg>
 </a>
-</body>
-</html>
+
+<!-- Styles for Floating Inbox -->
+<style>
+  .floating-inbox {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    padding: 12px;
+    border: 2px solid black;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+  }
+
+  .floating-inbox:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  }
+</style>
+
+<!-- Optional Theme Toggle -->
+<script>
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", currentTheme === "light" ? "dark" : "light");
+  }
+</script>
