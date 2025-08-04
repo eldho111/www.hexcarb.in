@@ -162,66 +162,70 @@
 
 <!-- Applications -->
 <section id="applications" 
-  class="py-16 px-6 bg-cover bg-center bg-no-repeat fade-in"
+  class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white"
   style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;"
 >
-  <div class="max-w-6xl mx-auto text-center mb-12 text-white drop-shadow-md">
-    <h2 class="text-4xl font-extrabold mb-6">Applications</h2>
-    <p class="text-xl leading-8 text-white/90 max-w-3xl mx-auto">
-      Discover how carbon nanotube innovations are redefining materials —
-      enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
+    <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
+    <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
+      Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
     </p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+  <!-- Cards Grid -->
+  <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
     
-    <!-- Aerospace -->
+    <!-- Reusable Card Template -->
     <div 
-      class="rounded-xl overflow-hidden shadow-lg bg-cover bg-center bg-no-repeat relative" 
+      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
       style="background-image: url('aerospace.jpg');"
     >
-      <div class="bg-white/80 dark:bg-black/60 backdrop-blur-sm p-6 h-full flex flex-col justify-center">
-        <h3 class="text-xl font-semibold mb-2">Aerospace</h3>
-        <p>
+      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+      <div class="relative p-8 text-white flex flex-col justify-center h-full">
+        <h3 class="text-2xl font-semibold mb-3">Aerospace</h3>
+        <p class="text-md leading-relaxed text-white/90">
           CNT-reinforced composites offer unmatched strength-to-weight performance, ideal for aerospace structures, thermal protection systems, and integrated sensors for real-time monitoring in extreme environments.
         </p>
       </div>
     </div>
 
-    <!-- Wearables -->
     <div 
-      class="rounded-xl overflow-hidden shadow-lg bg-cover bg-center bg-no-repeat" 
+      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
       style="background-image: url('wearables.jpg');"
     >
-      <div class="bg-white/80 dark:bg-black/60 backdrop-blur-sm p-6 h-full flex flex-col justify-center">
-        <h3 class="text-xl font-semibold mb-2">Wearables</h3>
-        <p>
+      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+      <div class="relative p-8 text-white flex flex-col justify-center h-full">
+        <h3 class="text-2xl font-semibold mb-3">Wearables</h3>
+        <p class="text-md leading-relaxed text-white/90">
           Our CNT fibers enable smart fabrics that are stretchable, washable, and electronically responsive—supporting advanced biometric monitoring and responsive clothing for health and defense.
         </p>
       </div>
     </div>
 
-    <!-- Energy -->
     <div 
-      class="rounded-xl overflow-hidden shadow-lg bg-cover bg-center bg-no-repeat" 
+      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
       style="background-image: url('energy.jpg');"
     >
-      <div class="bg-white/80 dark:bg-black/60 backdrop-blur-sm p-6 h-full flex flex-col justify-center">
-        <h3 class="text-xl font-semibold mb-2">Energy</h3>
-        <p>
+      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+      <div class="relative p-8 text-white flex flex-col justify-center h-full">
+        <h3 class="text-2xl font-semibold mb-3">Energy</h3>
+        <p class="text-md leading-relaxed text-white/90">
           CNTs enhance lithium-ion, sodium-ion, and solid-state batteries through superior electron transport, increasing performance, durability, and cycle life in energy storage systems.
         </p>
       </div>
     </div>
 
-    <!-- Built Environments -->
     <div 
-      class="rounded-xl overflow-hidden shadow-lg bg-cover bg-center bg-no-repeat" 
+      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
       style="background-image: url('infrastructure.jpg');"
     >
-      <div class="bg-white/80 dark:bg-black/60 backdrop-blur-sm p-6 h-full flex flex-col justify-center">
-        <h3 class="text-xl font-semibold mb-2">Built Environments</h3>
-        <p>
+      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+      <div class="relative p-8 text-white flex flex-col justify-center h-full">
+        <h3 class="text-2xl font-semibold mb-3">Built Environments</h3>
+        <p class="text-md leading-relaxed text-white/90">
           By incorporating CNTs into construction materials, we develop infrastructure that is self-monitoring, fire-resistant, and more durable—ideal for smart cities and extraterrestrial habitats.
         </p>
       </div>
