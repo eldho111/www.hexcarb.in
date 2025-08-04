@@ -116,12 +116,19 @@
 
   <!-- Hero -->
  <section 
-  class="text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" 
+  class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" 
   style="background-image: url('1.png');"
 >
-  <img src="logo.jpg" alt="HEXCARB Logo" class="mx-auto mb-6 w-90 h-90 object-contain">
-  <h1 class="text-4xl font-extrabold mb-4 tracking-wide text-black dark:text-white">HexCarb</h1>
-  <p class="text-lg max-w-xl mx-auto text-black dark:text-white">Forging the future atom by atom.</p>
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/50 dark:bg-black/60 backdrop-blur-sm z-0"></div>
+
+  
+  <!-- Content -->
+  <div class="relative z-10">
+    <img src="logo.jpg" alt="HEXCARB Logo" class="mx-auto mb-6 w-90 h-90 object-contain">
+    <h1 class="text-4xl font-extrabold mb-4 tracking-wide text-white">HexCarb</h1>
+    <p class="text-lg max-w-xl mx-auto text-white">Forging the future atom by atom.</p>
+  </div>
 </section>
   <!-- Technology -->
 <section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
