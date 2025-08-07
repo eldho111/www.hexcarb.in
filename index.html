@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
   <style>
@@ -53,7 +52,7 @@
     /* Floating button */
     .floating-button {
       position: fixed;
-      bottom: 24px;
+      bottom: 90px;
       right: 24px;
       background: #000;
       color: #fff;
@@ -96,31 +95,6 @@
   </style>
 </head>
 <body class="bg-white text-black">
-
-  <!-- Sticky Navbar -->
-  <header class="sticky top-0 z-50 bg-white shadow-md">
-    <nav class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="text-xl font-extrabold">HexCarb</div>
-      <div class="space-x-6 text-sm font-medium hidden md:block">
-        <a href="#technology" class="hover:underline">Technology</a>
-        <a href="#applications" class="hover:underline">Applications</a>
-        <a href="#vision" class="hover:underline">Vision</a>
-        <a href="#roadmap" class="hover:underline">Roadmap</a>
-      </div>
-      <!-- Dark Mode Toggle -->
-      <button onclick="toggleTheme()" class="ml-4 px-3 py-1 border border-gray-400 rounded text-sm">
-        🌓
-      </button>
-    </nav>
-  </header>
-
-  <!-- Hero -->
- <section 
-  class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" 
-  style="background-image: url('1.png');"
->
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/50 dark:bg-black/60 backdrop-blur-sm z-0"></div>
 
 
   <!-- Content -->
@@ -328,6 +302,11 @@
   <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
 </footer>
 
+<!-- HexCarb AI Brain Floating Button -->
+<a href="https://hexcarb-ai-clean.herokuapp.com" target="_blank" class="floating-button" aria-label="HexCarb AI Command Center">
+  HexCarb AI Brain
+</a>
+
 <!-- Floating Inbox -->
 <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -336,27 +315,6 @@
   </svg>
 </a>
 
-<!-- Styles for Floating Inbox -->
-<style>
-  .floating-inbox {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: white;
-    padding: 12px;
-    border: 2px solid black;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease;
-  }
-
-  .floating-inbox:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
-  }
-</style>
-
 <!-- Optional Theme Toggle -->
 <script>
   function toggleTheme() {
@@ -364,3 +322,5 @@
     document.documentElement.setAttribute("data-theme", currentTheme === "light" ? "dark" : "light");
   }
 </script>
+</body>
+</html>
