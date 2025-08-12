@@ -1,0 +1,53 @@
+name: Deploy Pages
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      dir: ${{ steps.pick.outputs.dir }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: pick
+        run: |
+          if [ -f docs/index.html ]; then echo "dir=docs" >> $GITHUB_OUTPUT; else echo "dir=." >> $GITHUB_OUTPUT; fi
+      - name: Generate version.json
+        run: |
+          python - <<'PY'
+import subprocess, json, datetime, os, pathlib
+sha = subprocess.check_output(["git","rev-parse","--short","HEAD"]).decode().strip()
+ts  = datetime.datetime.utcnow().isoformat()+"Z"
+out = {"commit": sha, "timestamp": ts}
+dir = "${{ steps.pick.outputs.dir }}"
+pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
+open(os.path.join(dir,"version.json"),"w").write(json.dumps(out))
+PY
+      - name: Show dir
+        run: echo "Publishing from ${{ steps.pick.outputs.dir }}"
+  build:
+    needs: detect
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ needs.detect.outputs.dir }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
