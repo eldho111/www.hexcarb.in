@@ -108,7 +108,7 @@
       <a href="#vision" class="hover:underline">Vision</a>
       <a href="#roadmap" class="hover:underline">Roadmap</a>
       <a href="https://hexcarb-ai-clean-4f7af858be70.herokuapp.com/" target="_blank" class="inline-block bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">
-        Hexcarb AI Brain
+        HexCarb AI Brain
       </a>
     </div>
       <!-- Dark Mode Toggle -->
@@ -329,8 +329,18 @@
 
 <!-- Footer -->
 <footer class="bg-white text-gray-400 py-6 text-center text-sm border-t">
-  <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
+  <p>&copy; 2025 HexCarb Advanced Materials Private Limited - <span id="build-hash"></span></p>
 </footer>
+
+<script>
+  fetch('/version.json')
+    .then(r => r.json())
+    .then(data => {
+      const el = document.getElementById('build-hash');
+      if (el) el.textContent = data.commit;
+    })
+    .catch(() => {});
+</script>
 
 <!-- Floating Inbox -->
 <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
