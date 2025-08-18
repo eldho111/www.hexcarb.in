@@ -1,56 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-  <style>
-  /* Engine panel animations */
-  #engineStart { cursor: pointer; }
-  #engineStart:active { transform: scale(0.998); }
-
-  /* Node “lit” style */
-  #engineSVG .node-lit {
-    filter: url(#soft-glow);
-  }
-  #engineSVG .node-lit circle {
-    fill: white !important;
-  }
-
-  /* Subtle hemisphere breathe on start */
-  .hemi-energized #cntSide path { stroke-opacity: 0.9; }
-  .hemi-energized #aiSide g[stroke] { opacity: 0.55; }
-
-  /* Takeover sweep */
-  @keyframes sweep {
-    0%   { width: 0; opacity: 0.08; }
-    50%  { width: 180px; opacity: 0.12; }
-    100% { width: 260px; opacity: 0.10; }
-  }
-  .sweep-anim { animation: sweep 800ms ease-out forwards; }/* XL Engine Panel */
-#engineStart { cursor: pointer; }
-#engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
-
-/* Sweep animation */
-@keyframes takeoverSweep {
-  0%   { width: 0; opacity: .10; }
-  60%  { width: 520px; opacity: .20; }
-  100% { width: 760px; opacity: .16; }
-}
-#takeover.sweep { animation: takeoverSweep 900ms ease-out forwards; }
-
-</style>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HEXCARB</title>
 
   <!-- SEO / OG -->
-  <meta name="description" content="HexCarb — SWCNT fibers, dispersions, and smart textiles accelerated by the HEXCARB AI Engine. Forging the future, atom by atom." />
+  <meta name="description" content="HexCarb — SWCNT fibers, dispersions, and smart textiles accelerated by the HEXCARB AI Engine. Forging the future, atom by atom.">
   <link rel="canonical" href="https://www.hexcarb.in/">
   <meta property="og:title" content="HEXCARB">
   <meta property="og:description" content="SWCNT fibers, dispersions, and smart textiles — accelerated by the HEXCARB AI Engine.">
   <meta property="og:type" content="website">
 
   <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,16 +27,10 @@
     @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
 
     /* Matte card look */
-    .matte { 
-      box-shadow: 0 6px 28px rgba(0,0,0,.08);
-      border: 1px solid rgba(0,0,0,.1);
-    }
-    .dark .matte {
-      border-color: rgba(255,255,255,.08);
-      box-shadow: 0 6px 28px rgba(0,0,0,.35);
-    }
+    .matte { box-shadow: 0 6px 28px rgba(0,0,0,.08); border: 1px solid rgba(0,0,0,.1); }
+    .dark .matte { border-color: rgba(255,255,255,.08); box-shadow: 0 6px 28px rgba(0,0,0,.35); }
 
-    /* Floating Inbox (single source of truth) */
+    /* Floating Inbox */
     .floating-inbox {
       position: fixed; bottom: 20px; right: 20px; z-index: 1000;
       background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%;
@@ -82,14 +39,20 @@
     .floating-inbox:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,0,0,.25); }
     .dark .floating-inbox { background:#111; border-color:#fff; }
 
-    /* Accessible skip link */
-    .skip-link {
-      position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
+    /* Skip link */
+    .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .skip-link:focus { position:static; width:auto; height:auto; margin:8px; padding:8px 12px; background:#000; color:#fff; border-radius:8px; }
+
+    /* ===== Engine Panel (XL) ===== */
+    #engineStart { cursor: pointer; }
+    #engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
+
+    @keyframes takeoverSweep {
+      0%   { width: 0;   opacity: .10; }
+      60%  { width: 520px; opacity: .20; }
+      100% { width: 760px; opacity: .16; }
     }
-    .skip-link:focus {
-      position:static; width:auto; height:auto; margin:8px; padding:8px 12px;
-      background:#000; color:#fff; border-radius:8px;
-    }
+    #takeover.sweep { animation: takeoverSweep 900ms ease-out forwards; }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-black dark:text-white">
@@ -119,7 +82,6 @@
         <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
           class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
         <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
-          <!-- Hamburger -->
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
       </div>
@@ -141,10 +103,7 @@
   <!-- Hero -->
   <section class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat"
            style="background-image: url('1.png');">
-    <!-- Single overlay works for both themes -->
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-0"></div>
-
-    <!-- Content -->
     <div class="relative z-10">
       <img src="logo.svg" alt="HEXCARB Logo"
            class="mx-auto mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]" />
@@ -154,203 +113,82 @@
   </section>
 
   <main id="main">
-    <!-- ENGINE PANEL -->
-<section id="engine" class="px-6 py-16">
-  <div class="max-w-6xl mx-auto">
-    <div class="mb-8 text-center">
-      <h2 class="text-4xl font-bold">HEXCARB AI Engine</h2>
-      <p class="mt-3 text-lg text-gray-700 dark:text-gray-300">
-        An external brain that fuses <span class="font-semibold">CNT intelligence</span> (geometry, physics, manufacturing)
-        with <span class="font-semibold">AI reasoning</span> (search, planning, optimization).
-      </p>
-    </div>
+    <!-- ========= HEXCARB AI ENGINE — XL PANEL ========= -->
+    <section id="engine" class="relative px-4 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
 
-    <!-- Clickable panel -->
-    <button id="engineStart"
-            class="group relative w-full rounded-2xl overflow-hidden p-6 md:p-10 bg-white dark:bg-black border border-black/10 dark:border-white/10 shadow-[0_6px_28px_rgba(0,0,0,0.08)] dark:shadow-[0_6px_28px_rgba(0,0,0,0.35)]"
-            aria-label="Start HEXCARB AI Engine">
-      <!-- subtle gradient sheen -->
-      <div class="pointer-events-none absolute inset-0 opacity-60"
-           style="background: radial-gradient(1200px 600px at 20% 0%, rgba(0,0,0,0.06), transparent 50%),
-                            radial-gradient(800px 400px at 80% 100%, rgba(255,255,255,0.06), transparent 50%);"></div>
+        <!-- Header -->
+        <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
+          <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">
+            Science that thinks. Technology that invents.
+          </p>
+        </div>
 
-      <div class="grid md:grid-cols-2 gap-8 items-center relative z-10">
-        <!-- SVG Brain -->
-        <div class="relative">
-          <svg id="engineSVG" viewBox="0 0 800 420" class="w-full h-auto">
-            <!-- defs: glow -->
+        <!-- Visual + CTA (clickable) -->
+        <button id="engineStart" class="group relative block w-full text-left focus:outline-none"
+                aria-label="Start HEXCARB AI Engine">
+          <!-- Replace the src with your actual file path -->
+          <img src="assets/img/engine-brain.webp" width="1920" height="860"
+               alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice"
+               class="w-full h-auto select-none pointer-events-none">
+
+          <!-- Node overlay (right hemisphere) -->
+          <svg id="engineOverlay" viewBox="0 0 1920 860"
+               class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
             <defs>
-              <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="6" result="blur"/>
-                <feMerge>
-                  <feMergeNode in="blur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
+              <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="white" stop-opacity="0"/>
+                <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </linearGradient>
+              <!-- Mask constraining sweep to right hemisphere (tweak if image is cropped differently) -->
+              <mask id="rightMask"><rect x="980" y="80" width="870" height="700" fill="white"/></mask>
             </defs>
 
-            <!-- Left hemisphere: hex lattice (CNT side) -->
-            <g id="cntSide" transform="translate(30,20)">
-              <!-- hex grid (simple repeated paths) -->
-              <g opacity="0.9" stroke="black" class="dark:stroke-white" stroke-width="1.5" fill="none">
-                <!-- Generate a few rows of hexes -->
-                <!-- row 1 -->
-                <path d="M40 60 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M110 60 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M180 60 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M250 60 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <!-- row 2 -->
-                <path d="M75 20 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M145 20 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M215 20 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M285 20 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <!-- row 3 -->
-                <path d="M40 140 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M110 140 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M180 140 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M250 140 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <!-- row 4 -->
-                <path d="M75 100 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M145 100 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M215 100 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-                <path d="M285 100 l35 -20 l35 20 l0 40 l-35 20 l-35 -20 Z" />
-              </g>
-
-              <!-- matte shading (left hemisphere mask) -->
-              <ellipse cx="200" cy="120" rx="200" ry="120" fill="none" stroke="currentColor" opacity="0.08"/>
+            <!-- connections -->
+            <g stroke="black" stroke-opacity="0.35" stroke-width="3"
+               class="dark:stroke-white" transform="translate(1020,140) scale(1.0)">
+              <line x1="40" y1="80"  x2="220" y2="40"/>
+              <line x1="220" y1="40" x2="360" y2="120"/>
+              <line x1="360" y1="120" x2="280" y2="230"/>
+              <line x1="280" y1="230" x2="120" y2="190"/>
+              <line x1="120" y1="190" x2="40"  y2="80"/>
+              <line x1="120" y1="190" x2="340" y2="210"/>
+              <line x1="220" y1="40"  x2="300" y2="200"/>
             </g>
 
-            <!-- Right hemisphere: AI neural nodes -->
-            <g id="aiSide" transform="translate(390,30)">
-              <!-- connections (static) -->
-              <g stroke="black" class="dark:stroke-white" opacity="0.35">
-                <line x1="40" y1="60" x2="130" y2="40"/>
-                <line x1="130" y1="40" x2="180" y2="90"/>
-                <line x1="180" y1="90" x2="120" y2="160"/>
-                <line x1="120" y1="160" x2="60" y2="120"/>
-                <line x1="60" y1="120" x2="40" y2="60"/>
-                <line x1="60" y1="120" x2="170" y2="150"/>
-              </g>
-
-              <!-- nodes (these will light sequentially) -->
-              <g id="nodes" fill="black" class="dark:fill-white">
-                <circle r="8" cx="40" cy="60" />
-                <circle r="8" cx="130" cy="40"/>
-                <circle r="8" cx="180" cy="90"/>
-                <circle r="8" cx="120" cy="160"/>
-                <circle r="8" cx="60" cy="120"/>
-                <circle r="8" cx="170" cy="150"/>
-              </g>
+            <!-- nodes -->
+            <g id="nodes" fill="black" class="dark:fill-white" transform="translate(1020,140) scale(1.0)">
+              <circle r="12" cx="40"  cy="80"/>
+              <circle r="12" cx="220" cy="40"/>
+              <circle r="12" cx="360" cy="120"/>
+              <circle r="12" cx="280" cy="230"/>
+              <circle r="12" cx="120" cy="190"/>
+              <circle r="12" cx="340" cy="210"/>
+              <circle r="12" cx="300" cy="200"/>
             </g>
 
-            <!-- “takeover” pulse line (animated width) -->
-            <rect id="takeover" x="380" y="10" width="0" height="300"
-                  fill="white" opacity="0.06" class="dark:fill-white" />
+            <!-- sweep constrained to right hemisphere -->
+            <g mask="url(#rightMask)">
+              <rect id="takeover" x="980" y="0" width="0" height="860" fill="url(#sweep)" />
+            </g>
           </svg>
-        </div>
 
-        <!-- Copy / CTA -->
-        <div class="text-left">
-          <h3 class="text-2xl font-semibold">Start the Engine</h3>
-          <p class="mt-3 text-gray-700 dark:text-gray-300">
-            Click to ignite a startup pulse that sweeps through the neural graph — then jump into
-            the live engine. Minimal UI. Maximum velocity.
-          </p>
-          <ul class="mt-4 space-y-2 text-gray-700 dark:text-gray-300 text-sm leading-6">
-            <li>• Experiment planner, SOPs, and traceable QA</li>
-            <li>• Literature + patents with citations on tap</li>
-            <li>• Procurement &amp; BOM intelligence</li>
-            <li>• SWCNT-aware reasoning for fibers, dispersions, textiles</li>
-          </ul>
-          <div class="mt-6 inline-flex items-center gap-3">
-            <span class="text-sm opacity-70">Click anywhere on the panel</span>
-            <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
+          <!-- Bottom caption -->
+          <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+              Click to ignite the engine → pulse through the neural graph → enter the live system.
+            </div>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="opacity-70">HEXCARB AI Engine</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
+            </div>
           </div>
-        </div>
+        </button>
       </div>
-    </button>
-  </div>
-</section>
-<!-- ========== HEXCARB AI ENGINE — XL PANEL ========== -->
-<section id="engine" class="relative px-4 py-10 md:py-14">
-  <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
-
-    <!-- Header -->
-    <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
-      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
-      <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">
-        Science that thinks. Technology that invents.
-      </p>
-    </div>
-
-    <!-- Visual + CTA (clickable) -->
-    <button id="engineStart"
-            class="group relative block w-full text-left focus:outline-none"
-            aria-label="Start HEXCARB AI Engine">
-
-      <!-- Brain image (use your file) -->
-      <!-- Replace src with your exported image path; keep explicit width/height to prevent layout shift -->
-      <img src="assets/img/engine-brain.webp" width="1920" height="860" alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice"
-           class="w-full h-auto select-none pointer-events-none">
-
-      <!-- Node overlay (right hemisphere) -->
-      <svg id="engineOverlay" viewBox="0 0 1920 860"
-           class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
-        <defs>
-          <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="white" stop-opacity="0"/>
-            <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="white" stop-opacity="0"/>
-          </linearGradient>
-          <mask id="rightMask">
-            <!-- mask roughly covering the right hemisphere (adjust if you crop image differently) -->
-            <rect x="980" y="80" width="870" height="700" fill="white"/>
-          </mask>
-        </defs>
-
-        <!-- connections -->
-        <g stroke="black" stroke-opacity="0.35" stroke-width="3"
-           class="dark:stroke-white" transform="translate(1020,140) scale(1.0)">
-          <line x1="40" y1="80"  x2="220" y2="40"/>
-          <line x1="220" y1="40" x2="360" y2="120"/>
-          <line x1="360" y1="120" x2="280" y2="230"/>
-          <line x1="280" y1="230" x2="120" y2="190"/>
-          <line x1="120" y1="190" x2="40"  y2="80"/>
-          <line x1="120" y1="190" x2="340" y2="210"/>
-          <line x1="220" y1="40"  x2="300" y2="200"/>
-        </g>
-
-        <!-- nodes: these will light up -->
-        <g id="nodes" fill="black" class="dark:fill-white" transform="translate(1020,140) scale(1.0)">
-          <circle r="12" cx="40"  cy="80"/>
-          <circle r="12" cx="220" cy="40"/>
-          <circle r="12" cx="360" cy="120"/>
-          <circle r="12" cx="280" cy="230"/>
-          <circle r="12" cx="120" cy="190"/>
-          <circle r="12" cx="340" cy="210"/>
-          <circle r="12" cx="300" cy="200"/>
-        </g>
-
-        <!-- sweep highlight constrained to right hemisphere -->
-        <g mask="url(#rightMask)">
-          <rect id="takeover" x="980" y="0" width="0" height="860" fill="url(#sweep)" />
-        </g>
-      </svg>
-
-      <!-- Bottom caption / hint -->
-      <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
-        <div class="text-sm text-gray-700 dark:text-gray-300">
-          Click to ignite the engine → pulse through the neural graph → enter the live system.
-        </div>
-        <div class="flex items-center gap-3 text-sm">
-          <span class="opacity-70">HEXCARB AI Engine</span>
-          <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
-        </div>
-      </div>
-    </button>
-  </div>
-</section>
+    </section>
 
     <!-- Technology -->
     <section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
@@ -369,9 +207,8 @@
     </section>
 
     <!-- Applications -->
-    <section id="applications"
-      class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white"
-      style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
+    <section id="applications" class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white"
+             style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
 
       <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
@@ -381,9 +218,7 @@
         </p>
       </div>
 
-      <!-- Cards Grid -->
       <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        <!-- Each card: add role/aria for background images -->
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
              style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
@@ -426,7 +261,9 @@
     <section id="vision" class="py-24 px-6 text-center fade-in bg-white dark:bg-black">
       <div class="max-w-4xl mx-auto">
         <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
-        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.</p>
+        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+          To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.
+        </p>
         <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
           From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.
         </p>
@@ -462,7 +299,7 @@
               <li>Partnerships with smart material labs</li>
             </ul>
           </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg:black">
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
             <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
             <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
               <li>Investor outreach for full-spectrum SWCNT platform</li>
@@ -519,13 +356,13 @@
     </svg>
   </a>
 
-  <!-- Minimal JS: theme + mobile menu -->
+  <!-- Minimal JS: theme + mobile menu + engine animation -->
   <script>
-    (function initTheme(){
+    // Theme init
+    (function(){
       const stored = localStorage.getItem('theme');
       const html = document.documentElement;
-      if (stored === 'light') html.classList.remove('dark');
-      else html.classList.add('dark');
+      if (stored === 'light') html.classList.remove('dark'); else html.classList.add('dark');
       const pressed = html.classList.contains('dark');
       document.getElementById('themeToggle')?.setAttribute('aria-pressed', String(pressed));
       document.getElementById('themeToggleMobile')?.setAttribute('aria-pressed', String(pressed));
@@ -536,7 +373,6 @@
       const isDark = html.classList.toggle('dark');
       btn?.setAttribute('aria-pressed', String(isDark));
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      // sync both buttons
       const other = btn?.id === 'themeToggle' ? document.getElementById('themeToggleMobile') : document.getElementById('themeToggle');
       other?.setAttribute('aria-pressed', String(isDark));
     }
@@ -544,91 +380,38 @@
     document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
     document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
 
+    // Mobile menu
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     menuBtn?.addEventListener('click', () => {
       const open = mobileMenu.classList.toggle('hidden');
       menuBtn.setAttribute('aria-expanded', String(!open));
     });
+
+    // Engine animation
+    (function(){
+      const btn = document.getElementById('engineStart');
+      if (!btn) return;
+      const overlay = document.getElementById('engineOverlay');
+      const nodes   = overlay.querySelectorAll('#nodes circle');
+      const bar     = overlay.querySelector('#takeover');
+
+      function startEngine(){
+        const order = [0,1,2,6,5,3,4];
+        order.forEach((idx, step) => {
+          setTimeout(() => {
+            const c = nodes[idx];
+            const wrap = document.createElementNS('http://www.w3.org/2000/svg','g');
+            wrap.setAttribute('class','node-lit');
+            c.parentNode.insertBefore(wrap, c);
+            wrap.appendChild(c);
+          }, 110 * step);
+        });
+        setTimeout(() => { bar.classList.add('sweep'); }, 110 * order.length + 80);
+        setTimeout(() => { window.location.href = 'https://ai.hexcarb.in'; }, 110 * order.length + 1100);
+      }
+      btn.addEventListener('click', startEngine, { once:true });
+    })();
   </script>
-  <script>
-  (function(){
-    const btn = document.getElementById('engineStart');
-    const svg = document.getElementById('engineSVG');
-    const nodesGroup = svg.querySelector('#nodes');
-    const nodeElems = Array.from(nodesGroup.querySelectorAll('circle'));
-    const takeover = svg.querySelector('#takeover');
-    const cntSide = svg.querySelector('#cntSide');
-    const aiSide  = svg.querySelector('#aiSide');
-
-    function lightSequence() {
-      // add subtle hemisphere energize
-      svg.classList.add('hemi-energized');
-
-      // sequentially light nodes
-      const order = [0,1,2,5,3,4]; // a nice path through the graph
-      order.forEach((idx, step) => {
-        setTimeout(() => {
-          const c = nodeElems[idx];
-          // wrap circle in a <g> to apply filter without affecting others
-          const wrap = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-          wrap.setAttribute('class','node-lit');
-          c.parentNode.insertBefore(wrap, c);
-          wrap.appendChild(c);
-        }, 120 * step);
-      });
-
-      // takeover sweep
-      setTimeout(() => {
-        takeover.classList.add('sweep-anim');
-      }, 120 * order.length + 80);
-
-      // redirect after animation
-      setTimeout(() => {
-        window.location.href = 'https://ai.hexcarb.in';
-      }, 120 * order.length + 1000);
-    }
-
-    btn.addEventListener('click', lightSequence, { once:true });
-  })();
-</script><script>
-(function(){
-  const btn = document.getElementById('engineStart');
-  if (!btn) return;
-
-  const overlay = document.getElementById('engineOverlay');
-  const nodes   = overlay.querySelectorAll('#nodes circle');
-  const bar     = overlay.querySelector('#takeover');
-
-  function startEngine(){
-    const order = [0,1,2,6,5,3,4]; // visually pleasing route
-
-    // sequential node glow
-    order.forEach((idx, step) => {
-      setTimeout(() => {
-        const c = nodes[idx];
-        const wrap = document.createElementNS('http://www.w3.org/2000/svg','g');
-        wrap.setAttribute('class','node-lit');
-        c.parentNode.insertBefore(wrap, c);
-        wrap.appendChild(c);
-      }, 110 * step);
-    });
-
-    // sweep takeover
-    setTimeout(() => {
-      bar.classList.add('sweep');
-    }, 110 * order.length + 80);
-
-    // redirect after complete
-    setTimeout(() => {
-      window.location.href = 'https://ai.hexcarb.in';
-    }, 110 * order.length + 1100);
-  }
-
-  btn.addEventListener('click', startEngine, { once:true });
-})();
-</script>
-
-
 </body>
 </html>
