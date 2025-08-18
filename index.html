@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HEXCARB</title>
 
   <!-- SEO / OG -->
@@ -12,7 +12,7 @@
   <meta property="og:description" content="SWCNT fibers, dispersions, and smart textiles — accelerated by the HEXCARB AI Engine.">
   <meta property="og:type" content="website">
 
-  <!-- Tailwind CDN (layout utilities) -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts -->
@@ -29,7 +29,11 @@
     .matte { box-shadow: 0 6px 28px rgba(0,0,0,.08); border: 1px solid rgba(0,0,0,.1); }
     .dark .matte { border-color: rgba(255,255,255,.08); box-shadow: 0 6px 28px rgba(0,0,0,.35); }
 
-    .floating-inbox { position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,.15); transition: transform .3s ease, box-shadow .3s ease; }
+    .floating-inbox {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+      background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0,0,0,.15); transition: transform .3s ease, box-shadow .3s ease;
+    }
     .floating-inbox:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,0,0,.25); }
     .dark .floating-inbox { background:#111; border-color:#fff; }
 
@@ -38,11 +42,16 @@
 
     /* Engine visuals */
     .pulse-dot { fill:#fff; filter:url(#pulseGlow); }
-    .beam-path { stroke:#fff; stroke-width:3; fill:none; opacity:.0; filter:url(#pulseGlow); }
-    .debug-route { stroke:#ffffffaa; stroke-width:2; fill:none; opacity:.08 }
+    .debug-route { stroke:#ffffffaa; stroke-width:2; fill:none; opacity:.08 } /* keep very faint for alignment */
+
+    /* Reduced motion: skip animation, go straight to AI site */
+    @media (prefers-reduced-motion: reduce) {
+      #engineStart { pointer-events: auto !important; }
+    }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-black dark:text-white">
+
   <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- Header -->
@@ -54,11 +63,14 @@
         <a href="#applications" class="hover:underline">Applications</a>
         <a href="#vision" class="hover:underline">Vision</a>
         <a href="#roadmap" class="hover:underline">Roadmap</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition">HEXCARB AI Engine</a>
-        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme" class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
+           class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition">HEXCARB AI Engine</a>
+        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
+          class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
       </div>
       <div class="md:hidden flex items-center gap-2">
-        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme" class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
+          class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
         <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
@@ -70,7 +82,8 @@
         <a href="#applications" class="py-1">Applications</a>
         <a href="#vision" class="py-1">Vision</a>
         <a href="#roadmap" class="py-1">Roadmap</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
+        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
+           class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
       </div>
     </div>
   </header>
@@ -86,61 +99,61 @@
   </section>
 
   <main id="main">
-    <!-- ENGINE PANEL (Integrated SVG with 3.png and 1.5s pulse) -->
+    <!-- ENGINE PANEL -->
     <section id="engine" class="relative px-4 py-10 md:py-14">
       <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
+
         <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
           <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
           <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Science that thinks. Technology that invents.</p>
         </div>
 
-        <!-- The button wraps a single inline SVG so the animation and image share exact geometry -->
+        <!-- Single SVG => ensures the image & route share identical geometry -->
         <button id="engineStart" class="group relative block w-full text-left focus:outline-none" aria-label="Start HEXCARB AI Engine">
           <div class="w-full flex justify-center">
-            <!-- Single SVG: perfect size match (1600x1000 viewBox) -->
-            <svg id="hexcarbPulseSVG" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" class="w-[92%] h-auto">
+            <svg id="hexcarbPulseSVG" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
               <defs>
-                <!-- Stronger glow: layered blurs + brightness bump -->
-                <filter id="pulseGlow" x="-60%" y="-60%" width="220%" height="220%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b1"/>
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="b2"/>
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="b3"/>
+                <!-- Wider bounds + stronger multi-blur for intense glow -->
+                <filter id="pulseGlow" x="-120%" y="-120%" width="440%" height="440%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b1"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="b2"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="b3"/>
                   <feMerge>
-                    <feMergeNode in="b1"/>
-                    <feMergeNode in="b2"/>
-                    <feMergeNode in="b3"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="b1"/><feMergeNode in="b2"/><feMergeNode in="b3"/><feMergeNode in="SourceGraphic"/>
                   </feMerge>
                 </filter>
               </defs>
-              <!-- Base artwork (exactly 1600x1000) -->
-              <image href="3.png" x="0" y="0" width="1600" height="1000"/>
-              <!-- Route overlay (from your light path). Keep for alignment; very low visibility. -->
-              <path id="route" class="debug-route" d="M 303.36297607421875 456.3717956542969 L 180.45884704589844 383.2515869140625 L 104.22712707519531 296.1296691894531 L 111.48729705810547 190.8572998046875 L 160.2340850830078 126.55301666259766 L 195.49771118164062 123.44152069091797 L 148.8252716064453 176.3369903564453 L 150.89959716796875 203.82188415527344 L 115.63595581054688 261.9031677246094 L 163.34559631347656 310.64996337890625 L 260.8392028808594 357.32244873046875 L 271.72943115234375 312.2056884765625 L 225.05697631835938 271.2377014160156 L 173.71725463867188 265.53326416015625 L 174.75439453125 220.9351043701172 L 238.5401153564453 160.26089477539062 L 234.3914337158203 92.32654571533203 L 274.8409118652344 123.44152069091797 L 275.3594970703125 183.07855224609375 L 222.46405029296875 220.9351043701172 L 313.216064453125 336.060546875 L 310.1045837402344 268.12615966796875 L 283.6568298339844 230.78819274902344 L 312.6974792480469 195.52455139160156 L 373.8902587890625 199.6732177734375 L 377.0017395019531 157.66798400878906 L 369.7416076660156 136.92466735839844 L 374.4088439941406 101.14244842529297 L 380.6318664550781 62.767311096191406 L 402.930908203125 30.61518096923828 L 429.378662109375 36.319583892822266 L 437.15740966796875 55.507171630859375 L 416.4140930175781 66.91598510742188 L 416.9326477050781 96.99380493164062 L 397.22650146484375 116.69993591308594 L 397.22650146484375 145.22201538085938 L 419.52557373046875 165.96533203125 L 412.7839660644531 204.3404541015625 L 392.5592346191406 217.30502319335938 L 385.81768798828125 255.16159057617188 L 402.930908203125 276.42352294921875 L 397.22650146484375 319.46588134765625 L 419.0069885253906 341.2463684082031 L 451.6777038574219 328.28179931640625 L 459.4564514160156 291.46240234375 L 436.6387939453125 274.86773681640625 L 439.75030517578125 227.6767120361328 L 420.5627136230469 209.52627563476562 L 419.52557373046875 158.18658447265625 L 443.38037109375 143.666259765625 L 451.15911865234375 105.2911148071289 L 423.6742248535156 98.54953002929688 L 422.6370544433594 68.47174835205078 L 447.529052734375 59.137237548828125 L 468.79095458984375 75.73188781738281 L 485.9041748046875 91.80797576904297 L 513.3890991210938 96.47520446777344 L 513.3890991210938 126.03443908691406 L 481.7555236816406 162.85382080078125 L 482.27410888671875 197.598876953125 L 482.27410888671875 200.19178771972656 L 482.27410888671875 200.19178771972656 L 506.12890625 225.6023712158203 L 501.980224609375 256.1987609863281 L 467.2351989746094 288.35089111328125 L 456.863525390625 322.5773620605469 L 485.9041748046875 344.8764343261719 L 520.6492309570312 300.2783203125 L 494.2015380859375 268.644775390625 L 510.277587890625 221.97232055664062 L 541.392578125 207.9705352783203 L 542.4296875 174.2626495361328 L 518.574951171875 140.0361785888672 L 527.390869140625 102.17964172363281 L 560.0615844726562 124.47868347167969 L 565.2474365234375 163.37240600585938 L 586.50927734375 191.37588500976562 L 580.2863159179688 239.08551025390625 L 557.4686889648438 285.7579650878906 L 570.4332275390625 303.90838623046875 L 589.1021728515625 318.4287109375 L 532.57666015625 344.35784912109375 L 477.6068420410156 360.4339294433594 L 430.4158020019531 378.5843200683594 L 419.0069885253906 409.6993103027344 L 422.6370544433594 424.2196350097656 L 445.4547119140625 454.8160095214844 L 481.2369384765625 476.0779113769531 L 525.3164672851562 452.74169921875 L 584.9534912109375 420.58953857421875 L 623.8472290039062 384.2887268066406 L 671.5569458007812 368.2126770019531 L 704.7462158203125 346.43218994140625 L 735.8611450195312 338.6534423828125 L 757.1231079101562 328.2817687988281 L 775.7920532226562 312.72430419921875 L 774.7548828125 313.761474609375 L 778.903564453125 314.280029296875"/>
-              <!-- Intense beam that follows the dot (animated dashoffset) -->
-              <path id="beam" class="beam-path" d="M 303.36297607421875 456.3717956542969 L 180.45884704589844 383.2515869140625 L 104.22712707519531 296.1296691894531 L 111.48729705810547 190.8572998046875 L 160.2340850830078 126.55301666259766 L 195.49771118164062 123.44152069091797 L 148.8252716064453 176.3369903564453 L 150.89959716796875 203.82188415527344 L 115.63595581054688 261.9031677246094 L 163.34559631347656 310.64996337890625 L 260.8392028808594 357.32244873046875 L 271.72943115234375 312.2056884765625 L 225.05697631835938 271.2377014160156 L 173.71725463867188 265.53326416015625 L 174.75439453125 220.9351043701172 L 238.5401153564453 160.26089477539062 L 234.3914337158203 92.32654571533203 L 274.8409118652344 123.44152069091797 L 275.3594970703125 183.07855224609375 L 222.46405029296875 220.9351043701172 L 313.216064453125 336.060546875 L 310.1045837402344 268.12615966796875 L 283.6568298339844 230.78819274902344 L 312.6974792480469 195.52455139160156 L 373.8902587890625 199.6732177734375 L 377.0017395019531 157.66798400878906 L 369.7416076660156 136.92466735839844 L 374.4088439941406 101.14244842529297 L 380.6318664550781 62.767311096191406 L 402.930908203125 30.61518096923828 L 429.378662109375 36.319583892822266 L 437.15740966796875 55.507171630859375 L 416.4140930175781 66.91598510742188 L 416.9326477050781 96.99380493164062 L 397.22650146484375 116.69993591308594 L 397.22650146484375 145.22201538085938 L 419.52557373046875 165.96533203125 L 412.7839660644531 204.3404541015625 L 392.5592346191406 217.30502319335938 L 385.81768798828125 255.16159057617188 L 402.930908203125 276.42352294921875 L 397.22650146484375 319.46588134765625 L 419.0069885253906 341.2463684082031 L 451.6777038574219 328.28179931640625 L 459.4564514160156 291.46240234375 L 436.6387939453125 274.86773681640625 L 439.75030517578125 227.6767120361328 L 420.5627136230469 209.52627563476562 L 419.52557373046875 158.18658447265625 L 443.38037109375 143.666259765625 L 451.15911865234375 105.2911148071289 L 423.6742248535156 98.54953002929688 L 422.6370544433594 68.47174835205078 L 447.529052734375 59.137237548828125 L 468.79095458984375 75.73188781738281 L 485.9041748046875 91.80797576904297 L 513.3890991210938 96.47520446777344 L 513.3890991210938 126.03443908691406 L 481.7555236816406 162.85382080078125 L 482.27410888671875 197.598876953125 L 482.27410888671875 200.19178771972656 L 482.27410888671875 200.19178771972656 L 506.12890625 225.6023712158203 L 501.980224609375 256.1987609863281 L 467.2351989746094 288.35089111328125 L 456.863525390625 322.5773620605469 L 485.9041748046875 344.8764343261719 L 520.6492309570312 300.2783203125 L 494.2015380859375 268.644775390625 L 510.277587890625 221.97232055664062 L 541.392578125 207.9705352783203 L 542.4296875 174.2626495361328 L 518.574951171875 140.0361785888672 L 527.390869140625 102.17964172363281 L 560.0615844726562 124.47868347167969 L 565.2474365234375 163.37240600585938 L 586.50927734375 191.37588500976562 L 580.2863159179688 239.08551025390625 L 557.4686889648438 285.7579650878906 L 570.4332275390625 303.90838623046875 L 589.1021728515625 318.4287109375 L 532.57666015625 344.35784912109375 L 477.6068420410156 360.4339294433594 L 430.4158020019531 378.5843200683594 L 419.0069885253906 409.6993103027344 L 422.6370544433594 424.2196350097656 L 445.4547119140625 454.8160095214844 L 481.2369384765625 476.0779113769531 L 525.3164672851562 452.74169921875 L 584.9534912109375 420.58953857421875 L 623.8472290039062 384.2887268066406 L 671.5569458007812 368.2126770019531 L 704.7462158203125 346.43218994140625 L 735.8611450195312 338.6534423828125 L 757.1231079101562 328.2817687988281 L 775.7920532226562 312.72430419921875 L 774.7548828125 313.761474609375 L 778.903564453125 314.280029296875"/>
+
+              <!-- Base artwork (exact 1600×1000) -->
+              <image href="3.png" x="0" y="0" width="1600" height="1000" />
+
+              <!-- Route overlay (kept faint for dev alignment) -->
+              <path id="route" class="debug-route" d="M 303.36297607421875 456.3717956542969 L 180.45884704589844 383.2515869140625 L 104.22712707519531 296.1296691894531 L 111.48729705810547 190.8572998046875 L 160.2340850830078 126.55301666259766 L 195.49771118164062 123.44152069091797 L 148.8252716064453 176.3369903564453 L 150.89959716796875 203.82188415527344 L 115.63595581054688 261.9031677246094 L 163.34559631347656 310.64996337890625 L 260.8392028808594 357.32244873046875 L 271.72943115234375 312.2056884765625 L 225.05697631835938 271.2377014160156 L 173.71725463867188 265.53326416015625 L 174.75439453125 220.9351043701172 L 238.5401153564453 160.26089477539062 L 234.3914337158203 92.32654571533203 L 274.8409118652344 123.44152069091797 L 275.3594970703125 183.07855224609375 L 222.46405029296875 220.9351043701172 L 313.216064453125 336.060546875 L 310.1045837402344 268.12615966796875 L 283.6568298339844 230.78819274902344 L 312.6974792480469 195.52455139160156 L 373.8902587890625 199.6732177734375 L 377.0017395019531 157.66798400878906 L 369.7416076660156 136.92466735839844 L 374.4088439941406 101.14244842529297 L 380.6318664550781 62.767311096191406 L 402.930908203125 30.61518096923828 L 429.378662109375 36.319583892822266 L 437.15740966796875 55.507171630859375 L 416.4140930175781 66.91598510742188 L 416.9326477050781 96.99380493164062 L 397.22650146484375 116.69993591308594 L 397.22650146484375 145.22201538085938 L 419.52557373046875 165.96533203125 L 412.7839660644531 204.3404541015625 L 392.5592346191406 217.30502319335938 L 385.81768798828125 255.16159057617188 L 402.930908203125 276.42352294921875 L 397.22650146484375 319.46588134765625 L 419.0069885253906 341.2463684082031 L 451.6777038574219 328.28179931640625 L 459.4564514160156 291.46240234375 L 436.6387939453125 274.86773681640625 L 439.75030517578125 227.6767120361328 L 420.5627136230469 209.52627563476562 L 419.52557373046875 158.18658447265625 L 443.38037109375 143.666259765625 L 451.15911865234375 105.2911148071289 L 423.6742248535156 98.54953002929688 L 422.6370544433594 68.47174835205078 L 447.529052734375 59.137237548828125 L 468.79095458984375 75.73188781738281 L 485.9041748046875 91.80797576904297 L 513.3890991210938 96.47520446777344 L 513.3890991210938 126.03443908691406 L 481.7555236816406 162.85382080078125 L 482.27410888671875 197.598876953125 L 482.27410888671875 200.19178771972656 L 482.27410888671875 200.19178771972656 L 506.12890625 225.6023712158203 L 501.980224609375 256.1987609863281 L 467.2351989746094 288.35089111328125 L 456.863525390625 322.5773620605469 L 485.9041748046875 344.8764343261719 L 520.6492309570312 300.2783203125 L 494.2015380859375 268.644775390625 L 510.277587890625 221.97232055664062 L 541.392578125 207.9705352783203 L 542.4296875 174.2626495361328 L 518.574951171875 140.0361785888672 L 527.390869140625 102.17964172363281 L 560.0615844726562 124.47868347167969 L 565.2474365234375 163.37240600585938 L 586.50927734375 191.37588500976562 L 580.2863159179688 239.08551025390625 L 557.4686889648438 285.7579650878906 L 570.4332275390625 303.90838623046875 L 589.1021728515625 318.4287109375 L 532.57666015625 344.35784912109375 L 477.6068420410156 360.4339294433594 L 430.4158020019531 378.5843200683594 L 419.0069885253906 409.6993103027344 L 422.6370544433594 424.2196350097656 L 445.4547119140625 454.8160095214844 L 481.2369384765625 476.0779113769531 L 525.3164672851562 452.74169921875 L 584.9534912109375 420.58953857421875 L 623.8472290039062 384.2887268066406 L 671.5569458007812 368.2126770019531 L 704.7462158203125 346.43218994140625 L 735.8611450195312 338.6534423828125 L 757.1231079101562 328.2817687988281 L 775.7920532226562 312.72430419921875 L 774.7548828125 313.761474609375 L 778.903564453125 314.280029296875" />
+
               <g id="pulses"></g>
+
               <script><![CDATA[
                 (function(){
-                  var svg = document.currentScript.ownerSVGElement;
+                  var svg  = document.currentScript.ownerSVGElement;
                   var path = svg.querySelector('#route');
-                  var beam = svg.querySelector('#beam');
                   var layer = svg.querySelector('#pulses');
 
-                  function prepBeam(){
-                    var L = path.getTotalLength();
-                    beam.style.strokeDasharray = L;
-                    beam.style.strokeDashoffset = L;
-                    beam.style.opacity = 0.0;
-                  }
-                  prepBeam();
+                  // --- Tuning knobs (intensity/size) ---
+                  var CORE_R  = 10; // bright core radius
+                  var HALO1_R = 30; // inner halo
+                  var HALO2_R = 55; // outer halo
+                  var GLOW_STD = 1; // extra growth per frame on halos (0-2 subtle "breathing")
 
                   function makeDot(){
                     var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-                    // triple halo for intense look
-                    var h1 = document.createElementNS('http://www.w3.org/2000/svg','circle'); h1.setAttribute('r','20'); h1.setAttribute('opacity','0.55');
-                    var h2 = document.createElementNS('http://www.w3.org/2000/svg','circle'); h2.setAttribute('r','34'); h2.setAttribute('opacity','0.28');
-                    var c  = document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','8'); c.setAttribute('class','pulse-dot');
+                    var h1 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                    var h2 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                    var c  = document.createElementNS('http://www.w3.org/2000/svg','circle');
+
+                    h1.setAttribute('r', HALO1_R); h1.setAttribute('opacity','0.45');
+                    h2.setAttribute('r', HALO2_R); h2.setAttribute('opacity','0.25');
+                    c.setAttribute('r', CORE_R);   c.setAttribute('class','pulse-dot');
+
                     g.appendChild(h2); g.appendChild(h1); g.appendChild(c);
                     g.setAttribute('filter','url(#pulseGlow)');
                     layer.appendChild(g);
@@ -148,36 +161,49 @@
                   }
 
                   function play(ms){
+                    // Accessibility: respect reduced motion
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                      window.location.href = 'https://ai.hexcarb.in'; return;
+                    }
+
                     var duration = ms || 1500; // 1.5s total
                     var dot = makeDot();
                     var L = path.getTotalLength();
                     var t0 = performance.now();
 
-                    // animate beam trail via CSS transition (matches duration)
-                    beam.style.transition = 'none'; void beam.getBoundingClientRect();
-                    beam.style.opacity = 0.32;
-                    beam.style.transition = 'stroke-dashoffset '+duration+'ms linear, opacity 220ms ease';
-                    beam.style.strokeDashoffset = '0';
-
                     (function step(t){
                       var u = (t - t0) / duration;
-                      if (u >= 1){ layer.removeChild(dot); // fade beam out gently
-                        beam.style.opacity = 0.12; setTimeout(function(){ prepBeam(); }, 240); return; }
+                      if (u >= 1){
+                        layer.removeChild(dot);
+                        window.location.href = 'https://ai.hexcarb.in';
+                        return;
+                      }
                       var d = u * L; var pt = path.getPointAtLength(d);
+                      // position the whole group at the path point
                       dot.setAttribute('transform', 'translate('+pt.x+','+pt.y+')');
+                      // subtle halo expansion for intensity
+                      var grow = 1 + (u * GLOW_STD);
+                      dot.children[0].setAttribute('r', (HALO2_R * grow).toFixed(2)); // outer
+                      dot.children[1].setAttribute('r', (HALO1_R * grow).toFixed(2)); // inner
                       requestAnimationFrame(step);
                     })(t0);
                   }
 
-                  // expose control on the host page
+                  // expose helpers
                   window.HexcarbPulse = { start:function(){ play(1500); }, startMs:function(x){ play(x); } };
                 })();
               ]]></script>
             </svg>
           </div>
+
           <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
-            <div class="text-sm text-gray-700 dark:text-gray-300">Click to ignite the engine → neural impulse traverses the structure → enters the live system.</div>
-            <div class="flex items-center gap-3 text-sm"><span class="opacity-70">HEXCARB AI Engine</span><span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span></div>
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+              Click to ignite the engine → neural impulse traverses the structure → hands off to the live system.
+            </div>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="opacity-70">HEXCARB AI Engine</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
+            </div>
           </div>
         </button>
       </div>
@@ -199,12 +225,14 @@
       </div>
     </section>
 
-    <!-- Applications (unchanged) -->
+    <!-- Applications -->
     <section id="applications" class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white" style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
       <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
         <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
-        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.</p>
+        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
+          Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
+        </p>
       </div>
       <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
@@ -214,6 +242,7 @@
             <p class="text-md leading-relaxed text-white/90">CNT-reinforced composites offer unmatched strength-to-weight performance, ideal for aerospace structures, thermal protection systems, and integrated sensors for real-time monitoring in extreme environments.</p>
           </div>
         </div>
+
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('wearables.jpg');" role="img" aria-label="Wearable smart textiles">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
           <div class="relative p-8 text-white flex flex-col justify-center h-full">
@@ -221,6 +250,7 @@
             <p class="text-md leading-relaxed text-white/90">Our CNT fibers enable smart fabrics that are stretchable, washable, and electronically responsive—supporting advanced biometric monitoring and responsive clothing for health and defense.</p>
           </div>
         </div>
+
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('energy.jpg');" role="img" aria-label="Energy storage and battery materials">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
           <div class="relative p-8 text-white flex flex-col justify-center h-full">
@@ -228,6 +258,7 @@
             <p class="text-md leading-relaxed text-white/90">CNTs enhance lithium-ion, sodium-ion, and solid-state batteries through superior electron transport, increasing performance, durability, and cycle life in energy storage systems.</p>
           </div>
         </div>
+
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('infrastructure.jpg');" role="img" aria-label="Built environments and smart infrastructure">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
           <div class="relative p-8 text-white flex flex-col justify-center h-full">
@@ -242,42 +273,96 @@
     <section id="vision" class="py-24 px-6 text-center fade-in bg-white dark:bg-black">
       <div class="max-w-4xl mx-auto">
         <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
-        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.</p>
-        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.</p>
+        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+          To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.
+        </p>
+        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+          From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.
+        </p>
       </div>
     </section>
 
     <!-- Roadmap -->
-    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text:white px-6 fade-in">
+    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text-white px-6 fade-in">
       <div class="max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8 text-center">Roadmap 2025</h2>
         <div class="grid md:grid-cols-2 gap-8 text-left">
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black"><h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>High-strength SWCNT fiber prototypes</li><li>Stable dispersion systems for water &amp; epoxy</li><li>Initial sensor thread design for stress response</li></ul></div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg:black"><h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>Mechanical and electrical benchmarking</li><li>Thermal performance and conductivity mapping</li><li>Third-party lab validation across sectors</li></ul></div>
-          <div class="matte rounded-2xl p-6 bg:white dark:bg:black"><h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>Beta release: structural fibers &amp; sensing yarns</li><li>Concrete &amp; battery dispersion pilot batches</li><li>Partnerships with smart material labs</li></ul></div>
-          <div class="matte rounded-2xl p-6 bg:white dark:bg:black"><h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>Investor outreach for full-spectrum SWCNT platform</li><li>Manufacturing roadmap across fibers, dispersions, sensors</li><li>Market positioning: “HexCarb – The Carbon Standard”</li></ul></div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>High-strength SWCNT fiber prototypes</li>
+              <li>Stable dispersion systems for water &amp; epoxy</li>
+              <li>Initial sensor thread design for stress response</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Mechanical and electrical benchmarking</li>
+              <li>Thermal performance and conductivity mapping</li>
+              <li>Third-party lab validation across sectors</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Beta release: structural fibers &amp; sensing yarns</li>
+              <li>Concrete &amp; battery dispersion pilot batches</li>
+              <li>Partnerships with smart material labs</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Investor outreach for full-spectrum SWCNT platform</li>
+              <li>Manufacturing roadmap across fibers, dispersions, sensors</li>
+              <li>Market positioning: “HexCarb – The Carbon Standard”</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Contact -->
-    <section id="contact" class="bg-white dark:bg-black text:black dark:text:white py-16 px-6 md:px-12">
+    <section id="contact" class="bg-white dark:bg-black text-black dark:text-white py-16 px-6 md:px-12">
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
         <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
+
         <form action="https://formspree.io/f/xgvznzyr" method="POST" class="grid gap-4">
-          <label class="text-left"><span class="sr-only">Your Name</span><input type="text" name="name" placeholder="Your Name" required aria-label="Your Name" class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" /></label>
-          <label class="text-left"><span class="sr-only">Your Email</span><input type="email" name="email" placeholder="Your Email" required aria-label="Your Email" class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" /></label>
-          <label class="text-left"><span class="sr-only">Your Message</span><textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message" class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline:none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea></label>
-          <button type="submit" class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">Send Message</button>
+          <label class="text-left">
+            <span class="sr-only">Your Name</span>
+            <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name"
+              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          </label>
+          <label class="text-left">
+            <span class="sr-only">Your Email</span>
+            <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email"
+              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          </label>
+          <label class="text-left">
+            <span class="sr-only">Your Message</span>
+            <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message"
+              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea>
+          </label>
+          <button type="submit" class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">
+            Send Message
+          </button>
         </form>
       </div>
     </section>
   </main>
 
   <!-- Footer / Inbox -->
-  <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10"><p>&copy; 2025 HexCarb Advanced Materials Private Limited</p></footer>
-  <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6" /></svg></a>
+  <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10">
+    <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
+  </footer>
+
+  <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6" />
+    </svg>
+  </a>
 
   <!-- Theme & Mobile Nav -->
   <script>
@@ -289,6 +374,7 @@
       document.getElementById('themeToggle')?.setAttribute('aria-pressed', String(pressed));
       document.getElementById('themeToggleMobile')?.setAttribute('aria-pressed', String(pressed));
     })();
+
     function toggleThemeInternal(btn){
       const html = document.documentElement;
       const isDark = html.classList.toggle('dark');
@@ -299,12 +385,16 @@
     }
     document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
     document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
+
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn?.addEventListener('click', () => { const open = mobileMenu.classList.toggle('hidden'); menuBtn.setAttribute('aria-expanded', String(!open)); });
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden');
+      menuBtn.setAttribute('aria-expanded', String(!open));
+    });
   </script>
 
-  <!-- Engine: trigger logic (click to run 1.5s pulse) -->
+  <!-- Engine: click to run pulse -->
   <script>
     (function(){
       const btn = document.getElementById('engineStart');
