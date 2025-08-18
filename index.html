@@ -1,371 +1,320 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" class="dark">
 <head>
-  <style>
-  .floating-inbox {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: white;
-    padding: 12px;
-    border: 2px solid black;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease;
-  }
-
-  .floating-inbox:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
-  }
-
-  .floating-inbox img {
-    width: 32px;
-    height: 32px;
-  }
-</style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HEXCARB</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- SEO / OG -->
+  <meta name="description" content="HexCarb — SWCNT fibers, dispersions, and smart textiles accelerated by the HEXCARB AI Engine. Forging the future, atom by atom." />
+  <link rel="canonical" href="https://www.hexcarb.in/">
+  <meta property="og:title" content="HEXCARB">
+  <meta property="og:description" content="SWCNT fibers, dispersions, and smart textiles — accelerated by the HEXCARB AI Engine.">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    html {
-      scroll-behavior: smooth;
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; transition: background .3s, color .3s; }
+    .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp .8s ease-out forwards; }
+    @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
+
+    /* Matte card look */
+    .matte { 
+      box-shadow: 0 6px 28px rgba(0,0,0,.08);
+      border: 1px solid rgba(0,0,0,.1);
     }
-    body {
-      font-family: 'Inter', sans-serif;
-      transition: background 0.3s, color 0.3s;
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.8s ease-out forwards;
-    }
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .dark .matte {
+      border-color: rgba(255,255,255,.08);
+      box-shadow: 0 6px 28px rgba(0,0,0,.35);
     }
 
-    /* Floating button */
-    .floating-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #000;
-      color: #fff;
-      padding: 14px 22px;
-      font-weight: 600;
-      border-radius: 9999px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 1000;
+    /* Floating Inbox (single source of truth) */
+    .floating-inbox {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+      background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0,0,0,.15); transition: transform .3s ease, box-shadow .3s ease;
     }
+    .floating-inbox:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,0,0,.25); }
+    .dark .floating-inbox { background:#111; border-color:#fff; }
 
-    .floating-button:hover {
-      transform: scale(1.05);
-      background: #333;
+    /* Accessible skip link */
+    .skip-link {
+      position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
     }
-
-    /* Dark mode classes */
-    html[data-theme='dark'] {
-      background: #000;
-      color: #fff;
-    }
-    html[data-theme='dark'] .bg-white {
-      background-color: #000 !important;
-    }
-    html[data-theme='dark'] .text-black {
-      color: #fff !important;
-    }
-    html[data-theme='dark'] .text-gray-600,
-    html[data-theme='dark'] .text-gray-400,
-    html[data-theme='dark'] .text-gray-700 {
-      color: #ccc !important;
-    }
-    html[data-theme='dark'] .bg-gray-100 {
-      background-color: #111 !important;
-    }
-    html[data-theme='dark'] footer {
-      border-color: #333;
+    .skip-link:focus {
+      position:static; width:auto; height:auto; margin:8px; padding:8px 12px;
+      background:#000; color:#fff; border-radius:8px;
     }
   </style>
 </head>
-<body class="bg-white text-black">
+<body class="bg-white text-black dark:bg-black dark:text-white">
 
-  <!-- Sticky Navbar -->
-  <header class="sticky top-0 z-50 bg-white shadow-md">
-  <nav class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-    <div class="text-xl font-extrabold">HexCarb</div>
+  <a href="#main" class="skip-link">Skip to content</a>
 
-    <div class="space-x-6 text-sm font-medium hidden md:block">
-      <a href="#technology" class="hover:underline">Technology</a>
-      <a href="#applications" class="hover:underline">Applications</a>
-      <a href="#vision" class="hover:underline">Vision</a>
-      <a href="#roadmap" class="hover:underline">Roadmap</a>
-      <a href="https://ai.hexcarb.in" target="_blank" class="inline-block bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">
-        Hexcarb AI Brain
-      </a>
-    </div>
-      <!-- Dark Mode Toggle -->
-      <button onclick="toggleTheme()" class="ml-4 px-3 py-1 border border-gray-400 rounded text-sm">
-        🌓
-      </button>
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
+    <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="text-xl font-extrabold tracking-wide">HexCarb</div>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="#technology" class="hover:underline">Technology</a>
+        <a href="#applications" class="hover:underline">Applications</a>
+        <a href="#vision" class="hover:underline">Vision</a>
+        <a href="#roadmap" class="hover:underline">Roadmap</a>
+        <a href="https://ai.hexcarb.in" target="_blank"
+           class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition"
+           rel="noopener noreferrer">HEXCARB AI Engine</a>
+        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
+          class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+      </div>
+
+      <!-- Mobile controls -->
+      <div class="md:hidden flex items-center gap-2">
+        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
+          class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+        <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
+          <!-- Hamburger -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-black/10 dark:border-white/10">
+      <div class="px-4 py-3 flex flex-col gap-3 text-sm">
+        <a href="#technology" class="py-1">Technology</a>
+        <a href="#applications" class="py-1">Applications</a>
+        <a href="#vision" class="py-1">Vision</a>
+        <a href="#roadmap" class="py-1">Roadmap</a>
+        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
+           class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
+      </div>
+    </div>
   </header>
 
   <!-- Hero -->
- <section 
-  class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" 
-  style="background-image: url('1.png');"
->
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/50 dark:bg-black/60 backdrop-blur-sm z-0"></div>
+  <section class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat"
+           style="background-image: url('1.png');">
+    <!-- Single overlay works for both themes -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-0"></div>
 
+    <!-- Content -->
+    <div class="relative z-10">
+      <img src="logo.svg" alt="HEXCARB Logo"
+           class="mx-auto mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]" />
+      <h1 class="text-4xl font-extrabold mb-4 tracking-wide text-white drop-shadow-md">HexCarb</h1>
+      <p class="text-lg max-w-xl mx-auto text-white drop-shadow-sm">Forging the future atom by atom.</p>
+    </div>
+  </section>
 
-  <!-- Content -->
-<div class="relative z-10">
-  <img 
-    src="logo.svg" 
-    alt="HEXCARB Logo" 
-    class="mx-auto mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]"
-  >
-  <h1 class="text-4xl font-extrabold mb-4 tracking-wide text-white drop-shadow-md">
-    HexCarb
-  </h1>
-  <p class="text-lg max-w-xl mx-auto text-white drop-shadow-sm">
-    Forging the future atom by atom.
-  </p>
-</div>
+  <main id="main">
+    <!-- Technology -->
+    <section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
+      <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+        <h2 class="text-xl font-semibold mb-2">Quantum Conductivity</h2>
+        <p>Single-walled carbon nanotubes behave like one-dimensional metals or semiconductors, enabling ultra-efficient signal transport in nanoscale electronics and intelligent fabrics.</p>
+      </div>
+      <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+        <h2 class="text-xl font-semibold mb-2">Thermal Superhighways</h2>
+        <p>With thermal conductivity surpassing even diamond, SWCNTs offer advanced thermal management for high-power electronics, wearables, and extreme-environment shielding.</p>
+      </div>
+      <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+        <h2 class="text-xl font-semibold mb-2">Atomic Strength</h2>
+        <p>As one of the strongest known materials, SWCNTs deliver extreme tensile strength and flexibility—ideal for lightweight aerospace structures, smart composites, and stretchable electronics.</p>
+      </div>
+    </section>
 
+    <!-- Applications -->
+    <section id="applications"
+      class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white"
+      style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
 
-</section>
-  <!-- Technology -->
-<section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
-  
-  <!-- Electrical Conductivity -->
-  <div>
-    <h2 class="text-xl font-semibold mb-2">Quantum Conductivity</h2>
-    <p>
-      Single-walled carbon nanotubes behave like one-dimensional metals or semiconductors, enabling ultra-efficient signal transport in nanoscale electronics and intelligent fabrics.
-    </p>
-  </div>
-
-  <!-- Thermal Conductivity -->
-  <div>
-    <h2 class="text-xl font-semibold mb-2">Thermal Superhighways</h2>
-    <p>
-      With thermal conductivity surpassing even diamond, SWCNTs offer advanced thermal management for high-power electronics, wearables, and extreme-environment shielding.
-    </p>
-  </div>
-
-  <!-- Mechanical Strength -->
-  <div>
-    <h2 class="text-xl font-semibold mb-2">Atomic Strength</h2>
-    <p>
-      As one of the strongest known materials, SWCNTs offer unmatched tensile strength and flexibility—ideal for lightweight aerospace structures, smart composites, and stretchable electronics.
-    </p>
-  </div>
-
-</section>
-
-
-<!-- Applications -->
-<section id="applications" 
-  class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white"
-  style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;"
->
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
-
-  <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
-    <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
-    <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
-      Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
-    </p>
-  </div>
-
-  <!-- Cards Grid -->
-  <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-    
-    <!-- Reusable Card Template -->
-    <div 
-      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
-      style="background-image: url('aerospace.jpg');"
-    >
-      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-      <div class="relative p-8 text-white flex flex-col justify-center h-full">
-        <h3 class="text-2xl font-semibold mb-3">Aerospace</h3>
-        <p class="text-md leading-relaxed text-white/90">
-          CNT-reinforced composites offer unmatched strength-to-weight performance, ideal for aerospace structures, thermal protection systems, and integrated sensors for real-time monitoring in extreme environments.
+      <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
+        <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
+        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
+          Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
         </p>
       </div>
-    </div>
 
-    <div 
-      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
-      style="background-image: url('wearables.jpg');"
-    >
-      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-      <div class="relative p-8 text-white flex flex-col justify-center h-full">
-        <h3 class="text-2xl font-semibold mb-3">Wearables</h3>
-        <p class="text-md leading-relaxed text-white/90">
-          Our CNT fibers enable smart fabrics that are stretchable, washable, and electronically responsive—supporting advanced biometric monitoring and responsive clothing for health and defense.
+      <!-- Cards Grid -->
+      <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <!-- Each card: add role/aria for background images -->
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Aerospace</h3>
+            <p class="text-md leading-relaxed text-white/90">CNT-reinforced composites offer unmatched strength-to-weight performance, ideal for aerospace structures, thermal protection systems, and integrated sensors for real-time monitoring in extreme environments.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('wearables.jpg');" role="img" aria-label="Wearable smart textiles">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Wearables</h3>
+            <p class="text-md leading-relaxed text-white/90">Our CNT fibers enable smart fabrics that are stretchable, washable, and electronically responsive—supporting advanced biometric monitoring and responsive clothing for health and defense.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('energy.jpg');" role="img" aria-label="Energy storage and battery materials">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Energy</h3>
+            <p class="text-md leading-relaxed text-white/90">CNTs enhance lithium-ion, sodium-ion, and solid-state batteries through superior electron transport, increasing performance, durability, and cycle life in energy storage systems.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('infrastructure.jpg');" role="img" aria-label="Built environments and smart infrastructure">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Built Environments</h3>
+            <p class="text-md leading-relaxed text-white/90">By incorporating CNTs into construction materials, we develop infrastructure that is self-monitoring, fire-resistant, and more durable—ideal for smart cities and extraterrestrial habitats.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision -->
+    <section id="vision" class="py-24 px-6 text-center fade-in bg-white dark:bg-black">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
+        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.</p>
+        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+          From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.
         </p>
       </div>
-    </div>
+    </section>
 
-    <div 
-      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
-      style="background-image: url('energy.jpg');"
-    >
-      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-      <div class="relative p-8 text-white flex flex-col justify-center h-full">
-        <h3 class="text-2xl font-semibold mb-3">Energy</h3>
-        <p class="text-md leading-relaxed text-white/90">
-          CNTs enhance lithium-ion, sodium-ion, and solid-state batteries through superior electron transport, increasing performance, durability, and cycle life in energy storage systems.
-        </p>
+    <!-- Roadmap -->
+    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text-white px-6 fade-in">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center">Roadmap 2025</h2>
+        <div class="grid md:grid-cols-2 gap-8 text-left">
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>High-strength SWCNT fiber prototypes</li>
+              <li>Stable dispersion systems for water &amp; epoxy</li>
+              <li>Initial sensor thread design for stress response</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Mechanical and electrical benchmarking</li>
+              <li>Thermal performance and conductivity mapping</li>
+              <li>Third-party lab validation across sectors</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Beta release: structural fibers &amp; sensing yarns</li>
+              <li>Concrete &amp; battery dispersion pilot batches</li>
+              <li>Partnerships with smart material labs</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg:black">
+            <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Investor outreach for full-spectrum SWCNT platform</li>
+              <li>Manufacturing roadmap across fibers, dispersions, sensors</li>
+              <li>Market positioning: “HexCarb – The Carbon Standard”</li>
+            </ul>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div 
-      class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
-      style="background-image: url('infrastructure.jpg');"
-    >
-      <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-      <div class="relative p-8 text-white flex flex-col justify-center h-full">
-        <h3 class="text-2xl font-semibold mb-3">Built Environments</h3>
-        <p class="text-md leading-relaxed text-white/90">
-          By incorporating CNTs into construction materials, we develop infrastructure that is self-monitoring, fire-resistant, and more durable—ideal for smart cities and extraterrestrial habitats.
-        </p>
+    <!-- Contact -->
+    <section id="contact" class="bg-white dark:bg-black text-black dark:text-white py-16 px-6 md:px-12">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
+        <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
+
+        <form action="https://formspree.io/f/xgvznzyr" method="POST" class="grid gap-4">
+          <label class="text-left">
+            <span class="sr-only">Your Name</span>
+            <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name"
+                   class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          </label>
+          <label class="text-left">
+            <span class="sr-only">Your Email</span>
+            <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email"
+                   class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          </label>
+          <label class="text-left">
+            <span class="sr-only">Your Message</span>
+            <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message"
+                      class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea>
+          </label>
+          <button type="submit"
+                  class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">
+            Send Message
+          </button>
+        </form>
       </div>
-    </div>
+    </section>
+  </main>
 
-  </div>
-</section>
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10">
+    <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
+  </footer>
 
+  <!-- Floating Inbox -->
+  <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4h16v16H4z"/>
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  </a>
 
- <section id="vision" class="py-24 px-6 text-center fade-in bg-white">
-  <div class="max-w-4xl mx-auto">
-    <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
-    <p class="text-xl text-gray-700 mb-6">
-      To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.
-    </p>
-    <p class="text-lg text-gray-600 leading-relaxed">
-      From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.
-    </p>
-  </div>
-</section>
+  <!-- Minimal JS: theme + mobile menu -->
+  <script>
+    (function initTheme(){
+      const stored = localStorage.getItem('theme');
+      const html = document.documentElement;
+      if (stored === 'light') html.classList.remove('dark');
+      else html.classList.add('dark');
+      const pressed = html.classList.contains('dark');
+      document.getElementById('themeToggle')?.setAttribute('aria-pressed', String(pressed));
+      document.getElementById('themeToggleMobile')?.setAttribute('aria-pressed', String(pressed));
+    })();
 
- <!-- Roadmap -->
-<section id="roadmap" class="py-16 bg-gray-100 text-black px-6 fade-in">
-  <div class="max-w-5xl mx-auto">
-    <h2 class="text-3xl font-bold mb-8 text-center">Roadmap 2025</h2>
-    <div class="grid md:grid-cols-2 gap-8 text-left">
+    function toggleThemeInternal(btn){
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      btn?.setAttribute('aria-pressed', String(isDark));
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      // sync both buttons
+      const other = btn?.id === 'themeToggle' ? document.getElementById('themeToggleMobile') : document.getElementById('themeToggle');
+      other?.setAttribute('aria-pressed', String(isDark));
+    }
 
-      <!-- Q1 -->
-      <div>
-        <h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3>
-        <ul class="list-disc ml-5 text-gray-700">
-          <li>High-strength SWCNT fiber prototypes</li>
-          <li>Stable dispersion systems for water & epoxy</li>
-          <li>Initial sensor thread design for stress response</li>
-        </ul>
-      </div>
+    document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
+    document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
 
-      <!-- Q2 -->
-      <div>
-        <h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3>
-        <ul class="list-disc ml-5 text-gray-700">
-          <li>Mechanical and electrical benchmarking</li>
-          <li>Thermal performance and conductivity mapping</li>
-          <li>Third-party lab validation across sectors</li>
-        </ul>
-      </div>
-
-      <!-- Q3 -->
-      <div>
-        <h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3>
-        <ul class="list-disc ml-5 text-gray-700">
-          <li>Beta release: structural fibers & sensing yarns</li>
-          <li>Concrete & battery dispersion pilot batches</li>
-          <li>Partnerships with smart material labs</li>
-        </ul>
-      </div>
-
-      <!-- Q4 -->
-      <div>
-        <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
-        <ul class="list-disc ml-5 text-gray-700">
-          <li>Investor outreach for full-spectrum SWCNT platform</li>
-          <li>Manufacturing roadmap across fibers, dispersions, sensors</li>
-          <li>Market positioning: "HexCarb – The Carbon Standard"</li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-  <!-- Contact Section -->
-<section id="contact" class="bg-white text-black py-16 px-6 md:px-12">
-  <div class="max-w-3xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
-    <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
-
-    <form action="https://formspree.io/f/xgvznzyr" method="POST" class="grid gap-4">
-      <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name" class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black" />
-      <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email" class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black" />
-      <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message" class="border border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black"></textarea>
-      <button type="submit" class="bg-black text-white rounded-lg p-3 font-semibold hover:bg-gray-900 transition">Send Message</button>
-    </form>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="bg-white text-gray-400 py-6 text-center text-sm border-t">
-  <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
-</footer>
-
-<!-- Floating Inbox -->
-<a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 4h16v16H4z"/>
-    <polyline points="22,6 12,13 2,6" />
-  </svg>
-</a>
-
-<!-- Styles for Floating Inbox -->
-<style>
-  .floating-inbox {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: white;
-    padding: 12px;
-    border: 2px solid black;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease;
-  }
-
-  .floating-inbox:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
-  }
-</style>
-
-<!-- Optional Theme Toggle -->
-<script>
-  function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    document.documentElement.setAttribute("data-theme", currentTheme === "light" ? "dark" : "light");
-  }
-</script>
-
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden');
+      menuBtn.setAttribute('aria-expanded', String(!open));
+    });
+  </script>
+</body>
+</html>
