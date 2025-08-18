@@ -2,21 +2,23 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HEXCARB</title>
+
+  <!-- SEO / OG -->
   <meta name="description" content="HexCarb — SWCNT fibers, dispersions, and smart textiles accelerated by the HEXCARB AI Engine. Forging the future, atom by atom.">
   <link rel="canonical" href="https://www.hexcarb.in/">
   <meta property="og:title" content="HEXCARB">
   <meta property="og:description" content="SWCNT fibers, dispersions, and smart textiles — accelerated by the HEXCARB AI Engine.">
   <meta property="og:type" content="website">
 
-  <!-- Tailwind (for layout only) -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     html { scroll-behavior: smooth; }
@@ -24,6 +26,11 @@
     .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp .8s ease-out forwards; }
     @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
 
+    /* Matte card look */
+    .matte { box-shadow: 0 6px 28px rgba(0,0,0,.08); border: 1px solid rgba(0,0,0,.1); }
+    .dark .matte { border-color: rgba(255,255,255,.08); box-shadow: 0 6px 28px rgba(0,0,0,.35); }
+
+    /* Floating Inbox */
     .floating-inbox {
       position: fixed; bottom: 20px; right: 20px; z-index: 1000;
       background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%;
@@ -32,118 +39,347 @@
     .floating-inbox:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,0,0,.25); }
     .dark .floating-inbox { background:#111; border-color:#fff; }
 
-    /* ===== Engine visuals ===== */
-    #engineOverlay .node-lit circle { fill:#fff !important; filter:url(#glow); }
-    .wire { fill:none; stroke-linecap:round; stroke-linejoin:round; }
-    .light { stroke:#fff; filter:url(#glow); }
+    /* Skip link */
+    .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .skip-link:focus { position:static; width:auto; height:auto; margin:8px; padding:8px 12px; background:#000; color:#fff; border-radius:8px; }
 
-    /* Right-hemisphere takeover sheen (percentage width; viewBox 0..100) */
-    @keyframes takeoverSweep { 0% { width:0; opacity:.10 } 60%{ width:32; opacity:.20 } 100%{ width:52; opacity:.16 } }
+    /* ===== Engine Panel (XL) ===== */
+    #engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
+
+    /* Takeover sweep (percentage-based width in the 0..100 viewBox) */
+    @keyframes takeoverSweep {
+      0%   { width: 0;   opacity: .10; }
+      60%  { width: 32;  opacity: .20; }
+      100% { width: 52;  opacity: .16; }
+    }
     #takeover.sweep { animation: takeoverSweep 920ms ease-out forwards; }
 
-    /* Left warm glow */
-    @keyframes warmUp { 0%{opacity:0;r:10} 40%{opacity:.22;r:18} 100%{opacity:.12;r:22} }
+    /* Left hemisphere warm glow */
+    @keyframes warmUp {
+      0%   { opacity: 0;   r: 10; }
+      40%  { opacity: .22; r: 18; }
+      100% { opacity: .12; r: 22; }
+    }
     #warmGlow.run { animation: warmUp 600ms ease-out forwards; }
 
-    /* Impulse dots + Mapper helpers */
-    .impulse-dot { fill:#fff; filter:url(#glow); opacity:.95 }
-    .map-guide { stroke:#ffffffaa; stroke-dasharray:2 2; fill:none; }
-    .map-point { fill:#ffffff99; }
-    .map-hint { position:absolute; right:14px; bottom:14px; font-size:12px; opacity:.65; background:rgba(0,0,0,.45); color:white; padding:6px 10px; border-radius:8px; }
-    .dark .map-hint { background:rgba(255,255,255,.1) }
-
+    /* Reduced motion skips fancy bits */
     @media (prefers-reduced-motion: reduce) {
-      #engineOverlay * { transition:none !important; animation:none !important; }
+      #engineOverlay * { transition: none !important; animation: none !important; }
     }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-black dark:text-white">
 
-  <!-- Simple header -->
-  <header class="sticky top-0 z-40 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
     <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="text-xl font-extrabold tracking-wide">HexCarb</div>
-      <a href="https://ai.hexcarb.in" class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition" target="_blank" rel="noopener">HEXCARB AI Engine</a>
-    </nav>
-  </header>
 
-  <!-- Hero (kept minimal) -->
-  <section class="relative text-center py-14 px-6 fade-in bg-cover bg-center bg-no-repeat" style="background-image:url('1.png');">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-0"></div>
-    <div class="relative z-10">
-      <img src="logo.svg" alt="HEXCARB Logo" class="mx-auto mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]" />
-      <h1 class="text-4xl font-extrabold mb-2 tracking-wide text-white drop-shadow-md">HexCarb</h1>
-      <p class="text-lg max-w-xl mx-auto text-white/95">Forging the future atom by atom.</p>
-    </div>
-  </section>
-
-  <!-- ========= HEXCARB AI ENGINE — PANEL ========= -->
-  <section id="engine" class="relative px-4 py-10 md:py-14">
-    <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
-
-      <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
-        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
-        <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Science that thinks. Technology that invents.</p>
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="#technology" class="hover:underline">Technology</a>
+        <a href="#applications" class="hover:underline">Applications</a>
+        <a href="#vision" class="hover:underline">Vision</a>
+        <a href="#roadmap" class="hover:underline">Roadmap</a>
+        <a href="https://ai.hexcarb.in" target="_blank"
+           class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition"
+           rel="noopener noreferrer">HEXCARB AI Engine</a>
+        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
+          class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
       </div>
 
-      <!-- Click target -->
-      <button id="engineStart" class="group relative block w-full text-left focus:outline-none" aria-label="Start HEXCARB AI Engine">
-        <!-- Brain image (slightly reduced width for breathing room) -->
-        <div class="w-full flex justify-center">
-          <img id="brainImg" src="3.png" alt="HEXCARB hybrid brain — AI nodes and CNT lattice" class="w-[92%] h-auto select-none pointer-events-none">
-        </div>
+      <!-- Mobile controls -->
+      <div class="md:hidden flex items-center gap-2">
+        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
+          class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+        <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
 
-        <!-- SVG overlay -->
-        <svg id="engineOverlay" viewBox="0 0 100 100" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
-          <defs>
-            <filter id="glow"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="white" stop-opacity="0"/>
-              <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
-              <stop offset="100%" stop-color="white" stop-opacity="0"/>
-            </linearGradient>
-            <!-- Right hemisphere mask (adjust if your composition differs) -->
-            <mask id="rightMask" maskUnits="objectBoundingBox">
-              <rect x="0.50" y="0.10" width="0.48" height="0.80" fill="white"/>
-            </mask>
-          </defs>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-black/10 dark:border-white/10">
+      <div class="px-4 py-3 flex flex-col gap-3 text-sm">
+        <a href="#technology" class="py-1">Technology</a>
+        <a href="#applications" class="py-1">Applications</a>
+        <a href="#vision" class="py-1">Vision</a>
+        <a href="#roadmap" class="py-1">Roadmap</a>
+        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
+           class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
+      </div>
+    </div>
+  </header>
 
-          <!-- Warm glow (left) -->
-          <circle id="warmGlow" cx="30" cy="50" r="10" fill="white" opacity="0"/>
-
-          <!-- Mapped animated paths are appended here -->
-          <g id="mapPaths" class="light" stroke-width="1.35"></g>
-
-          <!-- Right-side sheen sweep -->
-          <g mask="url(#rightMask)">
-            <rect id="takeover" x="50" y="0" width="0" height="100" fill="url(#sweep)" />
-          </g>
-
-          <!-- Exit pulse -->
-          <circle id="exitPulse" cx="94" cy="69" r="0.8" fill="#fff" opacity="0"/>
-
-          <!-- Mapper helpers -->
-          <g id="mapGuide" class="map-guide" visibility="hidden"></g>
-          <g id="mapPoints" visibility="hidden"></g>
-        </svg>
-
-        <!-- Map hint UI -->
-        <div id="mapHint" class="map-hint hidden">
-          Map Mode • M toggle · L/B/R/T choose segment · Click to add points · Enter finish · Backspace undo · Esc cancel · G ridge-snap · C curve on/off · S save
-        </div>
-
-        <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
-          <div class="text-sm text-gray-700 dark:text-gray-300">
-            Click to ignite the engine → neural impulses traverse the structure → enter the live system.
-          </div>
-          <div class="flex items-center gap-3 text-sm">
-            <span class="opacity-70">HEXCARB AI Engine</span>
-            <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
-          </div>
-        </div>
-      </button>
+  <!-- Hero -->
+  <section class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat"
+           style="background-image: url('1.png');">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-0"></div>
+    <div class="relative z-10">
+      <img src="logo.svg" alt="HEXCARB Logo"
+           class="mx-auto mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]" />
+      <h1 class="text-4xl font-extrabold mb-4 tracking-wide text-white drop-shadow-md">HexCarb</h1>
+      <p class="text-lg max-w-xl mx-auto text-white drop-shadow-sm">Forging the future atom by atom.</p>
     </div>
   </section>
+
+  <main id="main">
+    <!-- ========= HEXCARB AI ENGINE — XL PANEL (3.png) ========= -->
+    <section id="engine" class="relative px-4 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
+
+        <!-- Header -->
+        <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
+          <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Science that thinks. Technology that invents.</p>
+        </div>
+
+        <!-- Visual + CTA (clickable) -->
+        <button id="engineStart" class="group relative block w-full text-left focus:outline-none"
+                aria-label="Start HEXCARB AI Engine">
+          <!-- Slightly reduced image footprint (92% width) -->
+          <div class="w-full flex justify-center">
+            <img src="3.png" alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice"
+                 class="w-[92%] h-auto select-none pointer-events-none">
+          </div>
+
+          <!-- SVG overlay (percentage-based for responsiveness) -->
+          <svg id="engineOverlay" viewBox="0 0 100 100"
+               class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
+            <defs>
+              <filter id="glow"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"  stop-color="white" stop-opacity="0"/>
+                <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </linearGradient>
+              <!-- Mask: right hemisphere (tweaked to match 3.png composition) -->
+              <mask id="rightMask" maskUnits="objectBoundingBox">
+                <rect x="0.50" y="0.10" width="0.48" height="0.80" fill="white"/>
+              </mask>
+              <style>
+                .wire { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+                .base { stroke: currentColor; opacity:.32; }
+                .light { stroke: #fff; filter:url(#glow); }
+              </style>
+            </defs>
+
+            <!-- Warm glow on left hemisphere (starts on click) -->
+            <circle id="warmGlow" cx="30" cy="50" r="10" fill="white" opacity="0"/>
+
+            <!-- Subtle base wires for context (nudged to sit on 3.png) -->
+            <g id="wires-base" class="base" stroke-width="0.55">
+              <!-- Left circuits -->
+              <path d="M21.5,56 28,50.5 34.5,45.2 41,38.5" />
+              <path d="M24.8,62.2 31.2,58.2 37.8,54.2" />
+              <path d="M20.5,49 27,43.6 33,39.4" />
+              <!-- Bridge -->
+              <path d="M44.2,50 50,50 56,50" />
+              <!-- Right lattice -->
+              <path d="M58.2,46 66,40 74,46 70,56 62.3,52.2" />
+              <!-- Tube -->
+              <path d="M73.8,60 80,62 88,66 94,69" />
+            </g>
+
+            <!-- Animated “light” strokes (hidden via dashoffset until run) -->
+            <g id="wires-light" class="light" stroke-width="1.35">
+              <path id="path-L1" class="wire" d="M21.5,56 28,50.5 34.5,45.2 41,38.5"/>
+              <path id="path-L2" class="wire" d="M24.8,62.2 31.2,58.2 37.8,54.2"/>
+              <path id="path-L3" class="wire" d="M20.5,49 27,43.6 33,39.4"/>
+              <path id="path-B1" class="wire" d="M44.2,50 50,50 56,50"/>
+              <path id="path-R1" class="wire" d="M58.2,46 66,40 74,46 70,56 62.3,52.2"/>
+              <path id="path-T1" class="wire" d="M73.8,60 80,62 88,66 94,69"/>
+            </g>
+
+            <!-- Nodes that pop when the light passes -->
+            <g id="nodes-left" fill="#fff">
+              <circle cx="28" cy="50.5" r="0.9" opacity="0"/>
+              <circle cx="34.5" cy="45.2" r="0.9" opacity="0"/>
+              <circle cx="31.2" cy="58.2" r="0.9" opacity="0"/>
+              <circle cx="27" cy="43.6"  r="0.9" opacity="0"/>
+            </g>
+            <g id="nodes-right" fill="#fff">
+              <circle cx="66" cy="40" r="0.9" opacity="0"/>
+              <circle cx="74" cy="46" r="0.9" opacity="0"/>
+              <circle cx="70" cy="56" r="0.9" opacity="0"/>
+            </g>
+
+            <!-- Takeover sweep constrained to right hemisphere -->
+            <g mask="url(#rightMask)">
+              <rect id="takeover" x="50" y="0" width="0" height="100" fill="url(#sweep)" />
+            </g>
+
+            <!-- Exit pulse -->
+            <circle id="exitPulse" cx="94" cy="69" r="0.8" fill="#fff" opacity="0"/>
+          </svg>
+
+          <!-- Bottom caption -->
+          <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+              Click to ignite the engine → pulse through the neural graph → enter the live system.
+            </div>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="opacity-70">HEXCARB AI Engine</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
+            </div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Technology -->
+    <section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
+      <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+        <h2 class="text-xl font-semibold mb-2">Quantum Conductivity</h2>
+        <p>Single-walled carbon nanotubes behave like one-dimensional metals or semiconductors, enabling ultra-efficient signal transport in nanoscale electronics and intelligent fabrics.</p>
+      </div>
+      <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+        <h2 class="text-xl font-semibold mb-2">Thermal Superhighways</h2>
+        <p>With thermal conductivity surpassing even diamond, SWCNTs offer advanced thermal management for high-power electronics, wearables, and extreme-environment shielding.</p>
+      </div>
+      <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+        <h2 class="text-xl font-semibold mb-2">Atomic Strength</h2>
+        <p>As one of the strongest known materials, SWCNTs deliver extreme tensile strength and flexibility—ideal for lightweight aerospace structures, smart composites, and stretchable electronics.</p>
+      </div>
+    </section>
+
+    <!-- Applications -->
+    <section id="applications" class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white"
+             style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+
+      <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
+        <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
+        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
+          Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
+        </p>
+      </div>
+
+      <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Aerospace</h3>
+            <p class="text-md leading-relaxed text-white/90">CNT-reinforced composites offer unmatched strength-to-weight performance, ideal for aerospace structures, thermal protection systems, and integrated sensors for real-time monitoring in extreme environments.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('wearables.jpg');" role="img" aria-label="Wearable smart textiles">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Wearables</h3>
+            <p class="text-md leading-relaxed text-white/90">Our CNT fibers enable smart fabrics that are stretchable, washable, and electronically responsive—supporting advanced biometric monitoring and responsive clothing for health and defense.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('energy.jpg');" role="img" aria-label="Energy storage and battery materials">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Energy</h3>
+            <p class="text-md leading-relaxed text-white/90">CNTs enhance lithium-ion, sodium-ion, and solid-state batteries through superior electron transport, increasing performance, durability, and cycle life in energy storage systems.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]"
+             style="background-image: url('infrastructure.jpg');" role="img" aria-label="Built environments and smart infrastructure">
+          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
+          <div class="relative p-8 text-white flex flex-col justify-center h-full">
+            <h3 class="text-2xl font-semibold mb-3">Built Environments</h3>
+            <p class="text-md leading-relaxed text-white/90">By incorporating CNTs into construction materials, we develop infrastructure that is self-monitoring, fire-resistant, and more durable—ideal for smart cities and extraterrestrial habitats.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision -->
+    <section id="vision" class="py-24 px-6 text-center fade-in bg-white dark:bg-black">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
+        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+          To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.
+        </p>
+        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+          From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.
+        </p>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text-white px-6 fade-in">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center">Roadmap 2025</h2>
+        <div class="grid md:grid-cols-2 gap-8 text-left">
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>High-strength SWCNT fiber prototypes</li>
+              <li>Stable dispersion systems for water &amp; epoxy</li>
+              <li>Initial sensor thread design for stress response</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Mechanical and electrical benchmarking</li>
+              <li>Thermal performance and conductivity mapping</li>
+              <li>Third-party lab validation across sectors</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Beta release: structural fibers &amp; sensing yarns</li>
+              <li>Concrete &amp; battery dispersion pilot batches</li>
+              <li>Partnerships with smart material labs</li>
+            </ul>
+          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
+            <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
+            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
+              <li>Investor outreach for full-spectrum SWCNT platform</li>
+              <li>Manufacturing roadmap across fibers, dispersions, sensors</li>
+              <li>Market positioning: “HexCarb – The Carbon Standard”</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="bg-white dark:bg-black text-black dark:text-white py-16 px-6 md:px-12">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
+        <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
+
+        <form action="https://formspree.io/f/xgvznzyr" method="POST" class="grid gap-4">
+          <label class="text-left">
+            <span class="sr-only">Your Name</span>
+            <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name"
+                   class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          </label>
+          <label class="text-left">
+            <span class="sr-only">Your Email</span>
+            <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email"
+                   class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          </label>
+          <label class="text-left">
+            <span class="sr-only">Your Message</span>
+            <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message"
+                      class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea>
+          </label>
+          <button type="submit"
+                  class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
 
   <!-- Footer -->
   <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10">
@@ -152,287 +388,149 @@
 
   <!-- Floating Inbox -->
   <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6" />
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4h16v16H4z"/>
+      <polyline points="22,6 12,13 2,6" />
     </svg>
   </a>
 
-  <!-- Hidden canvas for ridge-snap sampling -->
-  <canvas id="sampleCanvas" style="position:fixed; left:-9999px; top:-9999px;" width="1" height="1"></canvas>
-
+  <!-- Minimal JS: theme + mobile menu + engine animation & sound -->
   <script>
-  (function(){
-    const btn   = document.getElementById('engineStart');
-    const img   = document.getElementById('brainImg');
-    const svg   = document.getElementById('engineOverlay');
-    const mapPaths  = svg.getElementById('mapPaths');
-    const mapGuide  = svg.getElementById('mapGuide');
-    const mapPoints = svg.getElementById('mapPoints');
-    const warmGlow  = svg.getElementById('warmGlow');
-    const takeover  = svg.getElementById('takeover');
-    const exitPulse = svg.getElementById('exitPulse');
-    const hintBox   = document.getElementById('mapHint');
+    // Theme init
+    (function(){
+      const stored = localStorage.getItem('theme');
+      const html = document.documentElement;
+      if (stored === 'light') html.classList.remove('dark'); else html.classList.add('dark');
+      const pressed = html.classList.contains('dark');
+      document.getElementById('themeToggle')?.setAttribute('aria-pressed', String(pressed));
+      document.getElementById('themeToggleMobile')?.setAttribute('aria-pressed', String(pressed));
+    })();
 
-    const canvas = document.getElementById('sampleCanvas');
-    const ctx = canvas.getContext('2d');
-
-    /* ---------- Mapper state ---------- */
-    const MAP = {
-      on:false, type:'L', curve:true, ridge:true,
-      current:[], counter:{L:0,B:0,R:0,T:0}, saved:{ L:[], B:[], R:[], T:[] }
-    };
-
-    function toggleMap(on){
-      MAP.on = (on ?? !MAP.on);
-      mapGuide.setAttribute('visibility', MAP.on?'visible':'hidden');
-      mapPoints.setAttribute('visibility', MAP.on?'visible':'hidden');
-      hintBox.classList.toggle('hidden', !MAP.on);
-      svg.style.pointerEvents = MAP.on ? 'auto' : 'none';
-      if (MAP.on) drawToCanvas(); // prepare sampling
+    function toggleThemeInternal(btn){
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      btn?.setAttribute('aria-pressed', String(isDark));
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      const other = btn?.id === 'themeToggle' ? document.getElementById('themeToggleMobile') : document.getElementById('themeToggle');
+      other?.setAttribute('aria-pressed', String(isDark));
     }
-    function setType(t){ MAP.type = t; }
-    function toggleCurve(){ MAP.curve = !MAP.curve; showHint(); }
-    function toggleRidge(){ MAP.ridge = !MAP.ridge; showHint(); }
+    document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
+    document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
 
-    function showHint(){
-      hintBox.textContent =
-        'Map Mode • M toggle · L/B/R/T choose segment · Click to add points · Enter finish · Backspace undo · Esc cancel · ' +
-        'G ridge-snap ['+(MAP.ridge?'ON':'OFF')+'] · C curve ['+(MAP.curve?'ON':'OFF')+'] · S save';
-    }
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden');
+      menuBtn.setAttribute('aria-expanded', String(!open));
+    });
 
-    /* ---------- Coordinate helpers ---------- */
-    function clientToViewBox(clientX, clientY){
-      const pt = svg.createSVGPoint(); pt.x = clientX; pt.y = clientY;
-      const inv = svg.getScreenCTM().inverse();
-      const loc = pt.matrixTransform(inv);
-      return [ +(loc.x).toFixed(1), +(loc.y).toFixed(1) ];
-    }
+    // Engine animation (with warm glow, acceleration, and soft chime)
+    (function(){
+      const btn = document.getElementById('engineStart');
+      if (!btn) return;
 
-    function viewBoxToImgPixels(vx, vy){
-      // Convert 0..100 viewBox into page pixels and then into canvas pixels
-      const svgRect = svg.getBoundingClientRect();
-      const pageX = svgRect.left + (vx/100)*svgRect.width;
-      const pageY = svgRect.top  + (vy/100)*svgRect.height;
+      const overlay   = document.getElementById('engineOverlay');
+      const ids       = ['path-L1','path-L2','path-L3','path-B1','path-R1','path-T1'];
+      const paths     = ids.map(id => overlay.getElementById(id));
+      const nodesLeft  = Array.from(overlay.getElementById('nodes-left').querySelectorAll('circle'));
+      const nodesRight = Array.from(overlay.getElementById('nodes-right').querySelectorAll('circle'));
+      const warmGlow   = overlay.getElementById('warmGlow');
+      const takeover   = overlay.getElementById('takeover');
+      const exitPulse  = overlay.getElementById('exitPulse');
 
-      const imgRect = img.getBoundingClientRect();
-      // Return coordinates inside the canvas where we drew the image
-      // Canvas is sized to the page (for simplicity) and image is drawn at its page rect.
-      const x = pageX;
-      const y = pageY;
-      return [x,y];
-    }
+      // Prepare stroke-dash for each path
+      paths.forEach(p => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+      });
 
-    /* ---------- Canvas sampling (ridge-snap) ---------- */
-    function drawToCanvas(){
-      // draw full page-sized canvas and paint the image at its on-page rect
-      const w = Math.max(1, Math.ceil(window.innerWidth));
-      const h = Math.max(1, Math.ceil(window.innerHeight));
-      canvas.width = w; canvas.height = h;
-      ctx.clearRect(0,0,w,h);
-
-      const r = img.getBoundingClientRect();
-      try {
-        ctx.drawImage(img, r.left, r.top, r.width, r.height);
-      } catch(e) {
-        // Cross-origin? It will fail; we just skip ridge-snap gracefully.
+      function animatePath(p, duration=300, delay=0, easing='ease'){
+        return new Promise(resolve => {
+          const len = p.getTotalLength();
+          p.style.transition = 'none';
+          void p.getBoundingClientRect(); // reflow
+          p.style.transition = `stroke-dashoffset ${duration}ms ${easing} ${delay}ms`;
+          p.style.strokeDashoffset = '0';
+          setTimeout(resolve, delay + duration);
+        });
       }
-    }
-    window.addEventListener('resize', ()=>{ if (MAP.on) drawToCanvas(); });
 
-    function luminanceAtPage(px, py){
-      try {
-        const d = ctx.getImageData(Math.floor(px), Math.floor(py), 1, 1).data;
-        // simple luma
-        return 0.2126*d[0] + 0.7152*d[1] + 0.0722*d[2];
-      } catch(e) { return 255; }
-    }
+      function popNode(circle, delay){
+        setTimeout(()=> {
+          circle.style.transition = 'opacity 120ms ease, r 180ms ease';
+          circle.setAttribute('opacity','1');
+          circle.setAttribute('r', (parseFloat(circle.getAttribute('r')) + 0.45).toString());
+          setTimeout(()=> circle.setAttribute('r','0.9'), 210);
+        }, delay);
+      }
 
-    function ridgeSnapPoint(vx, vy){
-      if (!MAP.ridge) return [vx,vy];
-      // search small neighborhood (page pixels) for darkest point (ridge)
-      const [baseX, baseY] = viewBoxToImgPixels(vx, vy);
-      const R = 8; // px radius
-      let best = {L: 1e9, x: baseX, y: baseY};
-      for (let dy=-R; dy<=R; dy++){
-        for (let dx=-R; dx<=R; dx++){
-          const L = luminanceAtPage(baseX+dx, baseY+dy);
-          if (L < best.L){ best = {L, x: baseX+dx, y: baseY+dy}; }
+      function pulseExit(){
+        exitPulse.style.transition = 'opacity 100ms ease, r 240ms cubic-bezier(.2,.7,.2,1)';
+        exitPulse.setAttribute('opacity','1');
+        exitPulse.setAttribute('r','2.8');
+        setTimeout(()=> exitPulse.setAttribute('opacity','0'), 260);
+      }
+
+      // Tiny “starter chime” using WebAudio (click-initiated, low volume)
+      function playChime(){
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.value = 760; // soft tech blip
+          g.gain.value = 0.15;     // low volume
+          o.connect(g); g.connect(ctx.destination);
+          o.start();
+          g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+          o.stop(ctx.currentTime + 0.22);
+        } catch(e) { /* no audio, no problem */ }
+      }
+
+      async function start(){
+        // Respect reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          window.location.href = 'https://ai.hexcarb.in';
+          return;
         }
+
+        // Warm glow on left hemisphere
+        warmGlow.classList.add('run');
+
+        // Left circuits (slight overlaps) + node pops
+        await animatePath(paths[0], 310,   0);      // L1
+        popNode(nodesLeft[0], 130); popNode(nodesLeft[1], 240);
+
+        animatePath(paths[1], 300, 120);            // L2 overlap
+        popNode(nodesLeft[2], 260);
+
+        animatePath(paths[2], 280, 240);            // L3 overlap
+        popNode(nodesLeft[3], 360);
+
+        // Bridge (slightly thicker feel via easing)
+        await animatePath(paths[3], 230, 110, 'cubic-bezier(.2,.8,.2,1)');
+
+        // Right lattice
+        await animatePath(paths[4], 620, 70,  'cubic-bezier(.2,.85,.2,1)');
+        popNode(nodesRight[0], 200); popNode(nodesRight[1], 320); popNode(nodesRight[2], 440);
+
+        // Tube run with acceleration
+        await animatePath(paths[5], 540, 40,  'cubic-bezier(.1,.95,.2,1)');
+        pulseExit();
+        playChime();
+
+        // Redirect shortly after exit
+        setTimeout(()=> { window.location.href = 'https://ai.hexcarb.in'; }, 260);
       }
-      // convert back from page px to viewBox
-      const svgRect = svg.getBoundingClientRect();
-      const vx2 = Math.max(0, Math.min(100, ((best.x - svgRect.left)/svgRect.width)*100));
-      const vy2 = Math.max(0, Math.min(100, ((best.y - svgRect.top )/svgRect.height)*100));
-      return [ +vx2.toFixed(1), +vy2.toFixed(1) ];
-    }
 
-    /* ---------- Bézier smoothing (Catmull–Rom to Cubic) ---------- */
-    function catmullRom2bezier(points){
-      if (points.length < 2) return '';
-      if (!MAP.curve || points.length === 2){
-        return 'M ' + points.map(p=>p.join(',')).join(' L ');
-      }
-      const p = points.map(pt => ({x:pt[0], y:pt[1]}));
-      let d = `M ${p[0].x},${p[0].y}`;
-      for (let i=0; i<p.length-1; i++){
-        const p0 = i>0 ? p[i-1] : p[i];
-        const p1 = p[i];
-        const p2 = p[i+1];
-        const p3 = i !== p.length-2 ? p[i+2] : p2;
-        const cp1x = p1.x + (p2.x - p0.x)/6;
-        const cp1y = p1.y + (p2.y - p0.y)/6;
-        const cp2x = p2.x - (p3.x - p1.x)/6;
-        const cp2y = p2.y - (p3.y - p1.y)/6;
-        d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
-      }
-      return d;
-    }
-
-    /* ---------- Mapper UI ---------- */
-    function redrawGuide(){
-      const d = MAP.current.length ? 'M '+MAP.current.map(p=>p.join(',')).join(' L ') : '';
-      mapGuide.innerHTML = '';
-      const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-      p.setAttribute('d', d);
-      mapGuide.appendChild(p);
-      mapPoints.innerHTML = '';
-      MAP.current.forEach(([x,y])=>{
-        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',.8);
-        c.setAttribute('class','map-point'); mapPoints.appendChild(c);
-      });
-    }
-
-    function addPoint(evt){
-      const [vx, vy] = clientToViewBox(evt.clientX, evt.clientY);
-      const [sx, sy] = ridgeSnapPoint(vx, vy);
-      MAP.current.push([sx, sy]);
-      redrawGuide();
-    }
-
-    function finishPath(){
-      if (MAP.current.length < 2) return;
-      const id = `map-${MAP.type}-${++MAP.counter[MAP.type]}`;
-      const d = catmullRom2bezier(MAP.current);
-      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-      path.setAttribute('id', id);
-      path.setAttribute('class','wire light');
-      path.setAttribute('d', d);
-      path.setAttribute('stroke-width','1.35');
-      mapPaths.appendChild(path);
-      MAP.saved[MAP.type].push(id);
-      MAP.current = [];
-      redrawGuide();
-      console.log('Saved path:', {id, type:MAP.type, d});
-      navigator.clipboard?.writeText(JSON.stringify({id, type:MAP.type, d})).catch(()=>{});
-    }
-
-    function undoPoint(){ MAP.current.pop(); redrawGuide(); }
-
-    // Keyboard controls
-    window.addEventListener('keydown', (e)=>{
-      if (e.key.toLowerCase() === 'm'){ toggleMap(); showHint(); }
-      if (!MAP.on) return;
-      const k = e.key.toLowerCase();
-      if ('lbrt'.includes(k)) setType(k.toUpperCase());
-      if (k==='c') toggleCurve();
-      if (k==='g') toggleRidge();
-      if (e.key === 'Enter') finishPath();
-      if (e.key === 'Backspace'){ e.preventDefault(); undoPoint(); }
-      if (e.key === 'Escape'){ MAP.current = []; redrawGuide(); }
-      if (k==='s'){
-        console.log('All paths:', MAP.saved);
-        navigator.clipboard?.writeText(JSON.stringify(MAP.saved)).catch(()=>{});
-      }
-    });
-    svg.addEventListener('click', (e)=>{ if (MAP.on) addPoint(e); });
-
-    /* ---------- Impulse engine ---------- */
-    function preparePath(p){
-      const len = p.getTotalLength();
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-      return len;
-    }
-    function animateStroke(p, duration=300, delay=0, easing='ease'){
-      return new Promise(resolve=>{
-        p.style.transition='none'; void p.getBoundingClientRect();
-        p.style.transition = `stroke-dashoffset ${duration}ms ${easing} ${delay}ms`;
-        p.style.strokeDashoffset = '0';
-        setTimeout(resolve, delay+duration);
-      });
-    }
-    function spawnImpulses(path, {n=6, dur=700, stagger=90, radius=.45, accel=false}={}){
-      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-      svg.appendChild(g);
-      const len = path.getTotalLength();
-      for (let i=0;i<n;i++){
-        const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        dot.setAttribute('r', radius); dot.setAttribute('class','impulse-dot'); g.appendChild(dot);
-        const start = performance.now() + i*stagger;
-        const ease = accel ? (t)=>t*t*(3-2*t) : (t)=>t;
-        (function move(now){
-          const t = Math.min(1, (now - start)/dur);
-          if (t<=0){ requestAnimationFrame(move); return; }
-          const d = ease(t);
-          const pt = path.getPointAtLength(d*len);
-          dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
-          if (t<1) requestAnimationFrame(move); else g.removeChild(dot);
-        })(performance.now());
-      }
-    }
-    function pulseExit(){
-      exitPulse.style.transition = 'opacity 100ms ease, r 240ms cubic-bezier(.2,.7,.2,1)';
-      exitPulse.setAttribute('opacity','1');
-      exitPulse.setAttribute('r','2.8');
-      setTimeout(()=> exitPulse.setAttribute('opacity','0'), 260);
-    }
-    function playChime(){
-      try {
-        const ctx = new (window.AudioContext||window.webkitAudioContext)();
-        const o=ctx.createOscillator(), g=ctx.createGain();
-        o.type='sine'; o.frequency.value=760; g.gain.value=.14; o.connect(g); g.connect(ctx.destination);
-        o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+.2); o.stop(ctx.currentTime+.22);
-      } catch(_) {}
-    }
-
-    function runSequence(){
-      const any = [...mapPaths.querySelectorAll('path')];
-      if (!any.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-        window.location.href='https://ai.hexcarb.in'; return;
-      }
-      warmGlow.classList.add('run');
-      any.forEach(preparePath);
-
-      // Order: L -> B -> R -> T
-      const L = MAP.saved.L.map(id=>svg.getElementById(id));
-      const B = MAP.saved.B.map(id=>svg.getElementById(id));
-      const R = MAP.saved.R.map(id=>svg.getElementById(id));
-      const T = MAP.saved.T.map(id=>svg.getElementById(id));
-
-      (async function(){
-        for (const p of L){ spawnImpulses(p,{n:7,dur:600,stagger:80,radius:.45}); await animateStroke(p,320,0,'ease-out'); }
-        for (const p of B){ spawnImpulses(p,{n:4,dur:380,stagger:70,radius:.5});   await animateStroke(p,240,80,'cubic-bezier(.2,.8,.2,1)'); }
-        for (const p of R){ spawnImpulses(p,{n:6,dur:560,stagger:90,radius:.45}); await animateStroke(p,560,60,'cubic-bezier(.2,.85,.2,1)'); }
-        takeover.classList.add('sweep');
-        for (const p of T){ spawnImpulses(p,{n:6,dur:520,stagger:70,radius:.5,accel:true}); await animateStroke(p,520,40,'cubic-bezier(.1,.95,.2,1)'); }
-
-        pulseExit(); playChime();
-        setTimeout(()=>window.location.href='https://ai.hexcarb.in', 260);
-      })();
-    }
-
-    // Click to start (ignore clicks during map mode)
-    btn.addEventListener('click', ()=>{
-      if (MAP.on) return;
-      btn.disabled = true;
-      runSequence();
-      setTimeout(()=>{ btn.disabled = false; }, 1500); // allow re-run during testing
-    });
-
-    // Ensure canvas is ready after image loads
-    if (img.complete) { /* ok */ } else { img.addEventListener('load', ()=>{ if (MAP.on) drawToCanvas(); }); }
-  })();
+      btn.addEventListener('click', () => {
+        btn.disabled = true; // run once
+        start();
+      }, { once:true });
+    })();
   </script>
 </body>
 </html>
