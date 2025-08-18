@@ -44,17 +44,28 @@
     .skip-link:focus { position:static; width:auto; height:auto; margin:8px; padding:8px 12px; background:#000; color:#fff; border-radius:8px; }
 
     /* ===== Engine Panel (XL) ===== */
-  /* Engine glow when a node is lit */
-#engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
+    #engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
 
-/* Takeover sweep animation (percentage-based rect width) */
-@keyframes takeoverSweep {
-  0%   { width: 0;   opacity: .10; }
-  60%  { width: 30;  opacity: .20; } /* grows ~30% of panel width */
-  100% { width: 50;  opacity: .16; } /* ends at ~50% width */
-}
-#takeover.sweep { animation: takeoverSweep 900ms ease-out forwards; }
+    /* Takeover sweep (percentage-based width in the 0..100 viewBox) */
+    @keyframes takeoverSweep {
+      0%   { width: 0;   opacity: .10; }
+      60%  { width: 32;  opacity: .20; }
+      100% { width: 52;  opacity: .16; }
+    }
+    #takeover.sweep { animation: takeoverSweep 920ms ease-out forwards; }
 
+    /* Left hemisphere warm glow */
+    @keyframes warmUp {
+      0%   { opacity: 0;   r: 10; }
+      40%  { opacity: .22; r: 18; }
+      100% { opacity: .12; r: 22; }
+    }
+    #warmGlow.run { animation: warmUp 600ms ease-out forwards; }
+
+    /* Reduced motion skips fancy bits */
+    @media (prefers-reduced-motion: reduce) {
+      #engineOverlay * { transition: none !important; animation: none !important; }
+    }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-black dark:text-white">
@@ -115,90 +126,108 @@
   </section>
 
   <main id="main">
-    <!-- ========= HEXCARB AI ENGINE — XL PANEL ========= -->
     <!-- ========= HEXCARB AI ENGINE — XL PANEL (3.png) ========= -->
-<section id="engine" class="relative px-4 py-10 md:py-14">
-  <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
+    <section id="engine" class="relative px-4 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
 
-    <!-- Header -->
-    <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
-      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
-      <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">
-        Science that thinks. Technology that invents.
-      </p>
-    </div>
-
-    <!-- Visual + CTA (clickable) -->
-    <button id="engineStart" class="group relative block w-full text-left focus:outline-none"
-            aria-label="Start HEXCARB AI Engine">
-
-      <!-- Your matte 3D brain image -->
-      <img src="3.png" alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice"
-           class="w-full h-auto select-none pointer-events-none">
-
-      <!-- Node overlay & sweep (percentage-based so it fits any image size) -->
-      <svg id="engineOverlay" viewBox="0 0 100 100"
-           class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2.5" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <!-- Gradient for the takeover sweep -->
-          <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"  stop-color="white" stop-opacity="0"/>
-            <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="white" stop-opacity="0"/>
-          </linearGradient>
-          <!-- Mask: right hemisphere area (50%→100%, with a little vertical inset) -->
-          <mask id="rightMask" maskUnits="objectBoundingBox">
-            <rect x="0.50" y="0.10" width="0.48" height="0.80" fill="white"/>
-          </mask>
-        </defs>
-
-        <!-- connections (right hemisphere) -->
-        <g stroke="black" stroke-opacity="0.35" stroke-width="0.6" class="dark:stroke-white">
-          <!-- positioned in the right half (x ~ 60–92, y ~ 28–72) -->
-          <line x1="62" y1="36" x2="76" y2="28"/>
-          <line x1="76" y1="28" x2="89" y2="40"/>
-          <line x1="89" y1="40" x2="80" y2="62"/>
-          <line x1="80" y1="62" x2="66" y2="55"/>
-          <line x1="66" y1="55" x2="62" y2="36"/>
-          <line x1="66" y1="55" x2="86" y2="58"/>
-          <line x1="76" y1="28" x2="82" y2="52"/>
-        </g>
-
-        <!-- nodes to light -->
-        <g id="nodes" fill="black" class="dark:fill-white">
-          <circle r="1.1" cx="62" cy="36"/>
-          <circle r="1.1" cx="76" cy="28"/>
-          <circle r="1.1" cx="89" cy="40"/>
-          <circle r="1.1" cx="80" cy="62"/>
-          <circle r="1.1" cx="66" cy="55"/>
-          <circle r="1.1" cx="86" cy="58"/>
-          <circle r="1.1" cx="82" cy="52"/>
-        </g>
-
-        <!-- takeover sweep constrained to the right mask -->
-        <g mask="url(#rightMask)">
-          <!-- start at x=50% (center), grow rightwards -->
-          <rect id="takeover" x="50" y="0" width="0" height="100" fill="url(#sweep)"/>
-        </g>
-      </svg>
-
-      <!-- Bottom caption -->
-      <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
-        <div class="text-sm text-gray-700 dark:text-gray-300">
-          Click to ignite the engine → pulse through the neural graph → enter the live system.
+        <!-- Header -->
+        <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
+          <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Science that thinks. Technology that invents.</p>
         </div>
-        <div class="flex items-center gap-3 text-sm">
-          <span class="opacity-70">HEXCARB AI Engine</span>
-          <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
-        </div>
+
+        <!-- Visual + CTA (clickable) -->
+        <button id="engineStart" class="group relative block w-full text-left focus:outline-none"
+                aria-label="Start HEXCARB AI Engine">
+          <!-- Slightly reduced image footprint (92% width) -->
+          <div class="w-full flex justify-center">
+            <img src="3.png" alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice"
+                 class="w-[92%] h-auto select-none pointer-events-none">
+          </div>
+
+          <!-- SVG overlay (percentage-based for responsiveness) -->
+          <svg id="engineOverlay" viewBox="0 0 100 100"
+               class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
+            <defs>
+              <filter id="glow"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"  stop-color="white" stop-opacity="0"/>
+                <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </linearGradient>
+              <!-- Mask: right hemisphere (tweaked to match 3.png composition) -->
+              <mask id="rightMask" maskUnits="objectBoundingBox">
+                <rect x="0.50" y="0.10" width="0.48" height="0.80" fill="white"/>
+              </mask>
+              <style>
+                .wire { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+                .base { stroke: currentColor; opacity:.32; }
+                .light { stroke: #fff; filter:url(#glow); }
+              </style>
+            </defs>
+
+            <!-- Warm glow on left hemisphere (starts on click) -->
+            <circle id="warmGlow" cx="30" cy="50" r="10" fill="white" opacity="0"/>
+
+            <!-- Subtle base wires for context (nudged to sit on 3.png) -->
+            <g id="wires-base" class="base" stroke-width="0.55">
+              <!-- Left circuits -->
+              <path d="M21.5,56 28,50.5 34.5,45.2 41,38.5" />
+              <path d="M24.8,62.2 31.2,58.2 37.8,54.2" />
+              <path d="M20.5,49 27,43.6 33,39.4" />
+              <!-- Bridge -->
+              <path d="M44.2,50 50,50 56,50" />
+              <!-- Right lattice -->
+              <path d="M58.2,46 66,40 74,46 70,56 62.3,52.2" />
+              <!-- Tube -->
+              <path d="M73.8,60 80,62 88,66 94,69" />
+            </g>
+
+            <!-- Animated “light” strokes (hidden via dashoffset until run) -->
+            <g id="wires-light" class="light" stroke-width="1.35">
+              <path id="path-L1" class="wire" d="M21.5,56 28,50.5 34.5,45.2 41,38.5"/>
+              <path id="path-L2" class="wire" d="M24.8,62.2 31.2,58.2 37.8,54.2"/>
+              <path id="path-L3" class="wire" d="M20.5,49 27,43.6 33,39.4"/>
+              <path id="path-B1" class="wire" d="M44.2,50 50,50 56,50"/>
+              <path id="path-R1" class="wire" d="M58.2,46 66,40 74,46 70,56 62.3,52.2"/>
+              <path id="path-T1" class="wire" d="M73.8,60 80,62 88,66 94,69"/>
+            </g>
+
+            <!-- Nodes that pop when the light passes -->
+            <g id="nodes-left" fill="#fff">
+              <circle cx="28" cy="50.5" r="0.9" opacity="0"/>
+              <circle cx="34.5" cy="45.2" r="0.9" opacity="0"/>
+              <circle cx="31.2" cy="58.2" r="0.9" opacity="0"/>
+              <circle cx="27" cy="43.6"  r="0.9" opacity="0"/>
+            </g>
+            <g id="nodes-right" fill="#fff">
+              <circle cx="66" cy="40" r="0.9" opacity="0"/>
+              <circle cx="74" cy="46" r="0.9" opacity="0"/>
+              <circle cx="70" cy="56" r="0.9" opacity="0"/>
+            </g>
+
+            <!-- Takeover sweep constrained to right hemisphere -->
+            <g mask="url(#rightMask)">
+              <rect id="takeover" x="50" y="0" width="0" height="100" fill="url(#sweep)" />
+            </g>
+
+            <!-- Exit pulse -->
+            <circle id="exitPulse" cx="94" cy="69" r="0.8" fill="#fff" opacity="0"/>
+          </svg>
+
+          <!-- Bottom caption -->
+          <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+              Click to ignite the engine → pulse through the neural graph → enter the live system.
+            </div>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="opacity-70">HEXCARB AI Engine</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
+            </div>
+          </div>
+        </button>
       </div>
-    </button>
-  </div>
-</section>
+    </section>
 
     <!-- Technology -->
     <section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
@@ -366,7 +395,7 @@
     </svg>
   </a>
 
-  <!-- Minimal JS: theme + mobile menu + engine animation -->
+  <!-- Minimal JS: theme + mobile menu + engine animation & sound -->
   <script>
     // Theme init
     (function(){
@@ -386,7 +415,6 @@
       const other = btn?.id === 'themeToggle' ? document.getElementById('themeToggleMobile') : document.getElementById('themeToggle');
       other?.setAttribute('aria-pressed', String(isDark));
     }
-
     document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
     document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
 
@@ -398,41 +426,111 @@
       menuBtn.setAttribute('aria-expanded', String(!open));
     });
 
-    // Engine animation
-<script>
-  (function(){
-    const btn = document.getElementById('engineStart');
-    if (!btn) return;
+    // Engine animation (with warm glow, acceleration, and soft chime)
+    (function(){
+      const btn = document.getElementById('engineStart');
+      if (!btn) return;
 
-    const overlay = document.getElementById('engineOverlay');
-    const nodes   = overlay.querySelectorAll('#nodes circle');
-    const bar     = overlay.querySelector('#takeover');
+      const overlay   = document.getElementById('engineOverlay');
+      const ids       = ['path-L1','path-L2','path-L3','path-B1','path-R1','path-T1'];
+      const paths     = ids.map(id => overlay.getElementById(id));
+      const nodesLeft  = Array.from(overlay.getElementById('nodes-left').querySelectorAll('circle'));
+      const nodesRight = Array.from(overlay.getElementById('nodes-right').querySelectorAll('circle'));
+      const warmGlow   = overlay.getElementById('warmGlow');
+      const takeover   = overlay.getElementById('takeover');
+      const exitPulse  = overlay.getElementById('exitPulse');
 
-    function startEngine(){
-      // nice visual route across the graph
-      const order = [0,1,2,6,5,3,4];
-
-      // sequential node glow
-      order.forEach((idx, step) => {
-        setTimeout(() => {
-          const c = nodes[idx];
-          const wrap = document.createElementNS('http://www.w3.org/2000/svg','g');
-          wrap.setAttribute('class','node-lit');
-          c.parentNode.insertBefore(wrap, c);
-          wrap.appendChild(c);
-        }, 110 * step);
+      // Prepare stroke-dash for each path
+      paths.forEach(p => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
       });
 
-      // sweep takeover (percentage-based rect width)
-      setTimeout(() => { bar.classList.add('sweep'); }, 110 * order.length + 80);
+      function animatePath(p, duration=300, delay=0, easing='ease'){
+        return new Promise(resolve => {
+          const len = p.getTotalLength();
+          p.style.transition = 'none';
+          void p.getBoundingClientRect(); // reflow
+          p.style.transition = `stroke-dashoffset ${duration}ms ${easing} ${delay}ms`;
+          p.style.strokeDashoffset = '0';
+          setTimeout(resolve, delay + duration);
+        });
+      }
 
-      // redirect after complete
-      setTimeout(() => { window.location.href = 'https://ai.hexcarb.in'; }, 110 * order.length + 1100);
-    }
+      function popNode(circle, delay){
+        setTimeout(()=> {
+          circle.style.transition = 'opacity 120ms ease, r 180ms ease';
+          circle.setAttribute('opacity','1');
+          circle.setAttribute('r', (parseFloat(circle.getAttribute('r')) + 0.45).toString());
+          setTimeout(()=> circle.setAttribute('r','0.9'), 210);
+        }, delay);
+      }
 
-    btn.addEventListener('click', startEngine, { once:true });
-  })();
-</script>
+      function pulseExit(){
+        exitPulse.style.transition = 'opacity 100ms ease, r 240ms cubic-bezier(.2,.7,.2,1)';
+        exitPulse.setAttribute('opacity','1');
+        exitPulse.setAttribute('r','2.8');
+        setTimeout(()=> exitPulse.setAttribute('opacity','0'), 260);
+      }
 
+      // Tiny “starter chime” using WebAudio (click-initiated, low volume)
+      function playChime(){
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.value = 760; // soft tech blip
+          g.gain.value = 0.15;     // low volume
+          o.connect(g); g.connect(ctx.destination);
+          o.start();
+          g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+          o.stop(ctx.currentTime + 0.22);
+        } catch(e) { /* no audio, no problem */ }
+      }
+
+      async function start(){
+        // Respect reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          window.location.href = 'https://ai.hexcarb.in';
+          return;
+        }
+
+        // Warm glow on left hemisphere
+        warmGlow.classList.add('run');
+
+        // Left circuits (slight overlaps) + node pops
+        await animatePath(paths[0], 310,   0);      // L1
+        popNode(nodesLeft[0], 130); popNode(nodesLeft[1], 240);
+
+        animatePath(paths[1], 300, 120);            // L2 overlap
+        popNode(nodesLeft[2], 260);
+
+        animatePath(paths[2], 280, 240);            // L3 overlap
+        popNode(nodesLeft[3], 360);
+
+        // Bridge (slightly thicker feel via easing)
+        await animatePath(paths[3], 230, 110, 'cubic-bezier(.2,.8,.2,1)');
+
+        // Right lattice
+        await animatePath(paths[4], 620, 70,  'cubic-bezier(.2,.85,.2,1)');
+        popNode(nodesRight[0], 200); popNode(nodesRight[1], 320); popNode(nodesRight[2], 440);
+
+        // Tube run with acceleration
+        await animatePath(paths[5], 540, 40,  'cubic-bezier(.1,.95,.2,1)');
+        pulseExit();
+        playChime();
+
+        // Redirect shortly after exit
+        setTimeout(()=> { window.location.href = 'https://ai.hexcarb.in'; }, 260);
+      }
+
+      btn.addEventListener('click', () => {
+        btn.disabled = true; // run once
+        start();
+      }, { once:true });
+    })();
+  </script>
 </body>
 </html>
