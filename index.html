@@ -24,7 +24,18 @@
     50%  { width: 180px; opacity: 0.12; }
     100% { width: 260px; opacity: 0.10; }
   }
-  .sweep-anim { animation: sweep 800ms ease-out forwards; }
+  .sweep-anim { animation: sweep 800ms ease-out forwards; }/* XL Engine Panel */
+#engineStart { cursor: pointer; }
+#engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
+
+/* Sweep animation */
+@keyframes takeoverSweep {
+  0%   { width: 0; opacity: .10; }
+  60%  { width: 520px; opacity: .20; }
+  100% { width: 760px; opacity: .16; }
+}
+#takeover.sweep { animation: takeoverSweep 900ms ease-out forwards; }
+
 </style>
 
   <meta charset="UTF-8" />
@@ -255,6 +266,86 @@
             <span class="text-sm opacity-70">Click anywhere on the panel</span>
             <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
           </div>
+        </div>
+      </div>
+    </button>
+  </div>
+</section>
+<!-- ========== HEXCARB AI ENGINE — XL PANEL ========== -->
+<section id="engine" class="relative px-4 py-10 md:py-14">
+  <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
+
+    <!-- Header -->
+    <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
+      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
+      <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">
+        Science that thinks. Technology that invents.
+      </p>
+    </div>
+
+    <!-- Visual + CTA (clickable) -->
+    <button id="engineStart"
+            class="group relative block w-full text-left focus:outline-none"
+            aria-label="Start HEXCARB AI Engine">
+
+      <!-- Brain image (use your file) -->
+      <!-- Replace src with your exported image path; keep explicit width/height to prevent layout shift -->
+      <img src="assets/img/engine-brain.webp" width="1920" height="860" alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice"
+           class="w-full h-auto select-none pointer-events-none">
+
+      <!-- Node overlay (right hemisphere) -->
+      <svg id="engineOverlay" viewBox="0 0 1920 860"
+           class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
+        <defs>
+          <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="white" stop-opacity="0"/>
+            <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="white" stop-opacity="0"/>
+          </linearGradient>
+          <mask id="rightMask">
+            <!-- mask roughly covering the right hemisphere (adjust if you crop image differently) -->
+            <rect x="980" y="80" width="870" height="700" fill="white"/>
+          </mask>
+        </defs>
+
+        <!-- connections -->
+        <g stroke="black" stroke-opacity="0.35" stroke-width="3"
+           class="dark:stroke-white" transform="translate(1020,140) scale(1.0)">
+          <line x1="40" y1="80"  x2="220" y2="40"/>
+          <line x1="220" y1="40" x2="360" y2="120"/>
+          <line x1="360" y1="120" x2="280" y2="230"/>
+          <line x1="280" y1="230" x2="120" y2="190"/>
+          <line x1="120" y1="190" x2="40"  y2="80"/>
+          <line x1="120" y1="190" x2="340" y2="210"/>
+          <line x1="220" y1="40"  x2="300" y2="200"/>
+        </g>
+
+        <!-- nodes: these will light up -->
+        <g id="nodes" fill="black" class="dark:fill-white" transform="translate(1020,140) scale(1.0)">
+          <circle r="12" cx="40"  cy="80"/>
+          <circle r="12" cx="220" cy="40"/>
+          <circle r="12" cx="360" cy="120"/>
+          <circle r="12" cx="280" cy="230"/>
+          <circle r="12" cx="120" cy="190"/>
+          <circle r="12" cx="340" cy="210"/>
+          <circle r="12" cx="300" cy="200"/>
+        </g>
+
+        <!-- sweep highlight constrained to right hemisphere -->
+        <g mask="url(#rightMask)">
+          <rect id="takeover" x="980" y="0" width="0" height="860" fill="url(#sweep)" />
+        </g>
+      </svg>
+
+      <!-- Bottom caption / hint -->
+      <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
+        <div class="text-sm text-gray-700 dark:text-gray-300">
+          Click to ignite the engine → pulse through the neural graph → enter the live system.
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <span class="opacity-70">HEXCARB AI Engine</span>
+          <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
         </div>
       </div>
     </button>
@@ -500,7 +591,44 @@
 
     btn.addEventListener('click', lightSequence, { once:true });
   })();
+</script><script>
+(function(){
+  const btn = document.getElementById('engineStart');
+  if (!btn) return;
+
+  const overlay = document.getElementById('engineOverlay');
+  const nodes   = overlay.querySelectorAll('#nodes circle');
+  const bar     = overlay.querySelector('#takeover');
+
+  function startEngine(){
+    const order = [0,1,2,6,5,3,4]; // visually pleasing route
+
+    // sequential node glow
+    order.forEach((idx, step) => {
+      setTimeout(() => {
+        const c = nodes[idx];
+        const wrap = document.createElementNS('http://www.w3.org/2000/svg','g');
+        wrap.setAttribute('class','node-lit');
+        c.parentNode.insertBefore(wrap, c);
+        wrap.appendChild(c);
+      }, 110 * step);
+    });
+
+    // sweep takeover
+    setTimeout(() => {
+      bar.classList.add('sweep');
+    }, 110 * order.length + 80);
+
+    // redirect after complete
+    setTimeout(() => {
+      window.location.href = 'https://ai.hexcarb.in';
+    }, 110 * order.length + 1100);
+  }
+
+  btn.addEventListener('click', startEngine, { once:true });
+})();
 </script>
+
 
 </body>
 </html>
