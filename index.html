@@ -21,9 +21,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ────────────────────────────────────────────────────────────────
-       Base / Layout / Theme
-       ──────────────────────────────────────────────────────────────── */
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; transition: background .3s, color .3s; }
     .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp .8s ease-out forwards; }
@@ -32,101 +29,53 @@
     .matte { box-shadow: 0 6px 28px rgba(0,0,0,.08); border: 1px solid rgba(0,0,0,.1); }
     .dark .matte { border-color: rgba(255,255,255,.08); box-shadow: 0 6px 28px rgba(0,0,0,.35); }
 
-    .floating-inbox {
-      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
-      background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0,0,0,.15); transition: transform .3s ease, box-shadow .3s ease;
-    }
+    .floating-inbox { position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,.15); transition: transform .3s ease, box-shadow .3s ease; }
     .floating-inbox:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,0,0,.25); }
     .dark .floating-inbox { background:#111; border-color:#fff; }
 
     .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
     .skip-link:focus { position:static; width:auto; height:auto; margin:8px; padding:8px 12px; background:#000; color:#fff; border-radius:8px; }
 
-    /* ────────────────────────────────────────────────────────────────
-       Engine: Visual Styles
-       ──────────────────────────────────────────────────────────────── */
-    #engineOverlay .node-lit circle { fill: #fff !important; filter: url(#glow); }
-
-    /* Right-hemisphere sweep sheen (viewBox 0..100) */
-    @keyframes takeoverSweep {
-      0%   { width: 0;  opacity: .10; }
-      60%  { width: 32; opacity: .20; }
-      100% { width: 52; opacity: .16; }
-    }
-    #takeover.sweep { animation: takeoverSweep 920ms ease-out forwards; }
-
-    /* Left warm glow */
-    @keyframes warmUp {
-      0%   { opacity: 0;   r: 10; }
-      40%  { opacity: .22; r: 18; }
-      100% { opacity: .12; r: 22; }
-    }
-    #warmGlow.run { animation: warmUp 600ms ease-out forwards; }
-
-    /* Engine wires / dots */
-    .wire { fill:none; stroke-linecap:round; stroke-linejoin:round; }
-    .base { stroke: currentColor; opacity:.32; }
-    .light { stroke: #fff; filter:url(#glow); }
-    .impulse-dot { fill:#fff; filter:url(#glow); opacity:.95 }
-
-    /* Reduced motion accessibility */
-    @media (prefers-reduced-motion: reduce) {
-      #engineOverlay * { transition: none !important; animation: none !important; }
-    }
-
-    /* ────────────────────────────────────────────────────────────────
-       Engine: Dev Mapper Styles (toggle with "M")
-       ──────────────────────────────────────────────────────────────── */
-    .map-guide { stroke:#ffffffaa; stroke-dasharray:2 2; fill:none; }
-    .map-point { fill:#ffffff99; }
-    .map-hint { position:absolute; right:14px; bottom:14px; font-size:12px; opacity:.65; background:rgba(0,0,0,.45); color:white; padding:6px 10px; border-radius:8px; }
-    .dark .map-hint { background:rgba(255,255,255,.1) }
+    /* Engine visuals */
+    .pulse-dot { fill:#fff; filter:url(#pulseGlow); }
+    .beam-path { stroke:#fff; stroke-width:3; fill:none; opacity:.0; filter:url(#pulseGlow); }
+    .debug-route { stroke:#ffffffaa; stroke-width:2; fill:none; opacity:.08 }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-black dark:text-white">
-
   <a href="#main" class="skip-link">Skip to content</a>
 
-  <!-- ── Header / Navbar ─────────────────────────────────────────── -->
+  <!-- Header -->
   <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
     <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="text-xl font-extrabold tracking-wide">HexCarb</div>
-
       <div class="hidden md:flex items-center gap-6 text-sm font-medium">
         <a href="#technology" class="hover:underline">Technology</a>
         <a href="#applications" class="hover:underline">Applications</a>
         <a href="#vision" class="hover:underline">Vision</a>
         <a href="#roadmap" class="hover:underline">Roadmap</a>
-        <a href="https://ai.hexcarb.in" target="_blank"
-           class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition"
-           rel="noopener noreferrer">HEXCARB AI Engine</a>
-        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
-          class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition">HEXCARB AI Engine</a>
+        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme" class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
       </div>
-
       <div class="md:hidden flex items-center gap-2">
-        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
-          class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme" class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
         <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
       </div>
     </nav>
-
     <div id="mobileMenu" class="md:hidden hidden border-t border-black/10 dark:border-white/10">
       <div class="px-4 py-3 flex flex-col gap-3 text-sm">
         <a href="#technology" class="py-1">Technology</a>
         <a href="#applications" class="py-1">Applications</a>
         <a href="#vision" class="py-1">Vision</a>
         <a href="#roadmap" class="py-1">Roadmap</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
-           class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
+        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
       </div>
     </div>
   </header>
 
-  <!-- ── Hero ────────────────────────────────────────────────────── -->
+  <!-- Hero -->
   <section class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" style="background-image: url('1.png');">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-0"></div>
     <div class="relative z-10">
@@ -137,111 +86,104 @@
   </section>
 
   <main id="main">
-    <!-- ── ENGINE PANEL (3.png) ───────────────────────────────────── -->
+    <!-- ENGINE PANEL (Integrated SVG with 3.png and 1.5s pulse) -->
     <section id="engine" class="relative px-4 py-10 md:py-14">
       <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
-
         <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
           <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
           <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Science that thinks. Technology that invents.</p>
         </div>
 
-        <!-- Clickable visual -->
+        <!-- The button wraps a single inline SVG so the animation and image share exact geometry -->
         <button id="engineStart" class="group relative block w-full text-left focus:outline-none" aria-label="Start HEXCARB AI Engine">
           <div class="w-full flex justify-center">
-            <!-- Slightly reduced image width for breathing room -->
-            <img id="brainImg" src="3.png" alt="HEXCARB hybrid brain — AI nodes and CNT hex lattice" class="w-[92%] h-auto select-none pointer-events-none">
+            <!-- Single SVG: perfect size match (1600x1000 viewBox) -->
+            <svg id="hexcarbPulseSVG" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" class="w-[92%] h-auto">
+              <defs>
+                <!-- Stronger glow: layered blurs + brightness bump -->
+                <filter id="pulseGlow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b1"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="b2"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="b3"/>
+                  <feMerge>
+                    <feMergeNode in="b1"/>
+                    <feMergeNode in="b2"/>
+                    <feMergeNode in="b3"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <!-- Base artwork (exactly 1600x1000) -->
+              <image href="3.png" x="0" y="0" width="1600" height="1000"/>
+              <!-- Route overlay (from your light path). Keep for alignment; very low visibility. -->
+              <path id="route" class="debug-route" d="M 303.36297607421875 456.3717956542969 L 180.45884704589844 383.2515869140625 L 104.22712707519531 296.1296691894531 L 111.48729705810547 190.8572998046875 L 160.2340850830078 126.55301666259766 L 195.49771118164062 123.44152069091797 L 148.8252716064453 176.3369903564453 L 150.89959716796875 203.82188415527344 L 115.63595581054688 261.9031677246094 L 163.34559631347656 310.64996337890625 L 260.8392028808594 357.32244873046875 L 271.72943115234375 312.2056884765625 L 225.05697631835938 271.2377014160156 L 173.71725463867188 265.53326416015625 L 174.75439453125 220.9351043701172 L 238.5401153564453 160.26089477539062 L 234.3914337158203 92.32654571533203 L 274.8409118652344 123.44152069091797 L 275.3594970703125 183.07855224609375 L 222.46405029296875 220.9351043701172 L 313.216064453125 336.060546875 L 310.1045837402344 268.12615966796875 L 283.6568298339844 230.78819274902344 L 312.6974792480469 195.52455139160156 L 373.8902587890625 199.6732177734375 L 377.0017395019531 157.66798400878906 L 369.7416076660156 136.92466735839844 L 374.4088439941406 101.14244842529297 L 380.6318664550781 62.767311096191406 L 402.930908203125 30.61518096923828 L 429.378662109375 36.319583892822266 L 437.15740966796875 55.507171630859375 L 416.4140930175781 66.91598510742188 L 416.9326477050781 96.99380493164062 L 397.22650146484375 116.69993591308594 L 397.22650146484375 145.22201538085938 L 419.52557373046875 165.96533203125 L 412.7839660644531 204.3404541015625 L 392.5592346191406 217.30502319335938 L 385.81768798828125 255.16159057617188 L 402.930908203125 276.42352294921875 L 397.22650146484375 319.46588134765625 L 419.0069885253906 341.2463684082031 L 451.6777038574219 328.28179931640625 L 459.4564514160156 291.46240234375 L 436.6387939453125 274.86773681640625 L 439.75030517578125 227.6767120361328 L 420.5627136230469 209.52627563476562 L 419.52557373046875 158.18658447265625 L 443.38037109375 143.666259765625 L 451.15911865234375 105.2911148071289 L 423.6742248535156 98.54953002929688 L 422.6370544433594 68.47174835205078 L 447.529052734375 59.137237548828125 L 468.79095458984375 75.73188781738281 L 485.9041748046875 91.80797576904297 L 513.3890991210938 96.47520446777344 L 513.3890991210938 126.03443908691406 L 481.7555236816406 162.85382080078125 L 482.27410888671875 197.598876953125 L 482.27410888671875 200.19178771972656 L 482.27410888671875 200.19178771972656 L 506.12890625 225.6023712158203 L 501.980224609375 256.1987609863281 L 467.2351989746094 288.35089111328125 L 456.863525390625 322.5773620605469 L 485.9041748046875 344.8764343261719 L 520.6492309570312 300.2783203125 L 494.2015380859375 268.644775390625 L 510.277587890625 221.97232055664062 L 541.392578125 207.9705352783203 L 542.4296875 174.2626495361328 L 518.574951171875 140.0361785888672 L 527.390869140625 102.17964172363281 L 560.0615844726562 124.47868347167969 L 565.2474365234375 163.37240600585938 L 586.50927734375 191.37588500976562 L 580.2863159179688 239.08551025390625 L 557.4686889648438 285.7579650878906 L 570.4332275390625 303.90838623046875 L 589.1021728515625 318.4287109375 L 532.57666015625 344.35784912109375 L 477.6068420410156 360.4339294433594 L 430.4158020019531 378.5843200683594 L 419.0069885253906 409.6993103027344 L 422.6370544433594 424.2196350097656 L 445.4547119140625 454.8160095214844 L 481.2369384765625 476.0779113769531 L 525.3164672851562 452.74169921875 L 584.9534912109375 420.58953857421875 L 623.8472290039062 384.2887268066406 L 671.5569458007812 368.2126770019531 L 704.7462158203125 346.43218994140625 L 735.8611450195312 338.6534423828125 L 757.1231079101562 328.2817687988281 L 775.7920532226562 312.72430419921875 L 774.7548828125 313.761474609375 L 778.903564453125 314.280029296875"/>
+              <!-- Intense beam that follows the dot (animated dashoffset) -->
+              <path id="beam" class="beam-path" d="M 303.36297607421875 456.3717956542969 L 180.45884704589844 383.2515869140625 L 104.22712707519531 296.1296691894531 L 111.48729705810547 190.8572998046875 L 160.2340850830078 126.55301666259766 L 195.49771118164062 123.44152069091797 L 148.8252716064453 176.3369903564453 L 150.89959716796875 203.82188415527344 L 115.63595581054688 261.9031677246094 L 163.34559631347656 310.64996337890625 L 260.8392028808594 357.32244873046875 L 271.72943115234375 312.2056884765625 L 225.05697631835938 271.2377014160156 L 173.71725463867188 265.53326416015625 L 174.75439453125 220.9351043701172 L 238.5401153564453 160.26089477539062 L 234.3914337158203 92.32654571533203 L 274.8409118652344 123.44152069091797 L 275.3594970703125 183.07855224609375 L 222.46405029296875 220.9351043701172 L 313.216064453125 336.060546875 L 310.1045837402344 268.12615966796875 L 283.6568298339844 230.78819274902344 L 312.6974792480469 195.52455139160156 L 373.8902587890625 199.6732177734375 L 377.0017395019531 157.66798400878906 L 369.7416076660156 136.92466735839844 L 374.4088439941406 101.14244842529297 L 380.6318664550781 62.767311096191406 L 402.930908203125 30.61518096923828 L 429.378662109375 36.319583892822266 L 437.15740966796875 55.507171630859375 L 416.4140930175781 66.91598510742188 L 416.9326477050781 96.99380493164062 L 397.22650146484375 116.69993591308594 L 397.22650146484375 145.22201538085938 L 419.52557373046875 165.96533203125 L 412.7839660644531 204.3404541015625 L 392.5592346191406 217.30502319335938 L 385.81768798828125 255.16159057617188 L 402.930908203125 276.42352294921875 L 397.22650146484375 319.46588134765625 L 419.0069885253906 341.2463684082031 L 451.6777038574219 328.28179931640625 L 459.4564514160156 291.46240234375 L 436.6387939453125 274.86773681640625 L 439.75030517578125 227.6767120361328 L 420.5627136230469 209.52627563476562 L 419.52557373046875 158.18658447265625 L 443.38037109375 143.666259765625 L 451.15911865234375 105.2911148071289 L 423.6742248535156 98.54953002929688 L 422.6370544433594 68.47174835205078 L 447.529052734375 59.137237548828125 L 468.79095458984375 75.73188781738281 L 485.9041748046875 91.80797576904297 L 513.3890991210938 96.47520446777344 L 513.3890991210938 126.03443908691406 L 481.7555236816406 162.85382080078125 L 482.27410888671875 197.598876953125 L 482.27410888671875 200.19178771972656 L 482.27410888671875 200.19178771972656 L 506.12890625 225.6023712158203 L 501.980224609375 256.1987609863281 L 467.2351989746094 288.35089111328125 L 456.863525390625 322.5773620605469 L 485.9041748046875 344.8764343261719 L 520.6492309570312 300.2783203125 L 494.2015380859375 268.644775390625 L 510.277587890625 221.97232055664062 L 541.392578125 207.9705352783203 L 542.4296875 174.2626495361328 L 518.574951171875 140.0361785888672 L 527.390869140625 102.17964172363281 L 560.0615844726562 124.47868347167969 L 565.2474365234375 163.37240600585938 L 586.50927734375 191.37588500976562 L 580.2863159179688 239.08551025390625 L 557.4686889648438 285.7579650878906 L 570.4332275390625 303.90838623046875 L 589.1021728515625 318.4287109375 L 532.57666015625 344.35784912109375 L 477.6068420410156 360.4339294433594 L 430.4158020019531 378.5843200683594 L 419.0069885253906 409.6993103027344 L 422.6370544433594 424.2196350097656 L 445.4547119140625 454.8160095214844 L 481.2369384765625 476.0779113769531 L 525.3164672851562 452.74169921875 L 584.9534912109375 420.58953857421875 L 623.8472290039062 384.2887268066406 L 671.5569458007812 368.2126770019531 L 704.7462158203125 346.43218994140625 L 735.8611450195312 338.6534423828125 L 757.1231079101562 328.2817687988281 L 775.7920532226562 312.72430419921875 L 774.7548828125 313.761474609375 L 778.903564453125 314.280029296875"/>
+              <g id="pulses"></g>
+              <script><![CDATA[
+                (function(){
+                  var svg = document.currentScript.ownerSVGElement;
+                  var path = svg.querySelector('#route');
+                  var beam = svg.querySelector('#beam');
+                  var layer = svg.querySelector('#pulses');
+
+                  function prepBeam(){
+                    var L = path.getTotalLength();
+                    beam.style.strokeDasharray = L;
+                    beam.style.strokeDashoffset = L;
+                    beam.style.opacity = 0.0;
+                  }
+                  prepBeam();
+
+                  function makeDot(){
+                    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+                    // triple halo for intense look
+                    var h1 = document.createElementNS('http://www.w3.org/2000/svg','circle'); h1.setAttribute('r','20'); h1.setAttribute('opacity','0.55');
+                    var h2 = document.createElementNS('http://www.w3.org/2000/svg','circle'); h2.setAttribute('r','34'); h2.setAttribute('opacity','0.28');
+                    var c  = document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','8'); c.setAttribute('class','pulse-dot');
+                    g.appendChild(h2); g.appendChild(h1); g.appendChild(c);
+                    g.setAttribute('filter','url(#pulseGlow)');
+                    layer.appendChild(g);
+                    return g;
+                  }
+
+                  function play(ms){
+                    var duration = ms || 1500; // 1.5s total
+                    var dot = makeDot();
+                    var L = path.getTotalLength();
+                    var t0 = performance.now();
+
+                    // animate beam trail via CSS transition (matches duration)
+                    beam.style.transition = 'none'; void beam.getBoundingClientRect();
+                    beam.style.opacity = 0.32;
+                    beam.style.transition = 'stroke-dashoffset '+duration+'ms linear, opacity 220ms ease';
+                    beam.style.strokeDashoffset = '0';
+
+                    (function step(t){
+                      var u = (t - t0) / duration;
+                      if (u >= 1){ layer.removeChild(dot); // fade beam out gently
+                        beam.style.opacity = 0.12; setTimeout(function(){ prepBeam(); }, 240); return; }
+                      var d = u * L; var pt = path.getPointAtLength(d);
+                      dot.setAttribute('transform', 'translate('+pt.x+','+pt.y+')');
+                      requestAnimationFrame(step);
+                    })(t0);
+                  }
+
+                  // expose control on the host page
+                  window.HexcarbPulse = { start:function(){ play(1500); }, startMs:function(x){ play(x); } };
+                })();
+              ]]></script>
+            </svg>
           </div>
-
-          <!-- SVG overlay (percentage-based for responsiveness) -->
-          <svg id="engineOverlay" viewBox="0 0 100 100" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
-            <defs>
-              <filter id="glow"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-              <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%"  stop-color="white" stop-opacity="0"/>
-                <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
-                <stop offset="100%" stop-color="white" stop-opacity="0"/>
-              </linearGradient>
-              <!-- Mask: right hemisphere (adjust if your 3.png crop differs) -->
-              <mask id="rightMask" maskUnits="objectBoundingBox">
-                <rect x="0.50" y="0.10" width="0.48" height="0.80" fill="white"/>
-              </mask>
-            </defs>
-
-            <!-- Warm left glow -->
-            <circle id="warmGlow" cx="30" cy="50" r="10" fill="white" opacity="0"/>
-
-            <!-- Subtle base wires for context (sit on top of 3.png) -->
-            <g id="wires-base" class="base" stroke-width="0.55">
-              <!-- Left circuits -->
-              <path d="M21.5,56 28,50.5 34.5,45.2 41,38.5" />
-              <path d="M24.8,62.2 31.2,58.2 37.8,54.2" />
-              <path d="M20.5,49 27,43.6 33,39.4" />
-              <!-- Bridge -->
-              <path d="M44.2,50 50,50 56,50" />
-              <!-- Right lattice -->
-              <path d="M58.2,46 66,40 74,46 70,56 62.3,52.2" />
-              <!-- Tube exit -->
-              <path d="M73.8,60 80,62 88,66 94,69" />
-            </g>
-
-            <!-- Animated light strokes (revealed via dashoffset) -->
-            <g id="wires-light" class="light" stroke-width="1.35">
-              <path id="path-L1" class="wire" d="M21.5,56 28,50.5 34.5,45.2 41,38.5"/>
-              <path id="path-L2" class="wire" d="M24.8,62.2 31.2,58.2 37.8,54.2"/>
-              <path id="path-L3" class="wire" d="M20.5,49 27,43.6 33,39.4"/>
-              <path id="path-B1" class="wire" d="M44.2,50 50,50 56,50"/>
-              <path id="path-R1" class="wire" d="M58.2,46 66,40 74,46 70,56 62.3,52.2"/>
-              <path id="path-T1" class="wire" d="M73.8,60 80,62 88,66 94,69"/>
-            </g>
-
-            <!-- Node pops where light passes -->
-            <g id="nodes-left" fill="#fff">
-              <circle cx="28" cy="50.5" r="0.9" opacity="0"/>
-              <circle cx="34.5" cy="45.2" r="0.9" opacity="0"/>
-              <circle cx="31.2" cy="58.2" r="0.9" opacity="0"/>
-              <circle cx="27" cy="43.6"  r="0.9" opacity="0"/>
-            </g>
-            <g id="nodes-right" fill="#fff">
-              <circle cx="66" cy="40" r="0.9" opacity="0"/>
-              <circle cx="74" cy="46" r="0.9" opacity="0"/>
-              <circle cx="70" cy="56" r="0.9" opacity="0"/>
-            </g>
-
-            <!-- Right-side sheen sweep -->
-            <g mask="url(#rightMask)">
-              <rect id="takeover" x="50" y="0" width="0" height="100" fill="url(#sweep)" />
-            </g>
-
-            <!-- Exit pulse -->
-            <circle id="exitPulse" cx="94" cy="69" r="0.8" fill="#fff" opacity="0"/>
-
-            <!-- Dev Mapper: drawn paths + guides -->
-            <g id="mapPaths" class="light" stroke-width="1.35"></g>
-            <g id="mapGuide" class="map-guide" visibility="hidden"></g>
-            <g id="mapPoints" visibility="hidden"></g>
-          </svg>
-
-          <!-- Mapper hint (shows when M toggled) -->
-          <div id="mapHint" class="map-hint hidden">
-            Map Mode • M toggle · L/B/R/T choose segment · Click to add points · Enter finish · Backspace undo · Esc cancel · G ridge-snap · C curve on/off · S save
-          </div>
-
-          <!-- Footer line under panel -->
           <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
-            <div class="text-sm text-gray-700 dark:text-gray-300">
-              Click to ignite the engine → neural impulses traverse the structure → enter the live system.
-            </div>
-            <div class="flex items-center gap-3 text-sm">
-              <span class="opacity-70">HEXCARB AI Engine</span>
-              <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
-            </div>
+            <div class="text-sm text-gray-700 dark:text-gray-300">Click to ignite the engine → neural impulse traverses the structure → enters the live system.</div>
+            <div class="flex items-center gap-3 text-sm"><span class="opacity-70">HEXCARB AI Engine</span><span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span></div>
           </div>
         </button>
       </div>
     </section>
 
-    <!-- ── Technology ─────────────────────────────────────────────── -->
+    <!-- Technology -->
     <section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center fade-in">
       <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
         <h2 class="text-xl font-semibold mb-2">Quantum Conductivity</h2>
@@ -257,17 +199,13 @@
       </div>
     </section>
 
-    <!-- ── Applications ───────────────────────────────────────────── -->
+    <!-- Applications (unchanged) -->
     <section id="applications" class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white" style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
-
       <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
         <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
-        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
-          Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
-        </p>
+        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.</p>
       </div>
-
       <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
@@ -276,7 +214,6 @@
             <p class="text-md leading-relaxed text-white/90">CNT-reinforced composites offer unmatched strength-to-weight performance, ideal for aerospace structures, thermal protection systems, and integrated sensors for real-time monitoring in extreme environments.</p>
           </div>
         </div>
-
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('wearables.jpg');" role="img" aria-label="Wearable smart textiles">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
           <div class="relative p-8 text-white flex flex-col justify-center h-full">
@@ -284,7 +221,6 @@
             <p class="text-md leading-relaxed text-white/90">Our CNT fibers enable smart fabrics that are stretchable, washable, and electronically responsive—supporting advanced biometric monitoring and responsive clothing for health and defense.</p>
           </div>
         </div>
-
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('energy.jpg');" role="img" aria-label="Energy storage and battery materials">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
           <div class="relative p-8 text-white flex flex-col justify-center h-full">
@@ -292,7 +228,6 @@
             <p class="text-md leading-relaxed text-white/90">CNTs enhance lithium-ion, sodium-ion, and solid-state batteries through superior electron transport, increasing performance, durability, and cycle life in energy storage systems.</p>
           </div>
         </div>
-
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('infrastructure.jpg');" role="img" aria-label="Built environments and smart infrastructure">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
           <div class="relative p-8 text-white flex flex-col justify-center h-full">
@@ -303,107 +238,48 @@
       </div>
     </section>
 
-    <!-- ── Vision ─────────────────────────────────────────────────── -->
+    <!-- Vision -->
     <section id="vision" class="py-24 px-6 text-center fade-in bg-white dark:bg-black">
       <div class="max-w-4xl mx-auto">
         <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
-        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
-          To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.
-        </p>
-        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-          From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.
-        </p>
+        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">To pioneer a new era of material intelligence — using carbon nanotube-based solutions to transform the way we build, sense, and interact with the world.</p>
+        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">From next-generation fibers to advanced dispersions and embedded sensing, we’re enabling performance at the atomic scale. Our mission is to make the invisible power of nanomaterials accessible, scalable, and transformative across industries — starting with the fundamentals, and expanding into everything from infrastructure to intelligence.</p>
       </div>
     </section>
 
-    <!-- ── Roadmap ────────────────────────────────────────────────── -->
-    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text-white px-6 fade-in">
+    <!-- Roadmap -->
+    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text:white px-6 fade-in">
       <div class="max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8 text-center">Roadmap 2025</h2>
         <div class="grid md:grid-cols-2 gap-8 text-left">
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>High-strength SWCNT fiber prototypes</li>
-              <li>Stable dispersion systems for water &amp; epoxy</li>
-              <li>Initial sensor thread design for stress response</li>
-            </ul>
-          </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>Mechanical and electrical benchmarking</li>
-              <li>Thermal performance and conductivity mapping</li>
-              <li>Third-party lab validation across sectors</li>
-            </ul>
-          </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>Beta release: structural fibers &amp; sensing yarns</li>
-              <li>Concrete &amp; battery dispersion pilot batches</li>
-              <li>Partnerships with smart material labs</li>
-            </ul>
-          </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>Investor outreach for full-spectrum SWCNT platform</li>
-              <li>Manufacturing roadmap across fibers, dispersions, sensors</li>
-              <li>Market positioning: “HexCarb – The Carbon Standard”</li>
-            </ul>
-          </div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg-black"><h3 class="text-xl font-semibold mb-2">Q1: Core Prototypes</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>High-strength SWCNT fiber prototypes</li><li>Stable dispersion systems for water &amp; epoxy</li><li>Initial sensor thread design for stress response</li></ul></div>
+          <div class="matte rounded-2xl p-6 bg-white dark:bg:black"><h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>Mechanical and electrical benchmarking</li><li>Thermal performance and conductivity mapping</li><li>Third-party lab validation across sectors</li></ul></div>
+          <div class="matte rounded-2xl p-6 bg:white dark:bg:black"><h3 class="text-xl font-semibold mb-2">Q3: Vertical Launches</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>Beta release: structural fibers &amp; sensing yarns</li><li>Concrete &amp; battery dispersion pilot batches</li><li>Partnerships with smart material labs</li></ul></div>
+          <div class="matte rounded-2xl p-6 bg:white dark:bg:black"><h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3><ul class="list-disc ml-5 text-gray-700 dark:text-gray-300"><li>Investor outreach for full-spectrum SWCNT platform</li><li>Manufacturing roadmap across fibers, dispersions, sensors</li><li>Market positioning: “HexCarb – The Carbon Standard”</li></ul></div>
         </div>
       </div>
     </section>
 
-    <!-- ── Contact ────────────────────────────────────────────────── -->
-    <section id="contact" class="bg-white dark:bg-black text-black dark:text-white py-16 px-6 md:px-12">
+    <!-- Contact -->
+    <section id="contact" class="bg-white dark:bg-black text:black dark:text:white py-16 px-6 md:px-12">
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
         <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
-
         <form action="https://formspree.io/f/xgvznzyr" method="POST" class="grid gap-4">
-          <label class="text-left">
-            <span class="sr-only">Your Name</span>
-            <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name"
-              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
-          </label>
-          <label class="text-left">
-            <span class="sr-only">Your Email</span>
-            <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email"
-              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
-          </label>
-          <label class="text-left">
-            <span class="sr-only">Your Message</span>
-            <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message"
-              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea>
-          </label>
-          <button type="submit" class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">
-            Send Message
-          </button>
+          <label class="text-left"><span class="sr-only">Your Name</span><input type="text" name="name" placeholder="Your Name" required aria-label="Your Name" class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" /></label>
+          <label class="text-left"><span class="sr-only">Your Email</span><input type="email" name="email" placeholder="Your Email" required aria-label="Your Email" class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" /></label>
+          <label class="text-left"><span class="sr-only">Your Message</span><textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message" class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline:none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea></label>
+          <button type="submit" class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">Send Message</button>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- ── Footer / Inbox ──────────────────────────────────────────── -->
-  <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10">
-    <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
-  </footer>
+  <!-- Footer / Inbox -->
+  <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10"><p>&copy; 2025 HexCarb Advanced Materials Private Limited</p></footer>
+  <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6" /></svg></a>
 
-  <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6" />
-    </svg>
-  </a>
-
-  <!-- Hidden canvas for ridge-snap sampling (Dev Mapper) -->
-  <canvas id="sampleCanvas" style="position:fixed; left:-9999px; top:-9999px;" width="1" height="1"></canvas>
-
-  <!-- ────────────────────────────────────────────────────────────────
-       App: Theme & Mobile Nav
-       ──────────────────────────────────────────────────────────────── -->
+  <!-- Theme & Mobile Nav -->
   <script>
     (function(){
       const stored = localStorage.getItem('theme');
@@ -413,7 +289,6 @@
       document.getElementById('themeToggle')?.setAttribute('aria-pressed', String(pressed));
       document.getElementById('themeToggleMobile')?.setAttribute('aria-pressed', String(pressed));
     })();
-
     function toggleThemeInternal(btn){
       const html = document.documentElement;
       const isDark = html.classList.toggle('dark');
@@ -424,293 +299,16 @@
     }
     document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
     document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
-
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn?.addEventListener('click', () => {
-      const open = mobileMenu.classList.toggle('hidden');
-      menuBtn.setAttribute('aria-expanded', String(!open));
-    });
+    menuBtn?.addEventListener('click', () => { const open = mobileMenu.classList.toggle('hidden'); menuBtn.setAttribute('aria-expanded', String(!open)); });
   </script>
 
-  <!-- ────────────────────────────────────────────────────────────────
-       Engine: Animation Core (neural impulse → sweep → exit → redirect)
-       ──────────────────────────────────────────────────────────────── -->
+  <!-- Engine: trigger logic (click to run 1.5s pulse) -->
   <script>
     (function(){
       const btn = document.getElementById('engineStart');
-      if (!btn) return;
-
-      const overlay   = document.getElementById('engineOverlay');
-      const ids       = ['path-L1','path-L2','path-L3','path-B1','path-R1','path-T1'];
-      const paths     = ids.map(id => overlay.getElementById(id));
-      const nodesLeft  = Array.from(overlay.getElementById('nodes-left').querySelectorAll('circle'));
-      const nodesRight = Array.from(overlay.getElementById('nodes-right').querySelectorAll('circle'));
-      const warmGlow   = overlay.getElementById('warmGlow');
-      const takeover   = overlay.getElementById('takeover');
-      const exitPulse  = overlay.getElementById('exitPulse');
-
-      // Stroke-dash prep
-      paths.forEach(p => {
-        const len = p.getTotalLength();
-        p.style.strokeDasharray = len;
-        p.style.strokeDashoffset = len;
-      });
-
-      function animatePath(p, duration=300, delay=0, easing='ease'){
-        return new Promise(resolve => {
-          p.style.transition = 'none'; void p.getBoundingClientRect();
-          p.style.transition = `stroke-dashoffset ${duration}ms ${easing} ${delay}ms`;
-          p.style.strokeDashoffset = '0';
-          setTimeout(resolve, delay + duration);
-        });
-      }
-
-      // Tiny glowing dots that travel along a path
-      function spawnImpulses(path, {n=5, dur=600, stagger=80, radius=.45, accel=false}={}){
-        const len = path.getTotalLength();
-        for (let i=0;i<n;i++){
-          const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
-          dot.setAttribute('r', radius); dot.setAttribute('class','impulse-dot');
-          overlay.appendChild(dot);
-          const start = performance.now() + i*stagger;
-          const ease = accel ? (t)=>t*t*(3-2*t) : (t)=>t;
-          (function move(now){
-            const t = Math.min(1, (now - start)/dur);
-            if (t<=0){ requestAnimationFrame(move); return; }
-            const d = ease(t);
-            const pt = path.getPointAtLength(d*len);
-            dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
-            if (t<1) requestAnimationFrame(move); else dot.remove();
-          })(performance.now());
-        }
-      }
-
-      function popNode(circle, delay){
-        setTimeout(()=> {
-          circle.style.transition = 'opacity 120ms ease, r 180ms ease';
-          circle.setAttribute('opacity','1');
-          circle.setAttribute('r', (parseFloat(circle.getAttribute('r')) + 0.45).toString());
-          setTimeout(()=> circle.setAttribute('r','0.9'), 210);
-        }, delay);
-      }
-
-      function pulseExit(){
-        exitPulse.style.transition = 'opacity 100ms ease, r 240ms cubic-bezier(.2,.7,.2,1)';
-        exitPulse.setAttribute('opacity','1');
-        exitPulse.setAttribute('r','2.8');
-        setTimeout(()=> exitPulse.setAttribute('opacity','0'), 260);
-      }
-
-      function playChime(){
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const o = ctx.createOscillator(); const g = ctx.createGain();
-          o.type = 'sine'; o.frequency.value = 760; g.gain.value = 0.15;
-          o.connect(g); g.connect(ctx.destination);
-          o.start();
-          g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
-          o.stop(ctx.currentTime + 0.22);
-        } catch(e) {}
-      }
-
-      async function start(){
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          window.location.href = 'https://ai.hexcarb.in';
-          return;
-        }
-
-        warmGlow.classList.add('run');
-
-        // LEFT (with dots & pops)
-        spawnImpulses(paths[0], {n:6,dur:600,stagger:80});
-        await animatePath(paths[0], 310,   0);  popNode(nodesLeft[0],130); popNode(nodesLeft[1],240);
-
-        spawnImpulses(paths[1], {n:5,dur:520,stagger:70});
-        animatePath(paths[1], 300, 120);        popNode(nodesLeft[2],260);
-
-        spawnImpulses(paths[2], {n:4,dur:520,stagger:70});
-        animatePath(paths[2], 280, 240);        popNode(nodesLeft[3],360);
-
-        // BRIDGE
-        await animatePath(paths[3], 230, 110, 'cubic-bezier(.2,.8,.2,1)');
-
-        // RIGHT LATTICE
-        spawnImpulses(paths[4], {n:6,dur:620,stagger:90});
-        await animatePath(paths[4], 620, 70,  'cubic-bezier(.2,.85,.2,1)');
-        popNode(nodesRight[0], 200); popNode(nodesRight[1], 320); popNode(nodesRight[2], 440);
-
-        // SWEEP SHEEN
-        takeover.classList.add('sweep');
-
-        // TUBE EXIT
-        spawnImpulses(paths[5], {n:6,dur:540,stagger:70,accel:true});
-        await animatePath(paths[5], 540, 40,  'cubic-bezier(.1,.95,.2,1)');
-
-        pulseExit(); playChime();
-        setTimeout(()=> { window.location.href = 'https://ai.hexcarb.in'; }, 260);
-      }
-
-      btn.addEventListener('click', () => { btn.disabled = true; start(); }, { once:true });
-    })();
-  </script>
-
-  <!-- ────────────────────────────────────────────────────────────────
-       Engine: Dev Path Mapper (toggle M) — optional helper
-       - Click to place points along ridges; Enter to save curve
-       - L/B/R/T choose segment; G ridge-snap; C curve toggle; S save all
-       ──────────────────────────────────────────────────────────────── -->
-  <script>
-    (function(){
-      const svg   = document.getElementById('engineOverlay');
-      const img   = document.getElementById('brainImg');
-      const hint  = document.getElementById('mapHint');
-      const mapGuide  = svg.getElementById('mapGuide');
-      const mapPoints = svg.getElementById('mapPoints');
-      const mapPaths  = svg.getElementById('mapPaths');
-
-      const canvas = document.getElementById('sampleCanvas');
-      const ctx = canvas.getContext('2d');
-
-      const MAP = { on:false, type:'L', curve:true, ridge:true, current:[], counter:{L:0,B:0,R:0,T:0}, saved:{L:[],B:[],R:[],T:[]} };
-
-      function toggleMap(on){
-        MAP.on = (on ?? !MAP.on);
-        mapGuide.setAttribute('visibility', MAP.on?'visible':'hidden');
-        mapPoints.setAttribute('visibility', MAP.on?'visible':'hidden');
-        hint.classList.toggle('hidden', !MAP.on);
-        svg.style.pointerEvents = MAP.on ? 'auto' : 'none';
-        if (MAP.on) drawToCanvas();
-        showHint();
-      }
-      function setType(t){ MAP.type = t; showHint(); }
-      function toggleCurve(){ MAP.curve = !MAP.curve; showHint(); }
-      function toggleRidge(){ MAP.ridge = !MAP.ridge; showHint(); }
-      function showHint(){
-        hint.textContent = 'Map Mode • M toggle · L/B/R/T choose segment · Click to add points · Enter finish · Backspace undo · Esc cancel · G ridge-snap ['+(MAP.ridge?'ON':'OFF')+'] · C curve ['+(MAP.curve?'ON':'OFF')+'] · S save';
-      }
-
-      function clientToViewBox(clientX, clientY){
-        const pt = svg.createSVGPoint(); pt.x = clientX; pt.y = clientY;
-        const inv = svg.getScreenCTM().inverse();
-        const loc = pt.matrixTransform(inv);
-        return [ +(loc.x).toFixed(1), +(loc.y).toFixed(1) ];
-      }
-
-      function drawToCanvas(){
-        const w = Math.max(1, Math.ceil(window.innerWidth));
-        const h = Math.max(1, Math.ceil(window.innerHeight));
-        canvas.width = w; canvas.height = h;
-        ctx.clearRect(0,0,w,h);
-        const r = img.getBoundingClientRect();
-        try { ctx.drawImage(img, r.left, r.top, r.width, r.height); } catch(e) { /* cross-origin images will skip ridge snap */ }
-      }
-      window.addEventListener('resize', ()=>{ if (MAP.on) drawToCanvas(); });
-
-      function luminanceAtPage(px, py){
-        try {
-          const d = ctx.getImageData(Math.floor(px), Math.floor(py), 1, 1).data;
-          return 0.2126*d[0] + 0.7152*d[1] + 0.0722*d[2];
-        } catch(e) { return 255; }
-      }
-      function viewBoxToPage(vx, vy){
-        const rect = svg.getBoundingClientRect();
-        return [ rect.left + (vx/100)*rect.width, rect.top + (vy/100)*rect.height ];
-      }
-      function pageToViewBox(px, py){
-        const rect = svg.getBoundingClientRect();
-        return [ +(((px-rect.left)/rect.width)*100).toFixed(1), +(((py-rect.top)/rect.height)*100).toFixed(1) ];
-      }
-      function ridgeSnap(vx, vy){
-        if (!MAP.ridge) return [vx,vy];
-        const [px, py] = viewBoxToPage(vx,vy);
-        let best = {L:1e9, x:px, y:py};
-        const R=8;
-        for (let dy=-R; dy<=R; dy++){
-          for (let dx=-R; dx<=R; dx++){
-            const L = luminanceAtPage(px+dx, py+dy);
-            if (L<best.L) best = {L, x:px+dx, y:py+dy};
-          }
-        }
-        return pageToViewBox(best.x, best.y);
-      }
-
-      function catmullRom2bezier(points, curve=true){
-        if (points.length < 2) return '';
-        if (!curve || points.length === 2) return 'M ' + points.map(p=>p.join(',')).join(' L ');
-        const p = points.map(pt => ({x:pt[0], y:pt[1]}));
-        let d = `M ${p[0].x},${p[0].y}`;
-        for (let i=0; i<p.length-1; i++){
-          const p0 = i>0 ? p[i-1] : p[i];
-          const p1 = p[i];
-          const p2 = p[i+1];
-          const p3 = i !== p.length-2 ? p[i+2] : p2;
-          const cp1x = p1.x + (p2.x - p0.x)/6;
-          const cp1y = p1.y + (p2.y - p0.y)/6;
-          const cp2x = p2.x - (p3.x - p1.x)/6;
-          const cp2y = p2.y - (p3.y - p1.y)/6;
-          d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
-        }
-        return d;
-      }
-
-      function redrawGuide(){
-        mapGuide.innerHTML = '';
-        const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-        const d = MAP.current.length ? 'M '+MAP.current.map(pt=>pt.join(',')).join(' L ') : '';
-        p.setAttribute('d', d);
-        mapGuide.appendChild(p);
-
-        mapPoints.innerHTML = '';
-        MAP.current.forEach(([x,y])=>{
-          const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-          c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',.8); c.setAttribute('class','map-point');
-          mapPoints.appendChild(c);
-        });
-      }
-
-      function addPoint(evt){
-        const [vx, vy] = clientToViewBox(evt.clientX, evt.clientY);
-        const [sx, sy] = ridgeSnap(vx, vy);
-        MAP.current.push([sx, sy]);
-        redrawGuide();
-      }
-      function finishPath(){
-        if (MAP.current.length < 2) return;
-        const id = `map-${MAP.type}-${++MAP.counter[MAP.type]}`;
-        const d = catmullRom2bezier(MAP.current, MAP.curve);
-        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-        path.setAttribute('id', id);
-        path.setAttribute('class','wire light');
-        path.setAttribute('d', d);
-        path.setAttribute('stroke-width','1.35');
-        mapPaths.appendChild(path);
-        MAP.saved[MAP.type].push(id);
-        MAP.current = []; redrawGuide();
-        // Copy for convenience
-        const payload = JSON.stringify({id, type:MAP.type, d});
-        console.log('Saved path:', payload);
-        navigator.clipboard?.writeText(payload).catch(()=>{});
-      }
-      function undoPoint(){ MAP.current.pop(); redrawGuide(); }
-
-      // Keyboard controls
-      window.addEventListener('keydown', (e)=>{
-        if (e.key.toLowerCase() === 'm'){ toggleMap(); }
-        if (!MAP.on) return;
-        const k = e.key.toLowerCase();
-        if ('lbrt'.includes(k)) setType(k.toUpperCase());
-        if (k==='c') toggleCurve();
-        if (k==='g') toggleRidge();
-        if (e.key === 'Enter') finishPath();
-        if (e.key === 'Backspace'){ e.preventDefault(); undoPoint(); }
-        if (e.key === 'Escape'){ MAP.current = []; redrawGuide(); }
-        if (k==='s'){ console.log('All paths:', MAP.saved); navigator.clipboard?.writeText(JSON.stringify(MAP.saved)).catch(()=>{}); }
-      });
-      svg.addEventListener('click', (e)=>{ if (MAP.on) addPoint(e); });
-
-      // Ensure canvas ready after image load
-      if (!img.complete){ img.addEventListener('load', ()=>{ if (MAP.on) drawToCanvas(); }); }
+      btn?.addEventListener('click', ()=>{ window.HexcarbPulse?.start(); }, { once:false });
     })();
   </script>
 </body>
