@@ -40,11 +40,7 @@
     .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
     .skip-link:focus { position:static; width:auto; height:auto; margin:8px; padding:8px 12px; background:#000; color:#fff; border-radius:8px; }
 
-    /* Engine visuals */
-    .pulse-dot { fill:#fff; filter:url(#pulseGlow); }
-    .debug-route { stroke:#ffffffaa; stroke-width:2; fill:none; opacity:.08 } /* keep very faint for alignment */
-
-    /* Reduced motion: skip animation, go straight to AI site */
+    /* Reduced motion: on click we will skip playback and redirect */
     @media (prefers-reduced-motion: reduce) {
       #engineStart { pointer-events: auto !important; }
     }
@@ -99,7 +95,7 @@
   </section>
 
   <main id="main">
-    <!-- ENGINE PANEL -->
+    <!-- ENGINE PANEL: video plays on click, redirects on end -->
     <section id="engine" class="relative px-4 py-10 md:py-14">
       <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
 
@@ -108,97 +104,29 @@
           <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Science that thinks. Technology that invents.</p>
         </div>
 
-        <!-- Single SVG => ensures the image & route share identical geometry -->
         <button id="engineStart" class="group relative block w-full text-left focus:outline-none" aria-label="Start HEXCARB AI Engine">
           <div class="w-full flex justify-center">
-            <svg id="hexcarbPulseSVG" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
-              <defs>
-                <!-- Wider bounds + stronger multi-blur for intense glow -->
-                <filter id="pulseGlow" x="-120%" y="-120%" width="440%" height="440%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b1"/>
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="b2"/>
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="b3"/>
-                  <feMerge>
-                    <feMergeNode in="b1"/><feMergeNode in="b2"/><feMergeNode in="b3"/><feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
+            <div class="relative w-full md:w-[92%]">
+              <video id="engineVideo"
+                     class="w-full h-auto select-none rounded-xl"
+                     width="1600" height="1000"
+                     playsinline preload="auto" poster="3.png">
+                <source src="3.mp4" type="video/mp4" />
+                <!-- If video can't load, the poster shows; click still redirects. -->
+              </video>
 
-              <!-- Base artwork (exact 1600×1000) -->
-              <image href="3.png" x="0" y="0" width="1600" height="1000" />
-
-              <!-- Route overlay (kept faint for dev alignment) -->
-              <path id="route" class="debug-route" d="M 303.36297607421875 456.3717956542969 L 180.45884704589844 383.2515869140625 L 104.22712707519531 296.1296691894531 L 111.48729705810547 190.8572998046875 L 160.2340850830078 126.55301666259766 L 195.49771118164062 123.44152069091797 L 148.8252716064453 176.3369903564453 L 150.89959716796875 203.82188415527344 L 115.63595581054688 261.9031677246094 L 163.34559631347656 310.64996337890625 L 260.8392028808594 357.32244873046875 L 271.72943115234375 312.2056884765625 L 225.05697631835938 271.2377014160156 L 173.71725463867188 265.53326416015625 L 174.75439453125 220.9351043701172 L 238.5401153564453 160.26089477539062 L 234.3914337158203 92.32654571533203 L 274.8409118652344 123.44152069091797 L 275.3594970703125 183.07855224609375 L 222.46405029296875 220.9351043701172 L 313.216064453125 336.060546875 L 310.1045837402344 268.12615966796875 L 283.6568298339844 230.78819274902344 L 312.6974792480469 195.52455139160156 L 373.8902587890625 199.6732177734375 L 377.0017395019531 157.66798400878906 L 369.7416076660156 136.92466735839844 L 374.4088439941406 101.14244842529297 L 380.6318664550781 62.767311096191406 L 402.930908203125 30.61518096923828 L 429.378662109375 36.319583892822266 L 437.15740966796875 55.507171630859375 L 416.4140930175781 66.91598510742188 L 416.9326477050781 96.99380493164062 L 397.22650146484375 116.69993591308594 L 397.22650146484375 145.22201538085938 L 419.52557373046875 165.96533203125 L 412.7839660644531 204.3404541015625 L 392.5592346191406 217.30502319335938 L 385.81768798828125 255.16159057617188 L 402.930908203125 276.42352294921875 L 397.22650146484375 319.46588134765625 L 419.0069885253906 341.2463684082031 L 451.6777038574219 328.28179931640625 L 459.4564514160156 291.46240234375 L 436.6387939453125 274.86773681640625 L 439.75030517578125 227.6767120361328 L 420.5627136230469 209.52627563476562 L 419.52557373046875 158.18658447265625 L 443.38037109375 143.666259765625 L 451.15911865234375 105.2911148071289 L 423.6742248535156 98.54953002929688 L 422.6370544433594 68.47174835205078 L 447.529052734375 59.137237548828125 L 468.79095458984375 75.73188781738281 L 485.9041748046875 91.80797576904297 L 513.3890991210938 96.47520446777344 L 513.3890991210938 126.03443908691406 L 481.7555236816406 162.85382080078125 L 482.27410888671875 197.598876953125 L 482.27410888671875 200.19178771972656 L 482.27410888671875 200.19178771972656 L 506.12890625 225.6023712158203 L 501.980224609375 256.1987609863281 L 467.2351989746094 288.35089111328125 L 456.863525390625 322.5773620605469 L 485.9041748046875 344.8764343261719 L 520.6492309570312 300.2783203125 L 494.2015380859375 268.644775390625 L 510.277587890625 221.97232055664062 L 541.392578125 207.9705352783203 L 542.4296875 174.2626495361328 L 518.574951171875 140.0361785888672 L 527.390869140625 102.17964172363281 L 560.0615844726562 124.47868347167969 L 565.2474365234375 163.37240600585938 L 586.50927734375 191.37588500976562 L 580.2863159179688 239.08551025390625 L 557.4686889648438 285.7579650878906 L 570.4332275390625 303.90838623046875 L 589.1021728515625 318.4287109375 L 532.57666015625 344.35784912109375 L 477.6068420410156 360.4339294433594 L 430.4158020019531 378.5843200683594 L 419.0069885253906 409.6993103027344 L 422.6370544433594 424.2196350097656 L 445.4547119140625 454.8160095214844 L 481.2369384765625 476.0779113769531 L 525.3164672851562 452.74169921875 L 584.9534912109375 420.58953857421875 L 623.8472290039062 384.2887268066406 L 671.5569458007812 368.2126770019531 L 704.7462158203125 346.43218994140625 L 735.8611450195312 338.6534423828125 L 757.1231079101562 328.2817687988281 L 775.7920532226562 312.72430419921875 L 774.7548828125 313.761474609375 L 778.903564453125 314.280029296875" />
-
-              <g id="pulses"></g>
-
-              <script><![CDATA[
-                (function(){
-                  var svg  = document.currentScript.ownerSVGElement;
-                  var path = svg.querySelector('#route');
-                  var layer = svg.querySelector('#pulses');
-
-                  // --- Tuning knobs (intensity/size) ---
-                  var CORE_R  = 10; // bright core radius
-                  var HALO1_R = 30; // inner halo
-                  var HALO2_R = 55; // outer halo
-                  var GLOW_STD = 1; // extra growth per frame on halos (0-2 subtle "breathing")
-
-                  function makeDot(){
-                    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-                    var h1 = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                    var h2 = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                    var c  = document.createElementNS('http://www.w3.org/2000/svg','circle');
-
-                    h1.setAttribute('r', HALO1_R); h1.setAttribute('opacity','0.45');
-                    h2.setAttribute('r', HALO2_R); h2.setAttribute('opacity','0.25');
-                    c.setAttribute('r', CORE_R);   c.setAttribute('class','pulse-dot');
-
-                    g.appendChild(h2); g.appendChild(h1); g.appendChild(c);
-                    g.setAttribute('filter','url(#pulseGlow)');
-                    layer.appendChild(g);
-                    return g;
-                  }
-
-                  function play(ms){
-                    // Accessibility: respect reduced motion
-                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                      window.location.href = 'https://ai.hexcarb.in'; return;
-                    }
-
-                    var duration = ms || 1500; // 1.5s total
-                    var dot = makeDot();
-                    var L = path.getTotalLength();
-                    var t0 = performance.now();
-
-                    (function step(t){
-                      var u = (t - t0) / duration;
-                      if (u >= 1){
-                        layer.removeChild(dot);
-                        window.location.href = 'https://ai.hexcarb.in';
-                        return;
-                      }
-                      var d = u * L; var pt = path.getPointAtLength(d);
-                      // position the whole group at the path point
-                      dot.setAttribute('transform', 'translate('+pt.x+','+pt.y+')');
-                      // subtle halo expansion for intensity
-                      var grow = 1 + (u * GLOW_STD);
-                      dot.children[0].setAttribute('r', (HALO2_R * grow).toFixed(2)); // outer
-                      dot.children[1].setAttribute('r', (HALO1_R * grow).toFixed(2)); // inner
-                      requestAnimationFrame(step);
-                    })(t0);
-                  }
-
-                  // expose helpers
-                  window.HexcarbPulse = { start:function(){ play(1500); }, startMs:function(x){ play(x); } };
-                })();
-              ]]></script>
-            </svg>
+              <!-- Play overlay icon -->
+              <div id="playOverlay" class="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div class="rounded-full bg-white/90 text-black w-16 h-16 flex items-center justify-center shadow-xl transition group-hover:scale-105">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
             <div class="text-sm text-gray-700 dark:text-gray-300">
-              Click to ignite the engine → neural impulse traverses the structure → hands off to the live system.
+              Tap to play the sequence → once it finishes, you’ll enter the live system.
             </div>
             <div class="flex items-center gap-3 text-sm">
               <span class="opacity-70">HEXCARB AI Engine</span>
@@ -228,12 +156,14 @@
     <!-- Applications -->
     <section id="applications" class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white" style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+
       <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
         <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
         <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
           Discover how carbon nanotube innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
         </p>
       </div>
+
       <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
           <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
@@ -394,11 +324,34 @@
     });
   </script>
 
-  <!-- Engine: click to run pulse -->
+  <!-- Engine: video click-to-play + redirect on finish -->
   <script>
     (function(){
       const btn = document.getElementById('engineStart');
-      btn?.addEventListener('click', ()=>{ window.HexcarbPulse?.start(); }, { once:false });
+      const video = document.getElementById('engineVideo');
+      const overlay = document.getElementById('playOverlay');
+      const DEST = 'https://ai.hexcarb.in';
+
+      function go(){ window.location.href = DEST; }
+
+      function playVideo(){
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { go(); return; }
+        if (!video) { go(); return; }
+        overlay.style.transition = 'opacity 180ms ease';
+        overlay.style.opacity = '0';
+        try {
+          video.currentTime = 0;
+          // video.muted = true; // uncomment if you need silent autoplay compatibility
+          const p = video.play();
+          if (p && typeof p.catch === 'function') p.catch(()=> go());
+        } catch(e){ go(); }
+      }
+
+      btn?.addEventListener('click', playVideo);
+      btn?.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); playVideo(); } });
+
+      video?.addEventListener('ended', go);
+      video?.addEventListener('error', go);
     })();
   </script>
 </body>
