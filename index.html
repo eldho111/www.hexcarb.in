@@ -50,40 +50,59 @@
 
   <a href="#main" class="skip-link">Skip to content</a>
 
-  <!-- Header -->
-  <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
-    <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="text-xl font-extrabold tracking-wide">HexCarb</div>
-      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="#technology" class="hover:underline">Technology</a>
-        <a href="#applications" class="hover:underline">Applications</a>
-        <a href="#vision" class="hover:underline">Vision</a>
-        <a href="#roadmap" class="hover:underline">Roadmap</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
-           class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition">HEXCARB AI Engine</a>
-        <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
-          class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
-      </div>
-      <div class="md:hidden flex items-center gap-2">
-        <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
-          class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
-        <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-        </button>
-      </div>
-    </nav>
-    <div id="mobileMenu" class="md:hidden hidden border-t border-black/10 dark:border-white/10">
-      <div class="px-4 py-3 flex flex-col gap-3 text-sm">
-        <a href="#technology" class="py-1">Technology</a>
-        <a href="#applications" class="py-1">Applications</a>
-        <a href="#vision" class="py-1">Vision</a>
-        <a href="#roadmap" class="py-1">Roadmap</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
-           class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
-        <a href="/shop.html" class="hover:text-[#6ee7ff]">Shop</a>
-      </div>
+ <!-- Header -->
+<header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
+  <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="text-xl font-extrabold tracking-wide">HexCarb</div>
+
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+      <a href="#technology" class="hover:underline">Technology</a>
+      <a href="#applications" class="hover:underline">Applications</a>
+      <a href="#vision" class="hover:underline">Vision</a>
+      <a href="#roadmap" class="hover:underline">Roadmap</a>
+
+      <!-- New Shop link -->
+      <a href="/shop.html" class="hover:underline text-[#6ee7ff]">Shop</a>
+
+      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
+         class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition">
+         HEXCARB AI Engine
+      </a>
+
+      <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
+        class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
     </div>
-  </header>
+
+    <!-- Mobile Icons -->
+    <div class="md:hidden flex items-center gap-2">
+      <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
+        class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
+      <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="md:hidden hidden border-t border-black/10 dark:border-white/10">
+    <div class="px-4 py-3 flex flex-col gap-3 text-sm">
+      <a href="#technology" class="py-1">Technology</a>
+      <a href="#applications" class="py-1">Applications</a>
+      <a href="#vision" class="py-1">Vision</a>
+      <a href="#roadmap" class="py-1">Roadmap</a>
+
+      <!-- New Shop link (mobile) -->
+      <a href="/shop.html" class="py-1 text-[#6ee7ff]">Shop</a>
+
+      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
+         class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
+    </div>
+  </div>
+</header>
+
 
   <!-- Hero -->
   <section class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" style="background-image: url('1.png');">
