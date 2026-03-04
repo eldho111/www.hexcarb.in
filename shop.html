@@ -1,326 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HexCarb | Shop</title>
-  <meta name="description" content="HexCarb — Shop advanced nanomaterials, engineered dispersions, masterbatches, and lab services." />
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>HexCarb Shop | Product Families</title>
+  <meta name="description" content="Explore HexCarb product families including dispersions, fibers, thermal interface materials, hybrid systems, and lab services. Quote-first workflow." />
+  <link rel="canonical" href="https://www.hexcarb.in/shop.html" />
+
+  <meta property="og:title" content="HexCarb Shop | Product Families" />
+  <meta property="og:description" content="Browse HexCarb product families and request a quote with product context." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.hexcarb.in/shop.html" />
+  <meta property="og:image" content="https://www.hexcarb.in/3.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
+
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            hcBg: '#ffffff',
-            hcText: '#0b1220',
-            hcAccent: '#0b1220',
-            hcMuted: '#53607a'
-          },
-          boxShadow: { glass: '0 10px 30px rgba(0,0,0,0.08)' },
-          borderRadius: { '2xl': '1.25rem' }
-        }
-      }
-    }
+    window.HEXCARB_GA4_ID = "G-XXXXXXXXXX";
   </script>
-  <style>
-    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
-    html { scroll-behavior: smooth; }
-  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "HexCarb Shop",
+    "url": "https://www.hexcarb.in/shop.html",
+    "description": "HexCarb product family catalog and quote workflow"
+  }
+  </script>
 </head>
+<body class="hc-premium" data-hc-bg-image="/1.png" data-hc-bg-video-disabled="true" style="--hc-ambient-image: url('/1.png');">
+  <header class="hc-header">
+    <div class="container hc-nav">
+      <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
+        <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+        <span class="hc-visually-hidden">HexCarb</span>
+      </a>
 
-<body class="relative bg-white text-hcText">
-  <!-- Background Image (behind everything) -->
-  <div class="pointer-events-none fixed inset-0 -z-10">
-    <img src="./bg-hexc-blur.png" alt=""
-         class="w-full h-full object-cover brightness-110 blur-[14px] md:blur-[18px]">
-  </div>
+      <nav class="hc-nav-links" aria-label="Primary">
+        <a href="/index.html" data-nav-path="/">Home</a>
+        <a href="/index.html#technology">Technology</a>
+        <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
+        <a href="/shop.html" data-nav-path="/shop.html">Shop</a>
+        <a href="/index.html#about">About</a>
+        <a href="/shop.html#contact">Contact</a>
+      </nav>
 
-  <!-- ======================== HEADER ======================== -->
-  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-black/10">
-    <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="/" class="text-xl font-extrabold tracking-wide">HexCarb</a>
-      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="/#technology" class="hover:underline">Technology</a>
-        <a href="/#applications" class="hover:underline">Applications</a>
-        <a href="/#vision" class="hover:underline">Vision</a>
-        <a href="/#roadmap" class="hover:underline">Roadmap</a>
-        <a href="/shop.html" class="underline font-semibold">Shop</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
-           class="inline-block bg-black text-white px-4 py-2 rounded hover:opacity-90 transition">HEXCARB AI Engine</a>
-      </div>
-      <div class="md:hidden flex items-center gap-2">
-        <button id="menuBtn" class="p-2 border border-black/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <div class="hc-nav-actions">
+        <a class="hc-btn hc-btn-primary" href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="shop_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"header"}'>AI Engine</a>
+        <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
+          <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
       </div>
-    </nav>
-    <div id="mobileMenu" class="md:hidden hidden border-t border-black/10">
-      <div class="px-4 py-3 flex flex-col gap-3 text-sm">
-        <a href="/#technology" class="py-1">Technology</a>
-        <a href="/#applications" class="py-1">Applications</a>
-        <a href="/#vision" class="py-1">Vision</a>
-        <a href="/#roadmap" class="py-1">Roadmap</a>
-        <a href="/shop.html" class="py-1 font-semibold">Shop</a>
-        <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" class="py-2 text-center rounded border border-black">HEXCARB AI Engine</a>
-      </div>
     </div>
+
+    <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
+      <a href="/index.html">Home</a>
+      <a href="/index.html#technology">Technology</a>
+      <a href="/applications/index.html">Applications</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/index.html#about">About</a>
+      <a href="/shop.html#contact">Contact</a>
+      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="shop_mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"mobile_menu"}'>AI Engine</a>
+    </nav>
   </header>
 
-  <!-- ======================== HERO ======================== -->
-  <section class="max-w-6xl mx-auto px-4 pt-10 pb-6">
-    <div class="grid md:grid-cols-2 gap-8 items-center">
+  <main>
+    <section class="hc-page-hero">
+      <div class="container hc-reveal">
+        <span class="hc-kicker">Quote-First Catalog</span>
+        <h1 style="margin-top:0.8rem;">HexCarb Product Families</h1>
+        <p>
+          Select a family, review capability notes, and request a quote with context. Final pricing and suitability are confirmed through enquiry, test-data review, and commercial qualification.
+        </p>
+        <div class="hc-shop-toc" id="toc">
+          <a href="#hextubes-rd">HexTubes R&amp;D</a>
+          <a href="#hextubes-ind">HexTubes Industrial</a>
+          <a href="#hexflow-a">HexFlow A</a>
+          <a href="#hexflow-s">HexFlow S</a>
+          <a href="#hexweave">HexWeave</a>
+          <a href="#hextherm">HexTherm</a>
+          <a href="#hexsheets-powders">HexSheets Powders</a>
+          <a href="#hexsheets-disp">HexSheets Disp.</a>
+          <a href="#hexlayers-m">HexLayers-M</a>
+          <a href="#hexink">HexInk</a>
+          <a href="#hexblend">HexBlend</a>
+          <a href="#hexlab">HexLab</a>
+          <a href="#hexrubber">HexRubber</a>
+        </div>
+        <p class="hc-muted" style="margin-top:0.9rem;">Capability notes are indicative. Final performance depends on formulation, loading, geometry, and process conditions.</p>
+      </div>
+    </section>
+
+    <template id="hc-product-template">
+      <article class="hc-card hc-product-card">
+        <div class="hc-product-price"></div>
+        <h3></h3>
+        <p class="hc-unit"></p>
+        <ul class="hc-product-features"></ul>
+        <div class="hc-btn-row" style="margin-top:auto;">
+          <a class="hc-btn hc-btn-accent quote-btn">Request Quote</a>
+          <a class="hc-btn hc-btn-ghost app-btn">Use Case</a>
+        </div>
+      </article>
+    </template>
+
+    <section id="hextubes-rd" class="hc-section">
+      <div class="container">
+        <h2>HexTubes - R&amp;D Powders</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Nanotube packs for lab characterization and pilot screening.</p>
+        <div class="hc-product-grid" data-section="hextubes-rd" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexTubes R1 - 1 g" data-unit="1 g vial" data-price="Pricing on quote" data-features='["Lab-screened","Characterization data","Batch traceable"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexTubes R5 - 5 g" data-unit="5 x 1 g pack" data-price="Pricing on quote" data-features='["R&D bundle","COA + SDS","Matched lot"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexTubes R10 - 10 g" data-unit="10 g pack" data-price="Pricing on quote" data-features='["Pilot trials","Stable handling","Support call"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hextubes-ind" class="hc-section hc-soft-bg">
+      <div class="container">
+        <h2>HexTubes - Industrial Powders</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Industrial CNT grades for conductive and reinforcement programs.</p>
+        <div class="hc-product-grid" data-section="hextubes-ind" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexTubes I100 - 100 g" data-unit="100 g pouch" data-price="Pricing on quote" data-features='["Conductivity-oriented grade","Characterization data","Blend-ready"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexTubes I500 - 500 g" data-unit="500 g pouch" data-price="Pricing on quote" data-features='["Industrial pack","Process friendly","Bulk pricing"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexTubes I1000 - 1 kg" data-unit="1 kg bag" data-price="Pricing on quote" data-features='["QC certificate","Cement/polymer","Pilot lines"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexflow-a" class="hc-section">
+      <div class="container">
+        <h2>HexFlow A-Series (Aqueous)</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Water-phase dispersions for printing, coating, and slurry workflows.</p>
+        <div class="hc-product-grid" data-section="hexflow-a" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexFlow A-100" data-unit="Bottle" data-price="Pricing on quote" data-features='["Print-ready","Filtration complete","Stability tested"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexFlow A-250" data-unit="Bottle" data-price="Pricing on quote" data-features='["Coating grade","Process tolerant","COA/SDS"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexFlow A-500" data-unit="Bottle" data-price="Pricing on quote" data-features='["Pilot scale","Blend compatible","Support included"]' data-app="/applications/dispersions.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexflow-s" class="hc-section hc-soft-bg">
+      <div class="container">
+        <h2>HexFlow S-Series (Solvent)</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Solvent-phase dispersions tuned for high-demand process windows.</p>
+        <div class="hc-product-grid" data-section="hexflow-s" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexFlow S-100" data-unit="Bottle" data-price="Pricing on quote" data-features='["Slurry compatible","Mix-ready","Process notes"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexFlow S-250" data-unit="Bottle" data-price="Pricing on quote" data-features='["Prepreg friendly","Fast integration","COA/SDS"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexFlow S-500" data-unit="Bottle" data-price="Pricing on quote" data-features='["High throughput","Shear stable","Pilot pack"]' data-app="/applications/dispersions.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexweave" class="hc-section">
+      <div class="container">
+        <h2>HexWeave - Fibers and Yarns</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Conductive and strain-aware yarn formats for smart textile integration.</p>
+        <div class="hc-product-grid" data-section="hexweave" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexWeave F10 - 10 m" data-unit="Spool" data-price="Pricing on quote" data-features='["Sensor-ready","Low mass","Consistent diameter"]' data-app="/applications/fibers.html"></div>
+          <div class="hc-shop-item" data-name="HexWeave Y50 - 50 m" data-unit="Spool" data-price="Pricing on quote" data-features='["Weavable","Lead-terminated","Flexible"]' data-app="/applications/fibers.html"></div>
+          <div class="hc-shop-item" data-name="HexWeave T10 - 10 mm x 5 m" data-unit="Roll" data-price="Pricing on quote" data-features='["Unidirectional","Bondable","Calibration note"]' data-app="/applications/fibers.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hextherm" class="hc-section hc-soft-bg">
+      <div class="container">
+        <h2>HexTherm - Films and TIM</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Thermal interface formats for compact and high-power electronics, selected by pressure and bond-line control needs.</p>
+        <div class="hc-product-grid" data-section="hextherm" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexTherm Sheet - 100 x 100 mm" data-unit="Sheet" data-price="Pricing on quote" data-features='["20-40 um profile","EMI attenuation","Custom sizing"]' data-app="/applications/thermal-interface-materials.html"></div>
+          <div class="hc-shop-item" data-name="HexTherm Pad - 30 x 30 mm" data-unit="Pad" data-price="Pricing on quote" data-features='["Low thermal resistance","Compressible","Datasheet available"]' data-app="/applications/thermal-interface-materials.html"></div>
+          <div class="hc-shop-item" data-name="HexTherm VA - 20 x 20 mm" data-unit="Pad" data-price="Pricing on quote" data-features='["Heat-spreading oriented","High-load cooling","Pilot run"]' data-app="/applications/thermal-interface-materials.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexsheets-powders" class="hc-section">
+      <div class="container">
+        <h2>HexSheets - Powders</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Layered carbons for coatings, composites, and barrier systems.</p>
+        <div class="hc-product-grid" data-section="hexsheets-powders" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexSheets FL - 50 g" data-unit="Jar" data-price="Pricing on quote" data-features='["Few-layer profile","High area","Low oxygen"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexSheets r-X - 100 g" data-unit="Jar" data-price="Pricing on quote" data-features='["Reduced form","Conductive","COA/SDS"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexSheets NP - 500 g" data-unit="Jar" data-price="Pricing on quote" data-features='["Platelet grade","Masterbatch-ready","Bulk options"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexsheets-disp" class="hc-section hc-soft-bg">
+      <div class="container">
+        <h2>HexSheets - Dispersions</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Graphene-focused liquid systems for printable and barrier use-cases with process tuning support.</p>
+        <div class="hc-product-grid" data-section="hexsheets-disp" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexSheets D-250" data-unit="Bottle" data-price="Pricing on quote" data-features='["Print-ready","Stable","COA on request"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexSheets D-500" data-unit="Bottle" data-price="Pricing on quote" data-features='["Barrier additive","Mix-ready","Process notes"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexSheets D-1000" data-unit="Bottle" data-price="Pricing on quote" data-features='["Pilot pack","Scalable","Support included"]' data-app="/applications/dispersions.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexlayers-m" class="hc-section">
+      <div class="container">
+        <h2>HexLayers-M Kits</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Assisted layer workflows with process and safety guidance.</p>
+        <div class="hc-product-grid" data-section="hexlayers-m" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexLayers-M Lab Kit" data-unit="For 5 batches" data-price="Pricing on quote" data-features='["Starter materials","Prep guide","Safety card"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexLayers-M Slurry 250" data-unit="Bottle" data-price="Pricing on quote" data-features='["Conductive","Printing","COA/SDS"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexLayers-M Paste 100" data-unit="Jar" data-price="Pricing on quote" data-features='["Screen-printable","Flexible","Pilot use"]' data-app="/applications/dispersions.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexink" class="hc-section hc-soft-bg">
+      <div class="container">
+        <h2>HexInk - Conductive Inks and Pastes</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Printable conductive systems for screen, inkjet, and aerosol workflows with process-window alignment.</p>
+        <div class="hc-product-grid" data-section="hexink" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexInk S-100" data-unit="Jar" data-price="Pricing on quote" data-features='["Conductivity-focused formulation","Flex-compatible","SDS available"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexInk J-100" data-unit="Bottle" data-price="Pricing on quote" data-features='["Nozzle-safe size","Smooth laydown","COA/SDS"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexInk H-Ag 50" data-unit="Jar" data-price="Pricing on quote" data-features='["Hybrid system","Conductivity-focused blend","Process-compatible"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexblend" class="hc-section">
+      <div class="container">
+        <h2>HexBlend - Masterbatches and Composites</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Concentrates and resin systems for conductivity and reinforcement goals.</p>
+        <div class="hc-product-grid" data-section="hexblend" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexBlend PP-10" data-unit="Pellets" data-price="Pricing on quote" data-features='["ESD range support","Uniform dispersion","Ready to dilute"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexBlend Epoxy-C" data-unit="Resin pack" data-price="Pricing on quote" data-features='["Shear mixed","Degassed","Lab proven"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexBlend PA-5" data-unit="Pellets" data-price="Pricing on quote" data-features='["Reinforcement-oriented","Process ready","COA"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexlab" class="hc-section hc-soft-bg">
+      <div class="container">
+        <h2>HexLab - Services</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Characterization and process support with citable reporting.</p>
+        <div class="hc-product-grid" data-section="hexlab" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexLab Raman + SEM" data-unit="Per sample" data-price="Pricing on quote" data-features='["Raman D/G/2D","SEM micrographs","PDF report"]' data-app="/applications/index.html"></div>
+          <div class="hc-shop-item" data-name="HexLab Stability Study" data-unit="Per system" data-price="Pricing on quote" data-features='["Zeta + UV-Vis","Aging test","Recommendations"]' data-app="/applications/dispersions.html"></div>
+          <div class="hc-shop-item" data-name="HexLab Application Call (60 min)" data-unit="Online" data-price="Pricing on quote" data-features='["Use-case review","Formulation tips","Roadmap"]' data-app="/applications/index.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hexrubber" class="hc-section">
+      <div class="container">
+        <h2>HexRubber - Additives</h2>
+        <p class="hc-muted" style="margin-top:0.6rem;">Elastomer-ready additives for conductive and reinforced blends.</p>
+        <div class="hc-product-grid" data-section="hexrubber" style="margin-top:1rem;">
+          <div class="hc-shop-item" data-name="HexRubber R-A" data-unit="1 kg pack" data-price="Pricing on quote" data-features='["Mix-friendly","Viscosity tuned","ESD targetable"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexRubber R-B" data-unit="1 kg pack" data-price="Pricing on quote" data-features='["Reinforcement focus","Process stable","QC included"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+          <div class="hc-shop-item" data-name="HexRubber R-C" data-unit="1 kg pack" data-price="Pricing on quote" data-features='["Conductive network","Compatibilized","Pilot support"]' data-app="/applications/swcnt-graphene-hybrid.html"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="hc-section hc-soft-bg">
+      <div class="container hc-grid hc-grid-2">
+        <div class="hc-reveal">
+          <span class="hc-kicker">Commercial Contact</span>
+          <h2 style="margin-top:0.75rem;">Bulk, custom, or NDA-backed projects</h2>
+          <p style="margin-top:0.8rem;">Send quantity range, target performance, and process constraints. We route your enquiry to the right product and application lead.</p>
+          <div class="hc-btn-row" style="margin-top:1rem;">
+            <a class="hc-btn hc-btn-primary" href="mailto:sales@hexcarb.in?subject=HexCarb%20Shop%20Enquiry" data-track-event="hc_quote_click" data-track-params='{"page":"shop","section":"contact","product_name":"general","cta_label":"write_to_sales"}'>Write to Sales</a>
+            <a class="hc-btn hc-btn-ghost" href="mailto:sales@hexcarb.in?subject=Request%20for%20COA%20and%20SDS">Request COA/SDS</a>
+          </div>
+        </div>
+
+        <div class="hc-card hc-reveal">
+          <h3>Application Routes</h3>
+          <p style="margin-top:0.5rem;">Jump directly into application pages to narrow requirements before requesting a quote.</p>
+          <ul style="margin-top:0.8rem;">
+            <li><a href="/applications/dispersions.html">Dispersions</a></li>
+            <li><a href="/applications/fibers.html">Fibers</a></li>
+            <li><a href="/applications/thermal-interface-materials.html">Thermal Interface Materials</a></li>
+            <li><a href="/applications/swcnt-graphene-hybrid.html">SWCNT and Graphene Hybrids</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hc-footer">
+    <div class="container hc-footer-grid">
       <div>
-        <h1 class="text-3xl md:text-5xl font-bold leading-tight">HexCarb Shop</h1>
-        <p class="mt-4 text-hcMuted">Engineered carbon nanomaterial families — powders, films, fibers, dispersions, masterbatches — plus HexLab services. Pricing released on enquiry and proforma.</p>
-        <div class="mt-6 flex flex-wrap gap-2 text-sm">
-          <a href="#toc" class="px-4 py-2 rounded-xl border border-black/10 bg-black/5 hover:bg-black/10">Browse sections</a>
-          <a href="#hextubes-rd" class="px-4 py-2 rounded-xl border border-black/10 hover:bg-black/5">Jump to HexTubes</a>
-          <a href="#contact" class="px-4 py-2 rounded-xl border border-black/10 hover:bg-black/5">Bulk/Custom</a>
-        </div>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
+          <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+          <span class="hc-visually-hidden">HexCarb</span>
+        </a>
+        <p>Quote-first advanced materials catalog for production teams and R&amp;D groups.</p>
       </div>
-      <div class="relative">
-        <div class="aspect-video rounded-2xl bg-gradient-to-br from-black/5 to-black/0 border border-black/10 shadow-glass grid place-items-center">
-          <svg width="140" height="140" viewBox="0 0 24 24" fill="none" class="opacity-80">
-            <circle cx="12" cy="12" r="9" stroke="#0b1220" stroke-width="1.2"/>
-            <path d="M12 6c3.3 0 6 2.7 6 6 0 .8-.2 1.5-.4 2.2L12 12V6z" fill="#0b122022"/>
-          </svg>
-        </div>
+
+      <div>
+        <h4>Shop Links</h4>
+        <ul class="hc-footer-list">
+          <li><a href="/shop.html#toc">All Sections</a></li>
+          <li><a href="/applications/index.html">Applications</a></li>
+          <li><a href="/shop.html#contact">Sales Contact</a></li>
+        </ul>
       </div>
-    </div>
-  </section>
 
-  <!-- ======================== SECTION INDEX ======================== -->
-  <section id="toc" class="max-w-6xl mx-auto px-4 pb-2">
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-      <a href="#hextubes-rd" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexTubes — R&D Powders</a>
-      <a href="#hextubes-ind" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexTubes — Industrial Powders</a>
-      <a href="#hexflow-a" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexFlow A-Series (Aqueous)</a>
-      <a href="#hexflow-s" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexFlow S-Series (Solvent)</a>
-      <a href="#hexweave" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexWeave (Fibers & Yarns)</a>
-      <a href="#hextherm" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexTherm (Films & TIM)</a>
-      <a href="#hexsheets-powders" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexSheets — Powders</a>
-      <a href="#hexsheets-disp" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexSheets — Dispersions</a>
-      <a href="#hexlayers-m" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexLayers-M Kits</a>
-      <a href="#hexink" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexInk (Conductive Inks)</a>
-      <a href="#hexblend" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexBlend (Masterbatches)</a>
-      <a href="#hexlab" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexLab (Services)</a>
-      <a href="#hexrubber" class="px-4 py-3 rounded-xl border border-black/10 bg-white hover:bg-black/5">HexRubber (Additives)</a>
-    </div>
-  </section>
-
-  <!-- ======================== TEMPLATE ======================== -->
-  <template id="card">
-    <article class="rounded-2xl border border-black/10 bg-white hover:shadow-lg transition p-4 flex flex-col">
-      <div class="aspect-[4/3] rounded-xl overflow-hidden border border-black/10 bg-black/5 grid place-items-center">
-        <div class="w-20 h-20 rounded-xl bg-black/10"></div>
-      </div>
-      <h3 class="mt-4 font-semibold text-base"></h3>
-      <p class="text-sm text-hcMuted"></p>
-      <div class="mt-2 text-lg font-semibold min-h-[1.5rem]"></div>
-      <ul class="mt-2 text-sm text-hcMuted space-y-1"></ul>
-      <div class="mt-4 flex gap-2">
-        <a class="buy flex-1 text-center px-4 py-2 rounded-xl bg-black text-white hover:opacity-90">Buy Now</a>
-        <a class="enquire px-4 py-2 rounded-xl border border-black/20 hover:bg-black/5">Enquire</a>
-      </div>
-    </article>
-  </template>
-
-  <!-- ======================== PRODUCT SECTIONS ======================== -->
-
-  <!-- 1. HexTubes — R&D Powders -->
-  <section id="hextubes-rd" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexTubes — R&D Powders</h2>
-    <p class="text-hcMuted mb-6">High-purity carbon nanotube families curated for lab work and early pilots. COA/SDS on request.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexTubes R1 — 1 g" data-unit="1 g vial" data-price="" data-features='["Lab-screened","Low ash","Batch traceable"]' data-link="#"></div>
-      <div class="card" data-name="HexTubes R5 — 5 g" data-unit="5 × 1 g" data-price="" data-features='["R&D bundle","COA + SDS","Matched lot"]' data-link="#"></div>
-      <div class="card" data-name="HexTubes R10 — 10 g" data-unit="10 g pack" data-price="" data-features='["Pilot trials","Stable handling","Support call"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 2. HexTubes — Industrial Powders -->
-  <section id="hextubes-ind" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexTubes — Industrial Powders</h2>
-    <p class="text-hcMuted mb-6">Conductive/structural families for batteries, cement, elastomers, and polymer compounds.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexTubes I100 — 100 g" data-unit="100 g pouch" data-price="" data-features='["Conductive grade","Low ash","Blend-ready"]' data-link="#"></div>
-      <div class="card" data-name="HexTubes I500 — 500 g" data-unit="500 g pouch" data-price="" data-features='["Industrial pack","Process friendly","Bulk pricing"]' data-link="#"></div>
-      <div class="card" data-name="HexTubes I1000 — 1 kg" data-unit="1 kg bag" data-price="" data-features='["QC certificate","Cement/Polymer","Pilot lines"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 3. HexFlow A-Series -->
-  <section id="hexflow-a" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexFlow A-Series</h2>
-    <p class="text-hcMuted mb-6">Engineered water-phase dispersions tuned for coating, printing, and slurry workflows. Formulations are proprietary.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexFlow A-100" data-unit="Bottle" data-price="" data-features='["Print-ready","Filtration complete","Stability tested"]' data-link="#"></div>
-      <div class="card" data-name="HexFlow A-250" data-unit="Bottle" data-price="" data-features='["Coating grade","Process tolerant","COA/SDS"]' data-link="#"></div>
-      <div class="card" data-name="HexFlow A-500" data-unit="Bottle" data-price="" data-features='["Pilot scale","Blend compatible","Support included"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 4. HexFlow S-Series -->
-  <section id="hexflow-s" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexFlow S-Series</h2>
-    <p class="text-hcMuted mb-6">Solvent-phase dispersions tailored for battery slurries and composite prepregs. Specific chemistries are undisclosed.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexFlow S-100" data-unit="Bottle" data-price="" data-features='["Slurry compatible","Mix-ready","Process notes"]' data-link="#"></div>
-      <div class="card" data-name="HexFlow S-250" data-unit="Bottle" data-price="" data-features='["Prepreg friendly","Fast integration","COA/SDS"]' data-link="#"></div>
-      <div class="card" data-name="HexFlow S-500" data-unit="Bottle" data-price="" data-features='["High throughput","Shear stable","Pilot pack"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 5. HexWeave -->
-  <section id="hexweave" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexWeave — Fibers & Yarns</h2>
-    <p class="text-hcMuted mb-6">Lightweight conductors and strain-sensing yarns for e-textiles and structural monitoring.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexWeave F10 — 10 m" data-unit="Spool" data-price="" data-features='["Sensor-ready","Low mass","Consistent dia"]' data-link="#"></div>
-      <div class="card" data-name="HexWeave Y50 — 50 m" data-unit="Spool" data-price="" data-features='["Weavable","Lead-terminated","Flexible"]' data-link="#"></div>
-      <div class="card" data-name="HexWeave T10 — 10 mm × 5 m" data-unit="Roll" data-price="" data-features='["Unidirectional","Bondable","Calibration note"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 6. HexTherm -->
-  <section id="hextherm" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexTherm — Films & TIM</h2>
-    <p class="text-hcMuted mb-6">Buckypaper and vertically-structured pads for heat management and EMI control.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexTherm Sheet — 100 × 100 mm" data-unit="Sheet" data-price="" data-features='["~20–40 µm","EMI attenuation","Custom sizes"]' data-link="#"></div>
-      <div class="card" data-name="HexTherm Pad — 30 × 30 mm" data-unit="Pad" data-price="" data-features='["Low thermal resistance","Compressible","Datasheet"]' data-link="#"></div>
-      <div class="card" data-name="HexTherm VA — 20 × 20 mm" data-unit="Pad" data-price="" data-features='["High k-eff","Server cooling","Pilot run"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 7. HexSheets — Powders -->
-  <section id="hexsheets-powders" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexSheets — Powders</h2>
-    <p class="text-hcMuted mb-6">Layered carbons for composites, coatings, and barrier systems.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexSheets FL — 50 g" data-unit="Jar" data-price="" data-features='["Few-layer profile","High area","Low oxygen"]' data-link="#"></div>
-      <div class="card" data-name="HexSheets r-X — 100 g" data-unit="Jar" data-price="" data-features='["Reduced form","Conductive","COA/SDS"]' data-link="#"></div>
-      <div class="card" data-name="HexSheets NP — 500 g" data-unit="Jar" data-price="" data-features='["Platelet grade","Masterbatch-ready","Bulk options"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 8. HexSheets — Dispersions -->
-  <section id="hexsheets-disp" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexSheets — Dispersions</h2>
-    <p class="text-hcMuted mb-6">Proprietary liquid systems for printing and barrier coat integration. Internals confidential.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexSheets D-250" data-unit="Bottle" data-price="" data-features='["Print-ready","Stable","COA on request"]' data-link="#"></div>
-      <div class="card" data-name="HexSheets D-500" data-unit="Bottle" data-price="" data-features='["Barrier additive","Mix-ready","Process notes"]' data-link="#"></div>
-      <div class="card" data-name="HexSheets D-1000" data-unit="Bottle" data-price="" data-features='["Pilot pack","Scalable","Support included"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 9. HexLayers-M Kits -->
-  <section id="hexlayers-m" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexLayers-M Kits</h2>
-    <p class="text-hcMuted mb-6">Assisted layer-material workflows with safety notes and application guides.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexLayers-M Lab Kit" data-unit="For 5 batches" data-price="" data-features='["Starter materials","Prep guide","Safety card"]' data-link="#"></div>
-      <div class="card" data-name="HexLayers-M Slurry 250" data-unit="Bottle" data-price="" data-features='["Conductive","Printing","COA/SDS"]' data-link="#"></div>
-      <div class="card" data-name="HexLayers-M Paste 100" data-unit="Jar" data-price="" data-features='["Screen-printable","Flexible","Pilot"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 10. HexInk -->
-  <section id="hexink" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexInk — Conductive Inks & Pastes</h2>
-    <p class="text-hcMuted mb-6">Printable systems for screen, inkjet, and aerosol-jet workflows.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexInk S-100" data-unit="Jar" data-price="" data-features='["<100 Ω/sq","Flex stable","SDS"]' data-link="#"></div>
-      <div class="card" data-name="HexInk J-100" data-unit="Bottle" data-price="" data-features='["Nozzle-safe size","Smooth laydown","COA/SDS"]' data-link="#"></div>
-      <div class="card" data-name="HexInk H-Ag 50" data-unit="Jar" data-price="" data-features='["Hybrid system","High conductivity","Reflow compatible"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 11. HexBlend -->
-  <section id="hexblend" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexBlend — Masterbatches & Composites</h2>
-    <p class="text-hcMuted mb-6">Concentrates and resin systems for ESD/antistatic, strength, and toughness.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexBlend PP-10" data-unit="Pellets" data-price="" data-features='["ESD 10^6–10^9 Ω","Uniform dispersion","Ready to dilute"]' data-link="#"></div>
-      <div class="card" data-name="HexBlend Epoxy-C" data-unit="Resin pack" data-price="" data-features='["Shear mixed","Degassed","Lab proven"]' data-link="#"></div>
-      <div class="card" data-name="HexBlend PA-5" data-unit="Pellets" data-price="" data-features='["Strength boost","Process ready","COA"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 12. HexLab -->
-  <section id="hexlab" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexLab — Services</h2>
-    <p class="text-hcMuted mb-6">Characterization, dispersion stability, and application support with citable reports.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexLab Raman + SEM" data-unit="Per sample" data-price="" data-features='["Raman D/G/2D","SEM micrographs","PDF report"]' data-link="#"></div>
-      <div class="card" data-name="HexLab Stability Study" data-unit="Per system" data-price="" data-features='["Zeta + UV-Vis","Aging test","Recommendations"]' data-link="#"></div>
-      <div class="card" data-name="HexLab Application Call (60 min)" data-unit="Online" data-price="" data-features='["Use-case review","Formulation tips","Roadmap"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- 13. HexRubber -->
-  <section id="hexrubber" class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-1">HexRubber — Additives</h2>
-    <p class="text-hcMuted mb-6">Elastomer-ready additives for NR, SBR, NBR, and EPDM blends targeting conductivity and reinforcement.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card" data-name="HexRubber R-A" data-unit="1 kg pack" data-price="" data-features='["Mix-friendly","Viscosity tuned","ESD targetable"]' data-link="#"></div>
-      <div class="card" data-name="HexRubber R-B" data-unit="1 kg pack" data-price="" data-features='["Reinforcement focus","Process stable","QC included"]' data-link="#"></div>
-      <div class="card" data-name="HexRubber R-C" data-unit="1 kg pack" data-price="" data-features='["Conductive network","Compatibilized","Pilot support"]' data-link="#"></div>
-    </div>
-  </section>
-
-  <!-- ======================== CONTACT ======================== -->
-  <section id="contact" class="max-w-6xl mx-auto px-4 py-14">
-    <div class="rounded-2xl border border-black/10 p-6 md:p-8 bg-black/5">
-      <h3 class="text-xl font-semibold">Bulk, custom, or NDA-backed projects?</h3>
-      <p class="text-hcMuted mt-2">Email <a href="mailto:sales@hexcarb.in" class="underline">sales@hexcarb.in</a> with your specs (quantity, target performance, process) or request a call.</p>
-      <div class="mt-4 flex gap-2 text-sm">
-        <a href="mailto:sales@hexcarb.in?subject=HexCarb%20Shop%20Enquiry" class="px-4 py-2 rounded-xl bg-black text-white hover:opacity-90">Write to Sales</a>
-        <a href="#" class="px-4 py-2 rounded-xl border border-black/20 hover:bg-black/5">Download COA/SDS (coming soon)</a>
+      <div>
+        <h4>Policy</h4>
+        <ul class="hc-footer-list">
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
+          <li><a href="/index.html">Homepage</a></li>
+        </ul>
       </div>
     </div>
-  </section>
 
-  <!-- ======================== FOOTER ======================== -->
-  <footer class="border-t border-black/10">
-    <div class="max-w-6xl mx-auto px-4 py-8 text-sm text-hcMuted flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
-      <div>© 2025 HexCarb Advanced Pvt. Ltd.</div>
-      <div class="flex gap-4">
-        <a href="/" class="hover:underline">Home</a>
-        <a href="#toc" class="hover:underline">Top</a>
-        <a href="/privacy.html" class="hover:underline">Privacy</a>
-      </div>
+    <div class="container hc-footer-bottom">
+      <span>&copy; <span data-hc-year>2026</span> HexCarb Advanced Materials Private Limited. All rights reserved.</span>
     </div>
   </footer>
 
-  <!-- ======================== SCRIPTS ======================== -->
+  <script src="/assets/js/hexcarb-ui.js"></script>
   <script>
-    // Mobile menu toggle
-    const btn = document.getElementById('menuBtn');
-    const mobile = document.getElementById('mobileMenu');
-    if (btn && mobile) btn.addEventListener('click', () => mobile.classList.toggle('hidden'));
+    (function () {
+      var template = document.getElementById("hc-product-template");
+      if (!template) return;
 
-    // Hydrate product cards from data-* attributes using the <template>
-    const template = document.getElementById('card');
-    document.querySelectorAll('.card').forEach((el) => {
-      const clone = template.content.cloneNode(true);
-      clone.querySelector('h3').textContent = el.dataset.name;
-      clone.querySelector('p').textContent = el.dataset.unit;
-      clone.querySelector('div.mt-2.text-lg.font-semibold').textContent = el.dataset.price || '';
-      const list = clone.querySelector('ul');
-      try {
-        JSON.parse(el.dataset.features).forEach(f => {
-          const li = document.createElement('li'); li.textContent = '• ' + f; list.appendChild(li);
+      document.querySelectorAll(".hc-shop-item").forEach(function (item) {
+        var section = item.parentElement && item.parentElement.getAttribute("data-section") ? item.parentElement.getAttribute("data-section") : "unknown";
+        var name = item.dataset.name || "HexCarb product";
+        var unit = item.dataset.unit || "Specification on request";
+        var price = item.dataset.price || "Pricing on quote";
+        var appLink = item.dataset.app || "/applications/index.html";
+        var features = [];
+
+        try {
+          features = JSON.parse(item.dataset.features || "[]");
+        } catch (err) {
+          features = [];
+        }
+
+        var clone = template.content.cloneNode(true);
+        clone.querySelector("h3").textContent = name;
+        clone.querySelector(".hc-unit").textContent = unit;
+        clone.querySelector(".hc-product-price").textContent = price;
+
+        var list = clone.querySelector(".hc-product-features");
+        features.forEach(function (feature) {
+          var li = document.createElement("li");
+          li.textContent = feature;
+          list.appendChild(li);
         });
-      } catch {}
-      clone.querySelector('a.buy').href = el.dataset.link || '#';
-      clone.querySelector('a.enquire').href = 'mailto:sales@hexcarb.in?subject=' + encodeURIComponent('Enquiry: ' + el.dataset.name);
-      el.replaceWith(clone);
-    });
+
+        var quoteBtn = clone.querySelector(".quote-btn");
+        var subject = encodeURIComponent("Enquiry: " + name);
+        var body = encodeURIComponent("Hello HexCarb team,%0D%0A%0D%0AWe want a quote for " + name + ".%0D%0AApplication:%0D%0AQuantity:%0D%0ATimeline:%0D%0A%0D%0ARegards,");
+        quoteBtn.href = "mailto:sales@hexcarb.in?subject=" + subject + "&body=" + body;
+        quoteBtn.addEventListener("click", function () {
+          if (typeof window.hexTrack === "function") {
+            window.hexTrack("hc_quote_click", {
+              page: "shop",
+              section: section,
+              product_name: name,
+              cta_label: "request_quote"
+            });
+          }
+        });
+
+        var appBtn = clone.querySelector(".app-btn");
+        appBtn.href = appLink;
+        appBtn.addEventListener("click", function () {
+          if (typeof window.hexTrack === "function") {
+            window.hexTrack("hc_application_nav_click", {
+              source_page: "shop",
+              target_page: appLink
+            });
+          }
+        });
+
+        item.replaceWith(clone);
+      });
+    })();
   </script>
 </body>
 </html>

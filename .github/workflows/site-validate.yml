@@ -1,0 +1,18 @@
+name: site-validate
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-links:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate local references
+        shell: pwsh
+        run: ./scripts/validate-site.ps1

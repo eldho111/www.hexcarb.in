@@ -1,516 +1,322 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HEXCARB</title>
+  <title>HexCarb | Intelligent Carbon Materials</title>
+  <meta name="description" content="HexCarb develops advanced carbon materials, dispersions, fibers, thermal interface materials, and SWCNT-graphene hybrid systems for industrial deployment." />
+  <link rel="canonical" href="https://www.hexcarb.in/" />
 
-  <!-- SEO / OG -->
-  <meta name="description" content="HexCarb — Advanced carbon materials (nanotubes, graphene) and intelligent composites accelerated by the HEXCARB AI Engine. Forging the future, atom by atom.">
-  <link rel="canonical" href="https://www.hexcarb.in/">
-  <meta property="og:title" content="HEXCARB">
-  <meta property="og:description" content="Advanced carbon materials—nanotubes, graphene—and intelligent composites, accelerated by the HEXCARB AI Engine.">
-  <meta property="og:type" content="website">
+  <meta property="og:title" content="HexCarb | Intelligent Carbon Materials" />
+  <meta property="og:description" content="Enterprise-ready carbon material systems accelerated by the HEXCARB AI Engine." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.hexcarb.in/" />
+  <meta property="og:image" content="https://www.hexcarb.in/3.png" />
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HexCarb | Intelligent Carbon Materials" />
+  <meta name="twitter:description" content="Carbon materials and AI-guided development for high-performance applications." />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
 
-  <style>
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; transition: background .3s, color .3s; }
-    .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp .8s ease-out forwards; }
-    @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
 
-    .matte { box-shadow: 0 6px 28px rgba(0,0,0,.08); border: 1px solid rgba(0,0,0,.1); }
-    .dark .matte { border-color: rgba(255,255,255,.08); box-shadow: 0 6px 28px rgba(0,0,0,.35); }
-
-    .floating-inbox {
-      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
-      background: #fff; padding: 12px; border: 2px solid #000; border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0,0,0,.15); transition: transform .3s ease, box-shadow .3s ease;
-    }
-    .floating-inbox:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(0,0,0,.25); }
-    .dark .floating-inbox { background:#111; border-color:#fff; }
-
-    .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
-    .skip-link:focus { position:static; width:auto; height:auto; margin:8px; padding:8px 12px; background:#000; color:#fff; border-radius:8px; }
-
-    /* Reduced motion: on click we will skip playback and redirect */
-    @media (prefers-reduced-motion: reduce) {
-      #engineStart { pointer-events: auto !important; }
-    }
-  </style>
+  <script>
+    window.HEXCARB_GA4_ID = "G-XXXXXXXXXX";
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "HexCarb Advanced Materials Private Limited",
+    "url": "https://www.hexcarb.in/",
+    "logo": "https://www.hexcarb.in/logo.svg",
+    "email": "info@hexcarb.in",
+    "sameAs": ["https://ai.hexcarb.in"]
+  }
+  </script>
 </head>
-<body class="bg-white text-black dark:bg-black dark:text-white">
-
-  <a href="#main" class="skip-link">Skip to content</a>
-
- <!-- Header -->
-<header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur border-b border-black/10 dark:border-white/10">
-  <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-    <div class="text-xl font-extrabold tracking-wide">HexCarb</div>
-
-    <!-- Desktop Menu -->
-    <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-      <a href="#technology" class="hover:underline">Technology</a>
-      <a href="#applications" class="hover:underline">Applications</a>
-      <a href="#vision" class="hover:underline">Vision</a>
-      <a href="#roadmap" class="hover:underline">Roadmap</a>
-
-      <!-- Shop link (adaptive color) -->
-      <a href="/shop.html"
-         class="hover:underline text-black dark:text-[#6ee7ff] transition">
-         Shop
-      </a>
-      <a href="#about" class="hover:underline">About</a>
-
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
-         class="inline-block bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded hover:opacity-90 transition">
-         HEXCARB AI Engine
+<body class="hc-premium" data-hc-bg-image="/1.png" style="--hc-ambient-image: url('/1.png');" data-hc-bg-video-disabled="true">
+  <header class="hc-header">
+    <div class="container hc-nav">
+      <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
+        <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+        <span class="hc-visually-hidden">HexCarb</span>
       </a>
 
-      <button id="themeToggle" type="button" aria-pressed="true" title="Toggle theme"
-        class="ml-2 px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
-    </div>
+      <nav class="hc-nav-links" aria-label="Primary">
+        <a href="/index.html" data-nav-path="/">Home</a>
+        <a href="/index.html#technology">Technology</a>
+        <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
+        <a href="/shop.html" data-nav-path="/shop.html">Shop</a>
+        <a href="/index.html#about">About</a>
+        <a href="/index.html#contact">Contact</a>
+      </nav>
 
-    <!-- Mobile Icons -->
-    <div class="md:hidden flex items-center gap-2">
-      <button id="themeToggleMobile" type="button" aria-pressed="true" title="Toggle theme"
-        class="px-3 py-1 border border-black/30 dark:border-white/30 rounded text-sm">🌓</button>
-      <button id="menuBtn" class="p-2 border border-black/20 dark:border-white/20 rounded" aria-expanded="false" aria-controls="mobileMenu" title="Menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 6h18M3 12h18M3 18h18"/>
-        </svg>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Mobile Menu -->
-  <div id="mobileMenu" class="md:hidden hidden border-t border-black/10 dark:border-white/10">
-    <div class="px-4 py-3 flex flex-col gap-3 text-sm">
-      <a href="#technology" class="py-1">Technology</a>
-      <a href="#applications" class="py-1">Applications</a>
-      <a href="#vision" class="py-1">Vision</a>
-      <a href="#roadmap" class="py-1">Roadmap</a>
-
-      <!-- Shop link (adaptive color) -->
-      <a href="/shop.html" class="py-1 text-black dark:text-[#6ee7ff]">Shop</a>
-
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer"
-         class="py-2 text-center rounded border border-black dark:border-white">HEXCARB AI Engine</a>
-    </div>
-  </div>
-</header>
-
-  <!-- Hero -->
-  <section class="relative text-center py-20 px-6 fade-in bg-cover bg-center bg-no-repeat" style="background-image: url('1.png');">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-0"></div>
-    <div class="relative z-10">
-      <img src="logo.svg" alt="HEXCARB Logo" class="mx-auto mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]" />
-      <h1 class="text-4xl font-extrabold mb-4 tracking-wide text-white drop-shadow-md">HexCarb</h1>
-      <p class="text-lg max-w-xl mx-auto text-white drop-shadow-sm">Material intelligence in carbon — nanotubes, graphene, and beyond.</p>
-    </div>
-  </section>
-
-  <main id="main">
-    <!-- ENGINE PANEL: video plays on click, redirects on end -->
-    <section id="engine" class="relative px-4 py-10 md:py-14">
-      <div class="max-w-7xl mx-auto bg-white dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_12px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_60px_rgba(0,0,0,0.45)] overflow-hidden">
-
-        <div class="px-6 sm:px-10 pt-8 pb-2 text-center">
-          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">HEXCARB — Science-Tech Hybrid Engine</h2>
-          <p class="mt-3 text-lg md:text-xl text-gray-700 dark:text-gray-300">Material science that thinks. Technology that invents.</p>
-          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">The <span class="font-semibold">HEXCARB AI Engine</span> accelerates multi-material discovery, prediction, and deployment across carbon nanomaterials.</p>
-        </div>
-
-        <button id="engineStart" class="group relative block w-full text-left focus:outline-none" aria-label="Start HEXCARB AI Engine">
-          <div class="w-full flex justify-center">
-            <div class="relative w-full md:w-[92%]">
-              <video id="engineVideo"
-                     class="w-full h-auto select-none rounded-xl"
-                     width="1600" height="1000"
-                     playsinline preload="auto" poster="3.png">
-                <source src="3.mp4" type="video/mp4" />
-                <!-- If video can't load, the poster shows; click still redirects. -->
-              </video>
-
-              <!-- Play overlay icon -->
-              <div id="playOverlay" class="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div class="w-24 h-24 bg-white/90 dark:bg-black/70 rounded-full flex items-center justify-center shadow-[0_0_25px_rgba(255,255,255,0.9)] transition group-hover:scale-105">
-                  <img src="logo.svg" alt="Play HEXCARB" class="w-14 h-14 object-contain" />
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div class="px-6 sm:px-10 pb-8 pt-4 flex items-center justify-between flex-wrap gap-3">
-            <div class="text-sm text-gray-700 dark:text-gray-300">
-              Tap to play the sequence → once it finishes, you’ll enter the live system.
-            </div>
-            <div class="flex items-center gap-3 text-sm">
-              <span class="opacity-70">HEXCARB AI Engine</span>
-              <span class="inline-block w-2 h-2 rounded-full bg-black dark:bg-white animate-ping"></span>
-            </div>
-          </div>
+      <div class="hc-nav-actions">
+        <a class="hc-btn hc-btn-primary" href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"header"}'>AI Engine</a>
+        <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
+          <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
       </div>
+    </div>
+
+    <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
+      <a href="/index.html">Home</a>
+      <a href="/index.html#technology">Technology</a>
+      <a href="/applications/index.html">Applications</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/index.html#about">About</a>
+      <a href="/index.html#contact">Contact</a>
+      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hc-home-hero hc-split-bg">
+      <div class="container hc-home-hero-inner">
+        <div class="hc-reveal">
+          <span class="hc-kicker">Advanced Materials Platform</span>
+          <h1 class="hc-heading-hero" style="margin-top:0.9rem;">From nanocarbon research to production-grade thermal and structural systems.</h1>
+          <p>
+            HexCarb develops SWCNT, MWCNT, and graphene systems with AI-assisted formulation workflows for electronics,
+            wearables, aerospace, and energy programs, from early screening through pilot-oriented validation.
+          </p>
+
+          <div class="hc-btn-row" style="margin-top:1.2rem;">
+            <a class="hc-btn hc-btn-accent" href="mailto:sales@hexcarb.in?subject=HexCarb%20Website%20Quote%20Request" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"hero","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
+            <a class="hc-btn hc-btn-ghost" href="/applications/index.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"home","target_page":"applications_hub"}'>Explore Applications</a>
+          </div>
+
+          <div class="hc-home-stats" aria-label="Core proof points">
+            <div class="hc-stat">
+              <strong>13 Product Families</strong>
+              <span>Shop taxonomy live</span>
+            </div>
+            <div class="hc-stat">
+              <strong>4 Application Tracks</strong>
+              <span>Dedicated pathways</span>
+            </div>
+            <div class="hc-stat">
+              <strong>Quote-First Flow</strong>
+              <span>Context aware CTA</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="hc-engine-image-btn hc-reveal"
+           href="https://ai.hexcarb.in"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-ai-link="hero_image_button"
+           data-track-event="hc_ai_engine_click"
+           data-track-params='{"page":"home","location":"hero_image_button"}'
+           aria-label="Enter HEXCARB AI Engine">
+          <img src="/3.png" alt="HEXCARB AI Engine launch visual" loading="eager" decoding="async" />
+          <div class="hc-engine-image-overlay">
+            <span class="hc-engine-image-kicker">Live System Access</span>
+            <strong>Enter HEXCARB AI Engine</strong>
+            <span>Click to launch the live environment</span>
+          </div>
+        </a>
+      </div>
     </section>
 
-    <!-- Technology -->
-<section id="technology" class="py-16 px-6 max-w-6xl mx-auto grid md:grid-cols-4 gap-10 text-center fade-in">
-  <!-- Quantum Conductivity -->
-  <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-    <h2 class="text-xl font-semibold mb-2">Quantum Conductivity</h2>
-    <p>
-      One- and two-dimensional carbons — single-walled nanotubes, multi-walled arrays, and graphene sheets —
-      unlock ultra-efficient electron and phonon transport for nanoscale electronics and sensing.
-      The <span class="font-semibold text-black dark:text-white">HEXCARB AI Engine</span> continuously learns
-      from conductivity data and quantum simulations to identify chirality, bundle alignment,
-      and defect-density conditions that maximize charge mobility across our materials.
-    </p>
-  </div>
-
-  <!-- Thermal Superhighways -->
-  <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-    <h2 class="text-xl font-semibold mb-2">Thermal Superhighways</h2>
-    <p>
-      Carbon nanostructures — from graphene stacks to CNT lattices — serve as atomic heat expressways,
-      dissipating energy in high-power systems. Through AI-driven modeling,
-      the <span class="font-semibold text-black dark:text-white">HEXCARB AI Engine</span>
-      maps phonon scattering and interface resistance,
-      predicting the optimal composite ratios and bonding architectures
-      for thermal interface materials, sensors, and aerospace skins.
-    </p>
-  </div>
-
-  <!-- Atomic Strength -->
-  <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-    <h2 class="text-xl font-semibold mb-2">Atomic Strength</h2>
-    <p>
-      CNT-based networks exhibit one of the highest strength-to-weight ratios ever recorded.
-      By coupling mechanical data from experiments with AI-based finite-element models,
-      the <span class="font-semibold text-black dark:text-white">HEXCARB AI Engine</span>
-      predicts stress–strain profiles, guides dispersion chemistry, and tailors nano-reinforcement
-      for fibers, films, and structural composites that adapt under load.
-    </p>
-  </div>
-
-  <!-- HEXCARB AI Engine (Architecture & Cloud) -->
-  <div class="matte rounded-2xl p-6 bg-white dark:bg-black text-left">
-    <h2 class="text-xl font-semibold mb-2">HEXCARB AI Engine</h2>
-    <p class="mb-3">
-      Our materials R&amp;D copilot. It ingests literature, lab results, and partner feedback to
-      <span class="font-semibold">predict properties, propose formulations, and plan experiments</span> for SWCNT/MWCNT/graphene systems.
-    </p>
-    
-    <div class="mt-4 flex flex-wrap gap-3">
-      <a href="#engine-deep" class="inline-block px-3 py-2 text-sm border border-black/30 dark:border-white/30 rounded hover:opacity-90">AI Engine — Details</a>
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" class="inline-block px-3 py-2 text-sm bg-black text-white dark:bg-white dark:text-black rounded hover:opacity-90">Launch Demo</a>
-    </div>
-  </div>
-</section>
-
-
-
-    <!-- Applications -->
-    <section id="applications" class="py-20 px-6 bg-cover bg-center bg-no-repeat fade-in relative text-white" style="background-image: url('2.png'); font-family: 'Space Grotesk', sans-serif;">
-      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
-
-      <div class="relative z-10 max-w-6xl mx-auto text-center mb-16">
-        <h2 class="text-5xl font-extrabold mb-6 tracking-wide">Applications</h2>
-        <p class="text-xl leading-relaxed text-white/90 max-w-3xl mx-auto">
-          Discover how carbon nanomaterial innovations are redefining materials — enabling smarter, lighter, and stronger solutions across tomorrow’s industries.
-        </p>
-      </div>
-
-      <div class="relative z-10 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('aerospace.jpg');" role="img" aria-label="Aerospace composites and sensing">
-          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-          <div class="relative p-8 text-white flex flex-col justify-center h-full">
-            <h3 class="text-2xl font-semibold mb-3">Aerospace</h3>
-            <p class="text-md leading-relaxed text-white/90">Carbon‑reinforced intelligent composites deliver unmatched strength‑to‑weight performance for structures, thermal protection, and embedded sensing in extreme environments.</p>
-          </div>
+    <section id="technology" class="hc-section">
+      <div class="container">
+        <div class="hc-reveal" style="max-width:760px; margin-bottom:1.3rem;">
+          <span class="hc-kicker">Technology Stack</span>
+          <h2 style="margin-top:0.75rem;">A modular carbon platform built for reliable deployment</h2>
+          <p style="margin-top:0.8rem;">Each pillar maps material-science mechanisms to measurable engineering constraints, with deployment guidance from HexLab and the AI engine.</p>
         </div>
 
-        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('wearables.jpg');" role="img" aria-label="Wearable smart textiles">
-          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-          <div class="relative p-8 text-white flex flex-col justify-center h-full">
-            <h3 class="text-2xl font-semibold mb-3">Wearables</h3>
-            <p class="text-md leading-relaxed text-white/90">Advanced carbon yarns, films, and coatings enable stretchable, washable, and responsive textiles for health, performance, and defense applications.</p>
-          </div>
-        </div>
-
-        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('energy.jpg');" role="img" aria-label="Energy storage and battery materials">
-          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-          <div class="relative p-8 text-white flex flex-col justify-center h-full">
-            <h3 class="text-2xl font-semibold mb-3">Energy</h3>
-            <p class="text-md leading-relaxed text-white/90">Carbon nanomaterials enhance electrodes, conductive networks, and thermal pathways — boosting performance, durability, and cycle life across energy systems.</p>
-          </div>
-        </div>
-
-        <div class="rounded-2xl overflow-hidden shadow-xl bg-cover bg-center bg-no-repeat relative group transition-transform hover:scale-[1.01]" style="background-image: url('infrastructure.jpg');" role="img" aria-label="Built environments and smart infrastructure">
-          <div class="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors"></div>
-          <div class="relative p-8 text-white flex flex-col justify-center h-full">
-            <h3 class="text-2xl font-semibold mb-3">Built Environments</h3>
-            <p class="text-md leading-relaxed text-white/90">By incorporating advanced carbon nanostructures into construction materials, infrastructure becomes stronger, more durable, and self‑aware — ideal for smart cities and off‑world habitats.</p>
-          </div>
+        <div class="hc-grid hc-grid-4">
+          <article class="hc-card hc-reveal">
+            <h3>Conductivity Design</h3>
+            <p>Engineer percolation pathways across CNT and graphene networks for stable electrical behavior.</p>
+          </article>
+          <article class="hc-card hc-reveal">
+            <h3>Thermal Control</h3>
+            <p>Manage heat flow by balancing bulk pathways and interface contact resistance across fillers, binders, and assembly pressure.</p>
+          </article>
+          <article class="hc-card hc-reveal">
+            <h3>Mechanical Reinforcement</h3>
+            <p>Improve strength-to-weight and fatigue behavior in composites using morphology-aware dispersion models.</p>
+          </article>
+          <article class="hc-card hc-reveal">
+            <h3>Scale Transition</h3>
+            <p>Move from lab qualification to repeatable pilot batches with controlled process windows and QA checkpoints.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- Vision -->
-    <section id="vision" class="py-24 px-6 text-center fade-in bg-white dark:bg-black">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-4xl font-bold mb-6">Our Vision</h2>
-        <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
-          To pioneer a new era of <span class="font-semibold">material intelligence</span> — using carbon nanomaterials (nanotubes, graphene, and beyond), enhanced by the <span class="font-semibold">HEXCARB AI Engine</span>, to transform how we build, sense, and interact with the world.
-        </p>
-        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-          From next‑generation fibers and films to advanced dispersions and embedded sensing, we make atomic‑scale performance accessible, scalable, and transformative across industries — starting with fundamentals and compounding into integrated systems.
-        </p>
-      </div>
-    </section>
+    <section class="hc-section hc-soft-bg">
+      <div class="container">
+        <div class="hc-reveal" style="max-width:720px; margin-bottom:1.3rem;">
+          <span class="hc-kicker">Applications</span>
+          <h2 style="margin-top:0.75rem;">Dedicated pathways by application, each mapped to the right product families</h2>
+          <p style="margin-top:0.8rem;">Use these pathways to move from problem framing to material shortlist and quote request in one flow.</p>
+        </div>
 
-    <!-- Roadmap -->
-    <section id="roadmap" class="py-16 bg-gray-100 dark:bg-[#0b0b0b] text-black dark:text-white px-6 fade-in">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-3xl font-bold mb-8 text-center">Roadmap 2025</h2>
-        <div class="grid md:grid-cols-2 gap-8 text-left">
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q1: Foundations</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>AI‑driven discovery and multi‑scale modeling across carbon nanomaterials</li>
-              <li>Baseline prototypes for fibers, films, dispersions, and sensor elements</li>
-              <li>Data pipelines linking experiments to the HEXCARB AI Engine</li>
-            </ul>
-          </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q2: Performance Validation</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>Mechanical, electrical, and thermal benchmarking with partners</li>
-              <li>Reliability, safety, and environmental testing protocols</li>
-              <li>Third‑party validation across key application domains</li>
-            </ul>
-          </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q3: Pilot Collaborations</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>Beta materials for aerospace, energy, wearables, and infrastructure</li>
-              <li>Integration with smart‑material labs and system OEMs</li>
-              <li>Feedback loops into AI‑guided design sprints</li>
-            </ul>
-          </div>
-          <div class="matte rounded-2xl p-6 bg-white dark:bg-black">
-            <h3 class="text-xl font-semibold mb-2">Q4: Scale with Intent</h3>
-            <ul class="list-disc ml-5 text-gray-700 dark:text-gray-300">
-              <li>Manufacturing pathways for prioritized lines (materials and modules)</li>
-              <li>Partner and investor outreach for platform expansion</li>
-              <li>Market positioning: <span class="italic">“HexCarb — The Carbon Intelligence Standard”</span></li>
-            </ul>
-          </div>
+        <div class="hc-app-cards">
+          <a class="hc-app-card hc-reveal" href="/applications/dispersions.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"home","target_page":"dispersions"}'>
+            <h3>Different Types of Dispersions</h3>
+            <p>Aqueous and solvent systems for coating, printing, slurry prep, and process-stable integration.</p>
+            <span class="hc-link-inline">Open Application Page</span>
+          </a>
+
+          <a class="hc-app-card hc-reveal" href="/applications/fibers.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"home","target_page":"fibers"}'>
+            <h3>Fibers</h3>
+            <p>Conductive and sensing yarn pathways for e-textiles, lightweight structures, and embedded monitoring.</p>
+            <span class="hc-link-inline">Open Application Page</span>
+          </a>
+
+          <a class="hc-app-card hc-reveal" href="/applications/thermal-interface-materials.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"home","target_page":"thermal_interface_materials"}'>
+            <h3>Thermal Interface Materials</h3>
+            <p>Films, pads, and high-efficiency pathways for compact electronics and high-power thermal stacks.</p>
+            <span class="hc-link-inline">Open Application Page</span>
+          </a>
+
+          <a class="hc-app-card hc-reveal" href="/applications/swcnt-graphene-hybrid.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"home","target_page":"swcnt_graphene_hybrid"}'>
+            <h3>SWCNT and Graphene Hybrid Materials</h3>
+            <p>Hybrid systems tuned for conductivity, toughness, and thermal transport in advanced product lines.</p>
+            <span class="hc-link-inline">Open Application Page</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- ABOUT -->
-<section id="about" class="py-24 px-6 fade-in bg-white dark:bg-black border-t border-black/10 dark:border-white/10">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center max-w-3xl mx-auto mb-12">
-      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">About HexCarb</h2>
-      <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">
-        Building the future of advanced materials — powered by carbon, guided by intelligence.
-      </p>
-    </div>
+    <section class="hc-section">
+      <div class="container hc-grid hc-grid-2">
+        <div class="hc-value-strip hc-reveal">
+          <span class="hc-kicker">Execution Confidence</span>
+          <h2 style="margin-top:0.75rem;">Why teams move from trial batches to supply discussions with HexCarb</h2>
+          <ul style="margin-top:1rem; margin-bottom:0; padding-left:1rem; color:var(--hc-text-muted);">
+            <li>Application-led product families across powders, dispersions, fibers, films, and masterbatches.</li>
+            <li>HexLab support for characterization and process tuning.</li>
+            <li>Quote-first model with rapid requirement capture and product-context routing.</li>
+          </ul>
+        </div>
 
-    <!-- Core narrative -->
-    <div class="grid md:grid-cols-2 gap-8 items-center">
-      <div class="text-left space-y-5">
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          <span class="font-semibold text-black dark:text-white">HexCarb Advanced Materials Private Limited</span>
-          is a deep-tech company developing high-performance materials that merge nanoscience with digital intelligence.
-          Our focus lies in the design, synthesis, and integration of <span class="font-semibold">single-walled carbon nanotubes (SWCNTs)</span>,
-          <span class="font-semibold">multi-walled carbon nanotubes (MWCNTs)</span>, and <span class="font-semibold">graphene-based structures</span>
-          for next-generation composites, fibers, films, and coatings.
-        </p>
-
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          The <span class="font-semibold text-black dark:text-white">HEXCARB AI Engine</span> acts as the company’s digital backbone —
-          a machine learning system that learns from experimental data, literature, and simulation results to accelerate discovery,
-          predict performance, and optimize manufacturing routes for nanocarbon-based materials.
-        </p>
-
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          From flexible electronics and aerospace composites to energy systems and smart construction materials,
-          HexCarb’s mission is to make nanocarbon performance scalable, repeatable, and intelligent —
-          forging a new paradigm in the science and application of advanced materials.
-        </p>
+        <aside class="hc-quote-panel hc-reveal">
+          <h3>Need a program-specific material recommendation?</h3>
+          <p style="margin-top:0.6rem;">Share use-case, throughput, target properties, and process constraints. We return a shortlist and qualification path.</p>
+          <div class="hc-btn-row" style="margin-top:1rem;">
+            <a class="hc-btn hc-btn-accent" href="mailto:sales@hexcarb.in?subject=HexCarb%20Program%20Enquiry" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"value_panel","product_name":"program_enquiry","cta_label":"request_quote"}'>Request Quote</a>
+            <a class="hc-btn hc-btn-ghost" href="/shop.html">View Product Families</a>
+          </div>
+        </aside>
       </div>
+    </section>
 
-      <!-- Image / visual placeholder -->
-      <div class="rounded-2xl overflow-hidden shadow-xl">
-        <img src="about-hexcarb.jpg" alt="HexCarb Advanced Materials Lab" class="w-full h-full object-cover">
+    <section id="about" class="hc-section hc-soft-bg">
+      <div class="container">
+        <div class="hc-reveal" style="max-width:780px; margin-bottom:1.2rem;">
+          <span class="hc-kicker">About HexCarb</span>
+          <h2 style="margin-top:0.75rem;">Building deployable carbon intelligence, not just lab samples</h2>
+          <p style="margin-top:0.8rem;">
+            HexCarb Advanced Materials Private Limited develops nanocarbon systems across SWCNT, MWCNT, graphene, and hybrid architectures.
+            We combine material science, process engineering, and AI-assisted iteration to help teams move from formulation trials to qualification-ready outcomes.
+          </p>
+        </div>
+
+        <div class="hc-grid hc-grid-2">
+          <article class="hc-card hc-reveal">
+            <h3>What we build</h3>
+            <ul style="margin-top:0.75rem;">
+              <li>Nanotube and graphene powders for R&amp;D and industrial validation.</li>
+              <li>Engineered dispersions and inks for coating, printing, and slurry routes.</li>
+              <li>Fibers, films, TIM, and composite-ready systems for real applications.</li>
+            </ul>
+          </article>
+
+          <article class="hc-card hc-reveal">
+            <h3>How we engage</h3>
+            <ul style="margin-top:0.75rem;">
+              <li>Quote-first commercial model with application context from day one.</li>
+              <li>HexLab-backed characterization and process refinement support.</li>
+              <li>AI-assisted decision loops that help reduce trial cycles and improve handoff to deployment teams.</li>
+            </ul>
+          </article>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Mission / Vision statement -->
-    <div class="mt-16 text-center max-w-3xl mx-auto">
-      <h3 class="text-2xl font-bold mb-4">Our Mission</h3>
-      <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-        To accelerate the world’s transition to intelligent materials — enabling faster innovation,
-        higher efficiency, and sustainable performance through nanocarbon science and AI.
-      </p>
-    </div>
+    <section id="contact" class="hc-section hc-soft-bg">
+      <div class="container hc-contact-layout">
+        <div class="hc-reveal">
+          <span class="hc-kicker">Contact</span>
+          <h2 style="margin-top:0.75rem;">Talk with the HexCarb team</h2>
+          <p style="margin-top:0.8rem;">For commercial, pilot, or R&D collaboration requests, send your scope and timeline.</p>
+          <div class="hc-pill-list" style="margin-top:1rem;">
+            <span class="hc-pill">SWCNT</span>
+            <span class="hc-pill">Graphene</span>
+            <span class="hc-pill">Dispersions</span>
+            <span class="hc-pill">TIM</span>
+            <span class="hc-pill">Fibers</span>
+            <span class="hc-pill">Hybrid Systems</span>
+          </div>
+          <p style="margin-top:1rem;"><strong>Email:</strong> <a href="mailto:info@hexcarb.in">info@hexcarb.in</a></p>
+        </div>
 
-    <!-- Founders placeholder -->
-    <div id="founders" class="mt-20 text-center max-w-5xl mx-auto">
-      <h3 class="text-3xl font-bold mb-8 tracking-tight">Founders</h3>
-      <p class="text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
-        The leadership team driving HexCarb’s vision of intelligent nanomaterials. (Add profiles below)
-      </p>
-
-      <!-- Founder cards placeholder -->
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Founder card 1 -->
-        <article class="matte rounded-2xl p-6 bg-white dark:bg-black h-60 flex items-center justify-center">
-          <span class="text-gray-400 italic">Founder 1 — Details Coming Soon</span>
-        </article>
-
-        <!-- Founder card 2 -->
-        <article class="matte rounded-2xl p-6 bg-white dark:bg-black h-60 flex items-center justify-center">
-          <span class="text-gray-400 italic">Founder 2 — Details Coming Soon</span>
-        </article>
-
-        <!-- Founder card 3 -->
-        <article class="matte rounded-2xl p-6 bg-white dark:bg-black h-60 flex items-center justify-center">
-          <span class="text-gray-400 italic">Founder 3 — Details Coming Soon</span>
-        </article>
-      </div>
-    </div>
-
-    <!-- Quick stats -->
-    <div class="mt-16 grid sm:grid-cols-3 gap-6 text-center">
-      <div class="p-6 rounded-2xl matte bg-white dark:bg-black">
-        <h4 class="text-3xl font-extrabold text-black dark:text-white">Nanocarbon</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">SWCNT, MWCNT, and Graphene Systems</p>
-      </div>
-      <div class="p-6 rounded-2xl matte bg-white dark:bg-black">
-        <h4 class="text-3xl font-extrabold text-black dark:text-white">AI-Integrated</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Machine-Learning Guided R&amp;D</p>
-      </div>
-      <div class="p-6 rounded-2xl matte bg-white dark:bg-black">
-        <h4 class="text-3xl font-extrabold text-black dark:text-white">Global Outlook</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Advanced Materials for Emerging Industries</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-    <!-- Contact -->
-    <section id="contact" class="bg-white dark:bg-black text-black dark:text-white py-16 px-6 md:px-12">
-      <div class="max-w-3xl mx-auto text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
-        <p class="text-lg mb-8">Let’s build the future of materials, together. Reach out for collaborations, inquiries, or partnerships.</p>
-
-        <form action="https://formspree.io/f/xgvznzyr" method="POST" class="grid gap-4">
-          <label class="text-left">
-            <span class="sr-only">Your Name</span>
-            <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name"
-              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+        <form class="hc-form hc-reveal" action="https://formspree.io/f/xgvznzyr" method="POST" data-track-form="home_contact_form">
+          <label>
+            <span class="hc-subtle-note">Name</span>
+            <input type="text" name="name" required />
           </label>
-          <label class="text-left">
-            <span class="sr-only">Your Email</span>
-            <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email"
-              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
+          <label>
+            <span class="hc-subtle-note">Email</span>
+            <input type="email" name="email" required />
           </label>
-          <label class="text-left">
-            <span class="sr-only">Your Message</span>
-            <textarea name="message" rows="5" placeholder="Your Message" required aria-label="Your Message"
-              class="w-full border border-black dark:border-white rounded-lg p-3 bg-white dark:bg-black focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"></textarea>
+          <label>
+            <span class="hc-subtle-note">Message</span>
+            <textarea name="message" required></textarea>
           </label>
-          <button type="submit" class="bg-black text-white dark:bg-white dark:text-black rounded-lg p-3 font-semibold hover:opacity-90 transition">
-            Send Message
-          </button>
+          <button class="hc-btn hc-btn-primary" type="submit">Send Message</button>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- Footer / Inbox -->
-  <footer class="bg-white dark:bg-black text-gray-400 py-6 text-center text-sm border-t border-black/10 dark:border-white/10">
-    <p>&copy; 2025 HexCarb Advanced Materials Private Limited</p>
+  <footer class="hc-footer">
+    <div class="container hc-footer-grid">
+      <div>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
+          <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+          <span class="hc-visually-hidden">HexCarb</span>
+        </a>
+        <p>Advanced carbon material systems for scalable thermal, electrical, and structural performance.</p>
+      </div>
+
+      <div>
+        <h4>Explore</h4>
+        <ul class="hc-footer-list">
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/applications/index.html">Applications</a></li>
+          <li><a href="/shop.html">Shop</a></li>
+          <li><a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer">AI Engine</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul class="hc-footer-list">
+          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/shop.html#contact">Sales Enquiry</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container hc-footer-bottom">
+      <span>&copy; <span data-hc-year>2026</span> HexCarb Advanced Materials Private Limited. All rights reserved.</span>
+    </div>
   </footer>
 
-  <a href="mailto:info@hexcarb.in" class="floating-inbox" aria-label="Get in Touch">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6" />
-    </svg>
-  </a>
-
-  <!-- Theme & Mobile Nav -->
-  <script>
-    (function(){
-      const stored = localStorage.getItem('theme');
-      const html = document.documentElement;
-      if (stored === 'light') html.classList.remove('dark'); else html.classList.add('dark');
-      const pressed = html.classList.contains('dark');
-      document.getElementById('themeToggle')?.setAttribute('aria-pressed', String(pressed));
-      document.getElementById('themeToggleMobile')?.setAttribute('aria-pressed', String(pressed));
-    })();
-
-    function toggleThemeInternal(btn){
-      const html = document.documentElement;
-      const isDark = html.classList.toggle('dark');
-      btn?.setAttribute('aria-pressed', String(isDark));
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      const other = btn?.id === 'themeToggle' ? document.getElementById('themeToggleMobile') : document.getElementById('themeToggle');
-      other?.setAttribute('aria-pressed', String(isDark));
-    }
-    document.getElementById('themeToggle')?.addEventListener('click', function(){ toggleThemeInternal(this); });
-    document.getElementById('themeToggleMobile')?.addEventListener('click', function(){ toggleThemeInternal(this); });
-
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn?.addEventListener('click', () => {
-      const open = mobileMenu.classList.toggle('hidden');
-      menuBtn.setAttribute('aria-expanded', String(!open));
-    });
-  </script>
-
-  <!-- Engine: video click-to-play + redirect on finish -->
-  <script>
-    (function(){
-      const btn = document.getElementById('engineStart');
-      const video = document.getElementById('engineVideo');
-      const overlay = document.getElementById('playOverlay');
-      const DEST = 'https://ai.hexcarb.in';
-
-      function go(){ window.location.href = DEST; }
-
-      function playVideo(){
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { go(); return; }
-        if (!video) { go(); return; }
-        overlay.style.transition = 'opacity 180ms ease';
-        overlay.style.opacity = '0';
-        try {
-          video.currentTime = 0;
-          const p = video.play();
-          if (p && typeof p.catch === 'function') p.catch(()=> go());
-        } catch(e){ go(); }
-      }
-
-      btn?.addEventListener('click', playVideo);
-      btn?.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); playVideo(); } });
-
-      video?.addEventListener('ended', go);
-      video?.addEventListener('error', go);
-    })();
-  </script>
+  <script src="/assets/js/hexcarb-ui.js"></script>
 </body>
 </html>
