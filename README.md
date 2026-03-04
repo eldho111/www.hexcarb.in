@@ -6,6 +6,9 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
 
 - `index.html` - Homepage
 - `shop.html` - Quote-first product family catalog
+- `quote.html` - Structured quote funnel
+- `thank-you.html` - Quote confirmation page
+- `coming-soon.html` - AI Engine launch placeholder
 - `privacy.html` - Privacy policy
 - `applications/` - Applications hub and dedicated pathways
   - `index.html`
@@ -14,7 +17,10 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
   - `thermal-interface-materials.html`
   - `swcnt-graphene-hybrid.html`
 - `assets/css/` - Shared design system and components
-- `assets/js/` - Shared navigation, reveal, and analytics hooks
+- `assets/js/` - Shared navigation, reveal, analytics hooks, runtime config
+- `assets/media/` - Optimized WebP ambient and hero media
+
+Note: AVIF variants are not generated in this local toolchain because AVIF encoder support is unavailable. Current production path uses WebP with PNG fallback.
 
 ## Local Preview
 
@@ -55,13 +61,17 @@ git push -u origin feature/site-redesign
 
 GA4 hooks are implemented in `assets/js/hexcarb-ui.js`.
 
-Set a real GA4 ID by replacing:
+Runtime GA4 config is read from page meta:
 
-```js
-window.HEXCARB_GA4_ID = "G-XXXXXXXXXX";
+```html
+<meta name="hc-ga4-id" content="" />
 ```
 
-across pages when you are ready to enable production analytics.
+Set the production ID across all pages with:
+
+```powershell
+./scripts/set-ga4-id.ps1 -Ga4Id "G-REPLACEWITHYOURID"
+```
 
 Tracked events:
 
@@ -70,27 +80,42 @@ Tracked events:
 - `hc_quote_click`
 - `hc_form_submit`
 - `hc_ai_engine_click`
+- `hc_quote_start`
+- `hc_quote_step_complete`
+- `hc_quote_submit_success`
 
 ## Background Mapping
 
-Premium ambient backgrounds are controlled per page from the `<body>` tag:
+Premium ambient backgrounds are image-first and controlled per page from the `<body>` tag:
 
 ```html
 <body class="hc-premium"
-      style="--hc-ambient-image: url('/bg-hexc-blur.png');"
-      data-hc-bg-image="/bg-hexc-blur.png"
-      data-hc-bg-video="/3.mp4"
-      data-hc-bg-poster="/3.png"
+      style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));"
+      data-hc-bg-image="/assets/media/ambient/background-1.webp"
       data-hc-bg-video-disabled="true">
 ```
 
 Attributes:
 
-- `data-hc-bg-image`: fallback/static blurred image.
-- `data-hc-bg-video`: ambient video source for capable desktop devices.
-- `data-hc-bg-poster`: poster for the ambient video.
+- `data-hc-bg-image`: primary optimized background image.
 - `data-hc-bg-video-disabled="true"`: force image-only background on that page.
 - `style="--hc-ambient-image: ..."`: hard fallback that renders even if JS is blocked.
+
+## Quote Flow Contract
+
+Primary quote CTAs route to:
+
+`/quote.html?source_page=...&source_section=...&application_slug=...&product_family=...`
+
+Submission redirect target:
+
+- `/thank-you.html`
+
+## AI Engine Link Contract
+
+All website AI Engine buttons currently route to:
+
+- `/coming-soon.html`
 
 ## Deployment Notes
 

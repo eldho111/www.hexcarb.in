@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,6 +14,10 @@
   <meta property="og:image" content="https://www.hexcarb.in/3.png" />
 
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HexCarb Shop | Product Families" />
+  <meta name="twitter:description" content="Browse product families, map use-cases, and start a structured quote request." />
+  <meta name="twitter:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="hc-ga4-id" content="" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,9 +26,6 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
 
-  <script>
-    window.HEXCARB_GA4_ID = "G-XXXXXXXXXX";
-  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,7 +36,8 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-bg-image="/1.png" data-hc-bg-video-disabled="true" style="--hc-ambient-image: url('/1.png');">
+<body class="hc-premium" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
+  <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
       <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
@@ -53,7 +55,7 @@
       </nav>
 
       <div class="hc-nav-actions">
-        <a class="hc-btn hc-btn-primary" href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="shop_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"header"}'>AI Engine</a>
+        <a class="hc-btn hc-btn-primary" href="/coming-soon.html" data-ai-link="shop_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"header"}'>AI Engine</a>
         <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
           <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
@@ -67,11 +69,11 @@
       <a href="/shop.html">Shop</a>
       <a href="/index.html#about">About</a>
       <a href="/shop.html#contact">Contact</a>
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="shop_mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"mobile_menu"}'>AI Engine</a>
+      <a href="/coming-soon.html" data-ai-link="shop_mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hc-page-hero">
       <div class="container hc-reveal">
         <span class="hc-kicker">Quote-First Catalog</span>
@@ -267,6 +269,36 @@
       </div>
     </section>
 
+    <section class="hc-section">
+      <div class="container">
+        <div class="hc-reveal" style="max-width:760px; margin-bottom:1rem;">
+          <span class="hc-kicker">Trust and Qualification</span>
+          <h2 style="margin-top:0.75rem;">Built for engineering validation and procurement readiness</h2>
+          <p style="margin-top:0.8rem;">Our commercial workflow is structured around technical fit, documentation readiness, and clear supply planning.</p>
+        </div>
+
+        <div class="hc-trust-grid">
+          <article class="hc-card hc-reveal">
+            <span class="hc-proof-chip">Documentation</span>
+            <h3 style="margin-top:0.7rem;">COA, SDS, and handling notes</h3>
+            <p>Document packs are matched to selected families and qualification stage.</p>
+          </article>
+
+          <article class="hc-card hc-reveal">
+            <span class="hc-proof-chip">Commercial Clarity</span>
+            <h3 style="margin-top:0.7rem;">Quote bands and scale planning</h3>
+            <p>Volume, lead time, and pilot-to-production pathways are aligned at quote stage.</p>
+          </article>
+
+          <article class="hc-card hc-reveal">
+            <span class="hc-proof-chip">Review Mode</span>
+            <h3 style="margin-top:0.7rem;">Data available on request</h3>
+            <p>Detailed test data and deeper qualification evidence are shared during technical review.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="contact" class="hc-section hc-soft-bg">
       <div class="container hc-grid hc-grid-2">
         <div class="hc-reveal">
@@ -274,8 +306,8 @@
           <h2 style="margin-top:0.75rem;">Bulk, custom, or NDA-backed projects</h2>
           <p style="margin-top:0.8rem;">Send quantity range, target performance, and process constraints. We route your enquiry to the right product and application lead.</p>
           <div class="hc-btn-row" style="margin-top:1rem;">
-            <a class="hc-btn hc-btn-primary" href="mailto:sales@hexcarb.in?subject=HexCarb%20Shop%20Enquiry" data-track-event="hc_quote_click" data-track-params='{"page":"shop","section":"contact","product_name":"general","cta_label":"write_to_sales"}'>Write to Sales</a>
-            <a class="hc-btn hc-btn-ghost" href="mailto:sales@hexcarb.in?subject=Request%20for%20COA%20and%20SDS">Request COA/SDS</a>
+            <a class="hc-btn hc-btn-primary" href="/quote.html?source_page=shop&source_section=contact&application_slug=general&product_family=general" data-track-event="hc_quote_click" data-track-params='{"page":"shop","section":"contact","product_name":"general","cta_label":"write_to_sales"}'>Start Quote</a>
+            <a class="hc-btn hc-btn-ghost" href="/quote.html?source_page=shop&source_section=contact&application_slug=general&product_family=document_request">Request COA/SDS</a>
           </div>
         </div>
 
@@ -327,6 +359,7 @@
     </div>
   </footer>
 
+  <script src="/assets/js/hexcarb-config.js"></script>
   <script src="/assets/js/hexcarb-ui.js"></script>
   <script>
     (function () {
@@ -360,9 +393,19 @@
         });
 
         var quoteBtn = clone.querySelector(".quote-btn");
-        var subject = encodeURIComponent("Enquiry: " + name);
-        var body = encodeURIComponent("Hello HexCarb team,%0D%0A%0D%0AWe want a quote for " + name + ".%0D%0AApplication:%0D%0AQuantity:%0D%0ATimeline:%0D%0A%0D%0ARegards,");
-        quoteBtn.href = "mailto:sales@hexcarb.in?subject=" + subject + "&body=" + body;
+        var slug = appLink
+          .split("/")
+          .pop()
+          .replace(".html", "")
+          .replace(/-/g, "_")
+          .replace(/[^a-z0-9_]/gi, "_");
+        var params = new URLSearchParams({
+          source_page: "shop",
+          source_section: section,
+          application_slug: slug || "general",
+          product_family: name
+        });
+        quoteBtn.href = "/quote.html?" + params.toString();
         quoteBtn.addEventListener("click", function () {
           if (typeof window.hexTrack === "function") {
             window.hexTrack("hc_quote_click", {
@@ -391,3 +434,4 @@
   </script>
 </body>
 </html>
+

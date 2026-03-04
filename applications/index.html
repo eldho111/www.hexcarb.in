@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -11,6 +11,12 @@
   <meta property="og:description" content="Category-driven pathways from material class to quote-ready product shortlist." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.hexcarb.in/applications/index.html" />
+  <meta property="og:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HexCarb Applications | Material Pathways" />
+  <meta name="twitter:description" content="Choose the right pathway, map to product families, and start a structured quote request." />
+  <meta name="twitter:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="hc-ga4-id" content="" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,9 +25,6 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
 
-  <script>
-    window.HEXCARB_GA4_ID = "G-XXXXXXXXXX";
-  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -32,7 +35,8 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-bg-image="/1.png" data-hc-bg-video-disabled="true" style="--hc-ambient-image: url('/1.png');">
+<body class="hc-premium" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
+  <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
       <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
@@ -50,7 +54,7 @@
       </nav>
 
       <div class="hc-nav-actions">
-        <a class="hc-btn hc-btn-primary" href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="applications_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"applications_hub","location":"header"}'>AI Engine</a>
+        <a class="hc-btn hc-btn-primary" href="/coming-soon.html" data-ai-link="applications_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"applications_hub","location":"header"}'>AI Engine</a>
         <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
           <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
@@ -64,11 +68,11 @@
       <a href="/shop.html">Shop</a>
       <a href="/index.html#about">About</a>
       <a href="/index.html#contact">Contact</a>
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="applications_mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"applications_hub","location":"mobile_menu"}'>AI Engine</a>
+      <a href="/coming-soon.html" data-ai-link="applications_mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"applications_hub","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hc-page-hero">
       <div class="container hc-reveal">
         <span class="hc-kicker">Applications Hub</span>
@@ -160,7 +164,7 @@
           <h3>Need support choosing the right pathway?</h3>
           <p style="margin-top:0.6rem;">Send your operating conditions, substrate, and target properties, and we will map them to the most suitable material route.</p>
           <div class="hc-btn-row" style="margin-top:1rem;">
-            <a class="hc-btn hc-btn-accent" href="mailto:sales@hexcarb.in?subject=HexCarb%20Application%20Pathway%20Enquiry" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"applications_hub","cta_type":"request_quote"}'>Request Quote</a>
+            <a class="hc-btn hc-btn-accent" href="/quote.html?source_page=applications_hub&source_section=support_panel&application_slug=applications_hub&product_family=general" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"applications_hub","cta_type":"request_quote"}'>Request Quote</a>
             <a class="hc-btn hc-btn-ghost" href="/shop.html">Open Shop</a>
           </div>
         </aside>
@@ -203,6 +207,8 @@
     </div>
   </footer>
 
+  <script src="/assets/js/hexcarb-config.js"></script>
   <script src="/assets/js/hexcarb-ui.js"></script>
 </body>
 </html>
+

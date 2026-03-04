@@ -84,6 +84,7 @@
 
     var menuButton = header.querySelector("[data-hc-menu-btn]");
     var mobileMenu = header.querySelector("[data-hc-mobile-nav]");
+    var menuOpenClass = "menu-open";
 
     function setScrolled() {
       if (window.scrollY > 8) {
@@ -93,20 +94,49 @@
       }
     }
 
+    function closeMenu() {
+      if (!menuButton || !mobileMenu) return;
+      header.classList.remove(menuOpenClass);
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "Open menu");
+    }
+
+    function openMenu() {
+      if (!menuButton || !mobileMenu) return;
+      header.classList.add(menuOpenClass);
+      menuButton.setAttribute("aria-expanded", "true");
+      menuButton.setAttribute("aria-label", "Close menu");
+    }
+
     setScrolled();
     window.addEventListener("scroll", setScrolled, { passive: true });
 
     if (menuButton && mobileMenu) {
       menuButton.addEventListener("click", function () {
-        var isOpen = header.classList.toggle("menu-open");
-        menuButton.setAttribute("aria-expanded", String(isOpen));
+        var isOpen = header.classList.contains(menuOpenClass);
+        if (isOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
       });
 
       mobileMenu.querySelectorAll("a").forEach(function (link) {
         link.addEventListener("click", function () {
-          header.classList.remove("menu-open");
-          menuButton.setAttribute("aria-expanded", "false");
+          closeMenu();
         });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("pointerdown", function (event) {
+        if (!header.classList.contains(menuOpenClass)) return;
+        if (header.contains(event.target)) return;
+        closeMenu();
       });
     }
 
@@ -118,28 +148,6 @@
         link.classList.add("active");
       }
     });
-  }
-
-  function initPremiumAmbient() {
-    var body = document.body;
-    if (!body || !body.classList.contains("hc-premium")) return;
-    if (document.querySelector(".hc-ambient")) return;
-
-    var ambientImage = body.getAttribute("data-hc-bg-image") || "/bg-hexc-blur.png";
-    var ambient = document.createElement("div");
-    ambient.className = "hc-ambient";
-    ambient.setAttribute("aria-hidden", "true");
-
-    var img = document.createElement("div");
-    img.className = "hc-ambient-image";
-    img.style.backgroundImage = "url(\"" + ambientImage + "\")";
-    ambient.appendChild(img);
-
-    var overlay = document.createElement("div");
-    overlay.className = "hc-ambient-overlay";
-    ambient.appendChild(overlay);
-
-    body.prepend(ambient);
   }
 
   function initReveal() {

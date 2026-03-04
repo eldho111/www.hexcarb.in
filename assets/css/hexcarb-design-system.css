@@ -1,6 +1,7 @@
 :root {
   --hc-primary: #0f1924;
-  --hc-accent: #b7985b;
+  --hc-accent: #8e6a35;
+  --hc-accent-bright: #a0793e;
   --hc-active: #f56454;
   --hc-bg: #ffffff;
   --hc-bg-soft: #edf2f7;
@@ -11,12 +12,12 @@
   --font-heading: "Sora", "Avenir Next", "Segoe UI", sans-serif;
   --font-body: "Public Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
-  --fs-hero: clamp(2.25rem, 4.4vw, 3.25rem);
+  --fs-hero: clamp(2.3rem, 4.8vw, 3.45rem);
   --lh-hero: 1.14;
-  --fs-h1: clamp(2rem, 3.8vw, 2.5rem);
-  --lh-h1: 1.2;
-  --fs-h2: clamp(1.65rem, 2.8vw, 2rem);
-  --lh-h2: 1.22;
+  --fs-h1: clamp(2rem, 3.9vw, 2.65rem);
+  --lh-h1: 1.18;
+  --fs-h2: clamp(1.72rem, 3vw, 2.1rem);
+  --lh-h2: 1.2;
   --fs-h3: clamp(1.3rem, 2.1vw, 1.5rem);
   --lh-h3: 1.28;
   --fs-body: 1rem;
@@ -79,11 +80,11 @@ body.hc-premium::before {
   inset: -8%;
   z-index: 0;
   pointer-events: none;
-  background-image: var(--hc-ambient-image, url("/bg-hexc-blur.png"));
+  background-image: var(--hc-ambient-image, url("/assets/media/ambient/background-1.webp"));
   background-size: cover;
   background-position: center;
-  opacity: 0.44;
-  filter: blur(2px) saturate(118%) contrast(106%);
+  opacity: 0.29;
+  filter: blur(1px) saturate(108%) contrast(103%);
 }
 
 body.hc-premium::after {
@@ -92,43 +93,7 @@ body.hc-premium::after {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(244, 247, 251, 0.06) 0%, rgba(244, 247, 251, 0.22) 28%, rgba(244, 247, 251, 0.36) 100%);
-}
-
-.hc-ambient {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-  background: radial-gradient(circle at 88% 12%, rgba(183, 152, 91, 0.15), transparent 40%), radial-gradient(circle at 12% 92%, rgba(15, 25, 36, 0.14), transparent 46%), #f4f7fb;
-}
-
-.hc-ambient-video {
-  position: absolute;
-  inset: -8%;
-  width: 116%;
-  height: 116%;
-  object-fit: cover;
-  opacity: 0.16;
-  filter: blur(2px) saturate(118%);
-  transform: scale(1.06);
-}
-
-.hc-ambient-image {
-  position: absolute;
-  inset: -8%;
-  background-image: url("/bg-hexc-blur.png");
-  background-size: cover;
-  background-position: center;
-  opacity: 0.26;
-  filter: blur(3px) saturate(115%);
-}
-
-.hc-ambient-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(244, 247, 251, 0.05) 0%, rgba(244, 247, 251, 0.18) 26%, rgba(244, 247, 251, 0.32) 100%);
+  background: linear-gradient(180deg, rgba(244, 247, 251, 0.24) 0%, rgba(244, 247, 251, 0.34) 36%, rgba(244, 247, 251, 0.44) 100%);
 }
 
 main,
@@ -182,8 +147,9 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--hc-accent);
-  outline-offset: 2px;
+  outline: 2px solid var(--hc-accent-bright);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(160, 121, 62, 0.22);
 }
 
 img,
@@ -203,17 +169,38 @@ video {
 }
 
 .hc-soft-bg {
-  background: rgba(237, 242, 247, 0.34);
+  background: rgba(237, 242, 247, 0.48);
   backdrop-filter: blur(4px);
 }
 
 .hc-split-bg {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(237, 242, 247, 0.24) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.36) 0%, rgba(237, 242, 247, 0.36) 100%);
   backdrop-filter: blur(4px);
 }
 
 .hc-muted {
   color: var(--hc-text-muted);
+}
+
+.hc-skip-link {
+  position: absolute;
+  left: 0.9rem;
+  top: -48px;
+  z-index: 90;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--hc-primary);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: top var(--dur-fast) var(--ease);
+}
+
+.hc-skip-link:focus-visible {
+  top: 0.8rem;
 }
 
 .hc-heading-hero {
@@ -361,21 +348,21 @@ video {
 }
 
 .hc-btn-ghost:hover {
-  border-color: var(--hc-accent);
+  border-color: var(--hc-accent-bright);
   color: var(--hc-accent);
 }
 
 .hc-btn-accent {
   background: var(--hc-accent);
-  color: #1e1709;
+  color: #fff;
 }
 
 .hc-btn-accent:hover {
-  background: #c7aa73;
+  background: var(--hc-accent-bright);
 }
 
 .hc-link-inline {
-  color: var(--hc-primary);
+  color: var(--hc-accent);
   font-family: var(--font-heading);
   font-size: 0.84rem;
   letter-spacing: 0.08em;
@@ -384,7 +371,7 @@ video {
 }
 
 .hc-link-inline:hover {
-  color: var(--hc-accent);
+  color: var(--hc-accent-bright);
 }
 
 .hc-header {
@@ -710,8 +697,8 @@ video {
     scroll-behavior: auto !important;
   }
 
-  .hc-ambient-video {
-    display: none !important;
+  .hc-skip-link {
+    transition: none !important;
   }
 }
 
@@ -751,20 +738,12 @@ video {
 
 @media (max-width: 680px) {
   body.hc-premium::before {
-    opacity: 0.34;
-    filter: blur(2px) saturate(108%);
+    opacity: 0.24;
+    filter: blur(1px) saturate(104%);
   }
 
   body.hc-premium::after {
-    background: linear-gradient(180deg, rgba(244, 247, 251, 0.14) 0%, rgba(244, 247, 251, 0.34) 100%);
-  }
-
-  .hc-ambient {
-    background: radial-gradient(circle at 80% 14%, rgba(183, 152, 91, 0.12), transparent 40%), #f4f7fb;
-  }
-
-  .hc-ambient-video {
-    display: none;
+    background: linear-gradient(180deg, rgba(244, 247, 251, 0.3) 0%, rgba(244, 247, 251, 0.48) 100%);
   }
 
   .hc-section {

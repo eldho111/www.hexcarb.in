@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -16,6 +16,8 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="HexCarb | Intelligent Carbon Materials" />
   <meta name="twitter:description" content="Carbon materials and AI-guided development for high-performance applications." />
+  <meta name="twitter:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="hc-ga4-id" content="" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,9 +26,6 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
 
-  <script>
-    window.HEXCARB_GA4_ID = "G-XXXXXXXXXX";
-  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,7 +38,8 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-bg-image="/1.png" style="--hc-ambient-image: url('/1.png');" data-hc-bg-video-disabled="true">
+<body class="hc-premium" data-hc-bg-image="/assets/media/ambient/background-1.webp" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));" data-hc-bg-video-disabled="true">
+  <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
       <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
@@ -57,7 +57,7 @@
       </nav>
 
       <div class="hc-nav-actions">
-        <a class="hc-btn hc-btn-primary" href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"header"}'>AI Engine</a>
+        <a class="hc-btn hc-btn-primary" href="/coming-soon.html" data-ai-link="header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"header"}'>AI Engine</a>
         <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
           <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
@@ -71,11 +71,11 @@
       <a href="/shop.html">Shop</a>
       <a href="/index.html#about">About</a>
       <a href="/index.html#contact">Contact</a>
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
+      <a href="/coming-soon.html" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hc-home-hero hc-split-bg">
       <div class="container hc-home-hero-inner">
         <div class="hc-reveal">
@@ -87,7 +87,7 @@
           </p>
 
           <div class="hc-btn-row" style="margin-top:1.2rem;">
-            <a class="hc-btn hc-btn-accent" href="mailto:sales@hexcarb.in?subject=HexCarb%20Website%20Quote%20Request" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"hero","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
+            <a class="hc-btn hc-btn-accent" href="/quote.html?source_page=home&source_section=hero&application_slug=general&product_family=general" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"hero","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
             <a class="hc-btn hc-btn-ghost" href="/applications/index.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"home","target_page":"applications_hub"}'>Explore Applications</a>
           </div>
 
@@ -108,14 +108,17 @@
         </div>
 
         <a class="hc-engine-image-btn hc-reveal"
-           href="https://ai.hexcarb.in"
+           href="/coming-soon.html"
            target="_blank"
            rel="noopener noreferrer"
            data-ai-link="hero_image_button"
            data-track-event="hc_ai_engine_click"
            data-track-params='{"page":"home","location":"hero_image_button"}'
            aria-label="Enter HEXCARB AI Engine">
-          <img src="/3.png" alt="HEXCARB AI Engine launch visual" loading="eager" decoding="async" />
+          <picture>
+            <source srcset="/assets/media/hero/ai-engine.webp" type="image/webp" />
+            <img src="/3.png" alt="HEXCARB AI Engine launch visual" width="1013" height="783" loading="eager" decoding="async" />
+          </picture>
           <div class="hc-engine-image-overlay">
             <span class="hc-engine-image-kicker">Live System Access</span>
             <strong>Enter HEXCARB AI Engine</strong>
@@ -206,10 +209,39 @@
           <h3>Need a program-specific material recommendation?</h3>
           <p style="margin-top:0.6rem;">Share use-case, throughput, target properties, and process constraints. We return a shortlist and qualification path.</p>
           <div class="hc-btn-row" style="margin-top:1rem;">
-            <a class="hc-btn hc-btn-accent" href="mailto:sales@hexcarb.in?subject=HexCarb%20Program%20Enquiry" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"value_panel","product_name":"program_enquiry","cta_label":"request_quote"}'>Request Quote</a>
+            <a class="hc-btn hc-btn-accent" href="/quote.html?source_page=home&source_section=value_panel&application_slug=general&product_family=program_enquiry" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"value_panel","product_name":"program_enquiry","cta_label":"request_quote"}'>Request Quote</a>
             <a class="hc-btn hc-btn-ghost" href="/shop.html">View Product Families</a>
           </div>
         </aside>
+      </div>
+    </section>
+
+    <section class="hc-section">
+      <div class="container">
+        <div class="hc-reveal" style="max-width:760px; margin-bottom:1.1rem;">
+          <span class="hc-kicker">Trust Framework</span>
+          <h2 style="margin-top:0.75rem;">Qualification-first support designed for procurement and engineering teams</h2>
+          <p style="margin-top:0.8rem;">We align technical selection with documentation readiness, compliance workflows, and commercial clarity.</p>
+        </div>
+
+        <div class="hc-trust-grid">
+          <article class="hc-card hc-reveal">
+            <span class="hc-proof-chip">Data Package</span>
+            <h3 style="margin-top:0.7rem;">Validation documents prepared per enquiry</h3>
+            <p>COA, SDS, processing notes, and test-method references are shared based on stage and NDA requirements.</p>
+          </article>
+          <article class="hc-card hc-reveal">
+            <span class="hc-proof-chip">Compliance Path</span>
+            <h3 style="margin-top:0.7rem;">Certification and regulatory context mapping</h3>
+            <p>Project-specific guidance for compatibility with customer documentation and qualification workflows.</p>
+          </article>
+          <article class="hc-card hc-reveal">
+            <span class="hc-proof-chip">Commercial Control</span>
+            <h3 style="margin-top:0.7rem;">Quote, NDA, and scale planning in one flow</h3>
+            <p>Single intake for technical requirements, quantity bands, and timeline commitments.</p>
+          </article>
+        </div>
+        <p class="hc-proof-note">Detailed evidence, test reports, and compliance artifacts are provided during qualification and commercial review.</p>
       </div>
     </section>
 
@@ -243,6 +275,24 @@
             </ul>
           </article>
         </div>
+
+        <article class="hc-card hc-founder-card hc-reveal" style="margin-top:1rem;">
+          <div class="hc-founder-avatar" aria-hidden="true">HC</div>
+          <div>
+            <span class="hc-proof-chip">Founder</span>
+            <h3 style="margin-top:0.72rem;">Founder&#39;s Vision</h3>
+            <p style="margin-top:0.7rem;">
+              Our objective is to convert advanced nanocarbon science into deployable industrial outcomes, with disciplined qualification,
+              transparent documentation, and faster decision loops between R&amp;D, engineering, and procurement.
+            </p>
+            <p class="hc-proof-note" style="margin-top:0.8rem;">
+              For strategic partnerships, share your target use-case and scale horizon through the structured quote workflow.
+            </p>
+            <div class="hc-btn-row" style="margin-top:1rem;">
+              <a class="hc-btn hc-btn-primary" href="/quote.html?source_page=home&source_section=founder&application_slug=general&product_family=strategic_collaboration" data-track-event="hc_quote_click" data-track-params='{"page":"home","section":"founder","product_name":"strategic_collaboration","cta_label":"start_quote"}'>Discuss Strategic Collaboration</a>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -298,7 +348,7 @@
           <li><a href="/index.html#about">About</a></li>
           <li><a href="/applications/index.html">Applications</a></li>
           <li><a href="/shop.html">Shop</a></li>
-          <li><a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer">AI Engine</a></li>
+          <li><a href="/coming-soon.html" data-ai-link="home_footer">AI Engine</a></li>
         </ul>
       </div>
 
@@ -317,6 +367,8 @@
     </div>
   </footer>
 
+  <script src="/assets/js/hexcarb-config.js"></script>
   <script src="/assets/js/hexcarb-ui.js"></script>
 </body>
 </html>
+
