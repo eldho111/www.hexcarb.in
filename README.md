@@ -9,7 +9,12 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
 - `quote.html` - Structured quote funnel
 - `thank-you.html` - Quote confirmation page
 - `coming-soon.html` - AI Engine launch placeholder
+- `proof.html` - Trust/proof center (partial-assets mode)
+- `materials-selector.html` - Interactive pre-quote recommender
 - `privacy.html` - Privacy policy
+- `case-studies/` - Case index + seed case template
+  - `index.html`
+  - `thermal-electronics.html`
 - `applications/` - Applications hub and dedicated pathways
   - `index.html`
   - `dispersions.html`
@@ -17,8 +22,9 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
   - `thermal-interface-materials.html`
   - `swcnt-graphene-hybrid.html`
 - `assets/css/` - Shared design system and components
-- `assets/js/` - Shared navigation, reveal, analytics hooks, runtime config
+- `assets/js/` - Shared navigation, reveal, analytics hooks, runtime config, signature interactions
 - `assets/media/` - Optimized WebP ambient and hero media
+- `assets/icons/` - Favicon and web manifest
 
 Note: AVIF variants are not generated in this local toolchain because AVIF encoder support is unavailable. Current production path uses WebP with PNG fallback.
 
@@ -45,6 +51,14 @@ Run local reference validation before commit:
 ```
 
 This checks local `href/src/url(...)` references in HTML/CSS and fails on missing files.
+
+For semantic heading QA:
+
+```powershell
+rg -n "<h1" -g "*.html" .
+```
+
+Home should have exactly one semantic `<h1>` (hero rotations use one `<h1>` + secondary heading tiers).
 
 ## Branch Workflow
 
@@ -83,6 +97,12 @@ Tracked events:
 - `hc_quote_start`
 - `hc_quote_step_complete`
 - `hc_quote_submit_success`
+- `hc_quote_quality_signal`
+- `hc_selector_start`
+- `hc_selector_recommendation_view`
+- `hc_proof_asset_click`
+- `hc_case_study_open`
+- `hc_theme_toggle`
 
 ## Background Mapping
 
@@ -120,5 +140,6 @@ All website AI Engine buttons currently route to:
 ## Deployment Notes
 
 - `robots.txt` and `sitemap.xml` are included.
+- `sitemap.xml` includes Home, Shop, Quote, Thank You, Privacy, Applications routes, Proof Center, Materials Selector, and Case Studies routes.
 - Ensure DNS/custom domain config remains aligned with `CNAME`.
 - GitHub Action `.github/workflows/site-validate.yml` runs validation on push/PR to `main`.

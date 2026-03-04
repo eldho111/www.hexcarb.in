@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
+  <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb Shop | Product Families</title>
   <meta name="description" content="Explore HexCarb product families including dispersions, fibers, thermal interface materials, hybrid systems, and lab services. Quote-first workflow." />
   <link rel="canonical" href="https://www.hexcarb.in/shop.html" />
@@ -11,12 +13,12 @@
   <meta property="og:description" content="Browse HexCarb product families and request a quote with product context." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.hexcarb.in/shop.html" />
-  <meta property="og:image" content="https://www.hexcarb.in/3.png" />
+  <meta property="og:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="HexCarb Shop | Product Families" />
   <meta name="twitter:description" content="Browse product families, map use-cases, and start a structured quote request." />
-  <meta name="twitter:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="twitter:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
   <meta name="hc-ga4-id" content="" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,6 +27,7 @@
 
   <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css" />
 
   <script type="application/ld+json">
   {
@@ -36,7 +39,7 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
+<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
@@ -55,7 +58,8 @@
       </nav>
 
       <div class="hc-nav-actions">
-        <a class="hc-btn hc-btn-primary" href="/coming-soon.html" data-ai-link="shop_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"header"}'>AI Engine</a>
+        <a class="hc-btn hc-btn-primary" data-hc-cta-tier="primary" href="/quote.html" data-source-page="global_header" data-source-section="header_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance" data-track-event="hc_quote_click" data-track-params='{"page":"global","section":"header","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
+        <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/coming-soon.html" data-ai-link="header_secondary" data-track-event="hc_ai_engine_click" data-track-params='{"page":"global","location":"header_secondary"}'>AI Engine</a>
         <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
           <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
@@ -69,6 +73,7 @@
       <a href="/shop.html">Shop</a>
       <a href="/index.html#about">About</a>
       <a href="/shop.html#contact">Contact</a>
+      <a href="/quote.html" data-source-page="mobile_nav" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
       <a href="/coming-soon.html" data-ai-link="shop_mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"shop","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
@@ -97,6 +102,33 @@
           <a href="#hexrubber">HexRubber</a>
         </div>
         <p class="hc-muted" style="margin-top:0.9rem;">Capability notes are indicative. Final performance depends on formulation, loading, geometry, and process conditions.</p>
+      </div>
+    </section>
+
+    <section class="hc-command-strip-wrap">
+      <div class="container">
+        <div class="hc-command-strip hc-reveal" data-hc-proof-state="partial">
+          <span class="hc-kicker" style="color:rgba(255,255,255,0.9);">Buying Confidence Layer</span>
+          <h2 style="margin-top:0.65rem;">Choose faster with selector guidance and proof-backed context</h2>
+          <div class="hc-command-grid">
+            <div class="hc-command-item">
+              <strong>Filter by use-case</strong>
+              <span>Industry + priority mapping</span>
+            </div>
+            <div class="hc-command-item">
+              <strong>Qualification support</strong>
+              <span>Method and documentation path</span>
+            </div>
+            <div class="hc-command-item">
+              <strong>Quote context preserved</strong>
+              <span>Source and product prefilled</span>
+            </div>
+          </div>
+          <div class="hc-command-actions">
+            <a class="hc-btn hc-btn-accent" href="/materials-selector.html">Start Materials Selector</a>
+            <a class="hc-btn hc-btn-ghost" href="/proof.html">Review Proof Center</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -269,7 +301,7 @@
       </div>
     </section>
 
-    <section class="hc-section">
+    <section class="hc-section" data-hc-proof-state="partial">
       <div class="container">
         <div class="hc-reveal" style="max-width:760px; margin-bottom:1rem;">
           <span class="hc-kicker">Trust and Qualification</span>
@@ -361,6 +393,7 @@
 
   <script src="/assets/js/hexcarb-config.js"></script>
   <script src="/assets/js/hexcarb-ui.js"></script>
+  <script src="/assets/js/hexcarb-signature.js"></script>
   <script>
     (function () {
       var template = document.getElementById("hc-product-template");
@@ -434,4 +467,8 @@
   </script>
 </body>
 </html>
+
+
+
+
 

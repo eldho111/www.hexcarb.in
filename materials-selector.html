@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
+  <link rel="manifest" href="/assets/icons/site.webmanifest" />
+  <title>HexCarb Materials Selector | Pre-Quote Recommender</title>
+  <meta name="description" content="Use the HexCarb materials selector to map industry, performance priorities, and process constraints to a recommended product pathway." />
+  <link rel="canonical" href="https://www.hexcarb.in/materials-selector.html" />
+  <meta property="og:title" content="HexCarb Materials Selector" />
+  <meta property="og:description" content="Interactive pre-quote selector for faster pathway-to-product decision making." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.hexcarb.in/materials-selector.html" />
+  <meta property="og:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HexCarb Materials Selector" />
+  <meta name="twitter:description" content="Choose use-case constraints and get a recommendation linked directly into quote flow." />
+  <meta name="twitter:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
+  <meta name="hc-ga4-id" content="" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css" />
+</head>
+<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'))">
+  <a class="hc-skip-link" href="#main-content">Skip to content</a>
+  <header class="hc-header">
+    <div class="container hc-nav">
+      <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
+        <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+        <span class="hc-visually-hidden">HexCarb</span>
+      </a>
+
+      <nav class="hc-nav-links" aria-label="Primary">
+        <a href="/index.html" data-nav-path="/">Home</a>
+        <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
+        <a href="/shop.html" data-nav-path="/shop.html">Shop</a>
+        <a href="/materials-selector.html" data-nav-path="/materials-selector.html">Selector</a>
+        <a href="/proof.html" data-nav-path="/proof.html">Proof</a>
+      </nav>
+
+      <div class="hc-nav-actions">
+        <a class="hc-btn hc-btn-primary" data-hc-cta-tier="primary" href="/quote.html" data-source-page="selector" data-source-section="header_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance" data-track-event="hc_quote_click" data-track-params='{"page":"materials_selector","section":"header","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
+        <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/coming-soon.html" data-ai-link="selector_header_secondary" data-track-event="hc_ai_engine_click" data-track-params='{"page":"materials_selector","location":"header_secondary"}'>AI Engine</a>
+        <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
+          <span class="hc-menu-lines" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
+      <a href="/index.html">Home</a>
+      <a href="/applications/index.html">Applications</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/proof.html">Proof</a>
+      <a href="/quote.html" data-source-page="selector_mobile" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
+      <a href="/coming-soon.html" data-ai-link="selector_mobile">AI Engine</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="hc-page-hero">
+      <div class="container hc-reveal" data-hc-reveal="depth-fade">
+        <span class="hc-kicker">Pre-Quote Recommender</span>
+        <h1 style="margin-top:0.8rem;">Find the most likely HexCarb pathway in under one minute</h1>
+        <p style="margin-top:0.8rem;">Select industry, technical priority, and process constraints. We return a recommendation with a direct quote path.</p>
+      </div>
+    </section>
+
+    <section class="hc-section">
+      <div class="container hc-grid hc-grid-2">
+        <form id="hc-materials-selector" class="hc-quote-flow hc-reveal" data-hc-reveal="left">
+          <div class="hc-field-grid">
+            <label>
+              <span class="hc-subtle-note">Industry</span>
+              <select id="selector-industry" required>
+                <option value="">Select</option>
+                <option value="electronics">Electronics</option>
+                <option value="wearables">Wearables</option>
+                <option value="aerospace">Aerospace</option>
+                <option value="energy">Energy</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="hc-subtle-note">Priority</span>
+              <select id="selector-priority" required>
+                <option value="">Select</option>
+                <option value="thermal">Thermal performance</option>
+                <option value="electrical">Electrical performance</option>
+                <option value="mechanical">Mechanical reinforcement</option>
+              </select>
+            </label>
+
+            <label class="hc-field-grid-full">
+              <span class="hc-subtle-note">Process constraints</span>
+              <textarea id="selector-constraints" placeholder="Example: substrate type, viscosity limit, thermal budget, line speed"></textarea>
+            </label>
+          </div>
+
+          <div class="hc-step-actions">
+            <button class="hc-btn hc-btn-primary" data-hc-cta-tier="primary" type="submit">Generate Recommendation</button>
+            <a class="hc-btn hc-btn-ghost" data-hc-cta-tier="tertiary" href="/proof.html">Open Proof Center</a>
+          </div>
+        </form>
+
+        <article class="hc-card hc-reveal" data-hc-reveal="depth-fade" data-hc-proof-state="partial" id="selector-result" aria-live="polite">
+          <span class="hc-proof-meta">Recommendation</span>
+          <h2 style="margin-top:0.75rem;">Waiting for your selection</h2>
+          <p style="margin-top:0.7rem;">Complete the selector to receive a suggested application pathway and product family.</p>
+          <div class="hc-btn-row" style="margin-top:1rem;">
+            <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/shop.html">Browse Shop</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hc-footer">
+    <div class="container hc-footer-grid">
+      <div>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
+          <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+          <span class="hc-visually-hidden">HexCarb</span>
+        </a>
+        <p>Use selector output to accelerate your quote briefing and technical alignment.</p>
+      </div>
+
+      <div>
+        <h4>Links</h4>
+        <ul class="hc-footer-list">
+          <li><a href="/applications/index.html">Applications</a></li>
+          <li><a href="/proof.html">Proof Center</a></li>
+          <li><a href="/case-studies/index.html">Case Studies</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <ul class="hc-footer-list">
+          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
+          <li><a href="/quote.html">Request Quote</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container hc-footer-bottom">
+      <span>&copy; <span data-hc-year>2026</span> HexCarb Advanced Materials Private Limited. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="/assets/js/hexcarb-config.js"></script>
+  <script src="/assets/js/hexcarb-ui.js"></script>
+  <script src="/assets/js/hexcarb-signature.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById("hc-materials-selector");
+      var result = document.getElementById("selector-result");
+      if (!form || !result) return;
+
+      function recommend(industry, priority) {
+        var out = {
+          family: "HexFlow",
+          application: "dispersions",
+          note: "Dispersion-led pathway for process and coating control."
+        };
+
+        if (priority === "thermal") {
+          out.family = "HexTherm";
+          out.application = "thermal_interface_materials";
+          out.note = "Thermal interface pathway prioritized for heat-transfer constraints.";
+        } else if (priority === "mechanical") {
+          out.family = "HexTubes_HexSheets_HexBlend";
+          out.application = "swcnt_graphene_hybrid";
+          out.note = "Hybrid reinforcement pathway prioritized for structural stability.";
+        } else if (priority === "electrical") {
+          out.family = industry === "wearables" ? "HexWeave" : "HexFlow";
+          out.application = industry === "wearables" ? "fibers" : "dispersions";
+          out.note = "Electrical performance pathway tuned for conductive continuity.";
+        }
+
+        return out;
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var industry = document.getElementById("selector-industry").value || "other";
+        var priority = document.getElementById("selector-priority").value || "performance";
+        var constraints = document.getElementById("selector-constraints").value || "";
+        var rec = recommend(industry, priority);
+
+        var quoteUrl = new URL("/quote.html", window.location.origin);
+        quoteUrl.searchParams.set("source_page", "materials_selector");
+        quoteUrl.searchParams.set("source_section", "result_panel");
+        quoteUrl.searchParams.set("application_slug", rec.application);
+        quoteUrl.searchParams.set("product_family", rec.family);
+        quoteUrl.searchParams.set("intent_stage", "evaluate");
+        quoteUrl.searchParams.set("industry", industry);
+        quoteUrl.searchParams.set("priority", priority);
+        if (constraints.trim()) {
+          quoteUrl.searchParams.set("selector_constraints", constraints.trim().slice(0, 180));
+        }
+
+        result.innerHTML = '' +
+          '<span class="hc-proof-meta">Recommendation</span>' +
+          '<h2 style="margin-top:0.75rem;">' + rec.family.replaceAll('_', ' / ') + '</h2>' +
+          '<p style="margin-top:0.7rem;">' + rec.note + '</p>' +
+          '<p style="margin-top:0.55rem;" class="hc-muted"><strong>Industry:</strong> ' + industry + ' | <strong>Priority:</strong> ' + priority + '</p>' +
+          '<div class="hc-btn-row" style="margin-top:1rem;">' +
+            '<a class="hc-btn hc-btn-accent" data-hc-cta-tier="primary" href="' + quoteUrl.pathname + quoteUrl.search + '">Continue to Quote</a>' +
+            '<a class="hc-btn hc-btn-ghost" data-hc-cta-tier="tertiary" href="/shop.html">Open Shop</a>' +
+          '</div>';
+
+        form.dispatchEvent(new CustomEvent("hc:recommendation", {
+          bubbles: true,
+          detail: {
+            industry: industry,
+            application_slug: rec.application,
+            recommended_family: rec.family
+          }
+        }));
+      });
+    })();
+  </script>
+</body>
+</html>

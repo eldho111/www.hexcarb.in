@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
+  <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb | Request a Quote</title>
   <meta name="description" content="Structured quote intake for HexCarb applications, material families, quantity bands, and process constraints." />
   <link rel="canonical" href="https://www.hexcarb.in/quote.html" />
@@ -10,11 +12,11 @@
   <meta property="og:description" content="Submit your application and process requirements to receive a qualified material recommendation and quote." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.hexcarb.in/quote.html" />
-  <meta property="og:image" content="https://www.hexcarb.in/3.png" />
+  <meta property="og:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="HexCarb | Request a Quote" />
   <meta name="twitter:description" content="Share technical and commercial requirements through a guided quote workflow." />
-  <meta name="twitter:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="twitter:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
   <meta name="hc-ga4-id" content="" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,6 +25,7 @@
 
   <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css" />
 
   <script type="application/ld+json">
   {
@@ -34,7 +37,7 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
+<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
@@ -53,7 +56,8 @@
       </nav>
 
       <div class="hc-nav-actions">
-        <a class="hc-btn hc-btn-primary" href="/coming-soon.html" data-ai-link="quote_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"quote","location":"header"}'>AI Engine</a>
+        <a class="hc-btn hc-btn-primary" data-hc-cta-tier="primary" href="/quote.html" data-source-page="global_header" data-source-section="header_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance" data-track-event="hc_quote_click" data-track-params='{"page":"global","section":"header","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
+        <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/coming-soon.html" data-ai-link="header_secondary" data-track-event="hc_ai_engine_click" data-track-params='{"page":"global","location":"header_secondary"}'>AI Engine</a>
         <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
           <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
@@ -77,10 +81,29 @@
         <span class="hc-kicker">Quote Workflow</span>
         <h1 style="margin-top:0.8rem;">Share your requirements and get a qualified recommendation</h1>
         <p>Complete this guided form to route your request by application, material family, quantity band, and process constraints.</p>
+        <div class="hc-hero-badges">
+          <span class="hc-hero-badge">Technical Field Qualification</span>
+          <span class="hc-hero-badge">Procurement-Ready Context</span>
+          <span class="hc-hero-badge">Partial Proof Asset Mode</span>
+        </div>
       </div>
     </section>
 
-    <section class="hc-section" id="quote-form">
+    <section class="hc-command-strip-wrap">
+      <div class="container">
+        <div class="hc-command-strip hc-reveal" data-hc-proof-state="partial">
+          <span class="hc-kicker" style="color:rgba(255,255,255,0.9);">Before You Submit</span>
+          <h2 style="margin-top:0.65rem;">Add trust context for higher-quality review from day one</h2>
+          <div class="hc-command-actions">
+            <a class="hc-btn hc-btn-accent" href="/proof.html">Open Proof Center</a>
+            <a class="hc-btn hc-btn-ghost" href="/case-studies/index.html">Browse Case Narratives</a>
+            <a class="hc-btn hc-btn-ghost" href="/materials-selector.html">Run Materials Selector</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hc-section" id="quote-form" data-hc-proof-state="partial">
       <div class="container hc-grid hc-grid-2">
         <div class="hc-reveal">
           <div class="hc-quote-flow">
@@ -90,11 +113,16 @@
               <div class="hc-step-dot" data-step-dot="3">3. Contact</div>
             </div>
 
-            <form id="hc-quote-form" class="hc-form" action="https://formspree.io/f/xgvznzyr" method="POST" data-track-form="quote_funnel_form">
+            <form id="hc-quote-form" class="hc-form" action="https://formspree.io/f/xgvznzyr" method="POST" data-track-form="quote_funnel_form" data-hc-antispam="true" data-hc-min-submit-ms="4000" data-hc-status-id="quote-status-text">
               <input type="hidden" name="source_page" id="source_page" value="" />
               <input type="hidden" name="source_section" id="source_section" value="" />
               <input type="hidden" name="application_slug" id="application_slug" value="" />
               <input type="hidden" name="product_family" id="product_family" value="" />
+              <input type="hidden" name="intent_stage" id="intent_stage" value="" />
+              <input type="hidden" name="industry" id="industry" value="" />
+              <input type="hidden" name="priority" id="priority" value="" />
+              <input class="hc-honeypot" type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <input type="hidden" name="hc_started_at" value="" />
 
               <section class="hc-step-panel" data-step-panel="1">
                 <div class="hc-field-grid">
@@ -251,6 +279,7 @@
 
   <script src="/assets/js/hexcarb-config.js"></script>
   <script src="/assets/js/hexcarb-ui.js"></script>
+  <script src="/assets/js/hexcarb-signature.js"></script>
   <script>
     (function () {
       var form = document.getElementById("hc-quote-form");
@@ -268,6 +297,9 @@
       var sourceSection = query.get("source_section") || "unknown";
       var appSlug = query.get("application_slug") || "general";
       var productFamily = query.get("product_family") || "general";
+      var intentStage = query.get("intent_stage") || "evaluate";
+      var industry = query.get("industry") || "other";
+      var priority = query.get("priority") || "performance";
 
       function normalizeApplication(value) {
         var normalized = String(value || "").toLowerCase();
@@ -297,18 +329,28 @@
       document.getElementById("source_section").value = sourceSection;
       document.getElementById("application_slug").value = appSlug;
       document.getElementById("product_family").value = productFamily;
+      document.getElementById("intent_stage").value = intentStage;
+      document.getElementById("industry").value = industry;
+      document.getElementById("priority").value = priority;
 
       var appSelect = document.getElementById("application_pathway");
       var familySelect = document.getElementById("material_family");
       if (appSelect) appSelect.value = normalizedApp;
       if (familySelect) familySelect.value = normalizedFamily;
+      var startedAtInput = form.querySelector('input[name="hc_started_at"]');
+      if (startedAtInput && !startedAtInput.value) {
+        startedAtInput.value = String(Date.now());
+      }
 
       if (typeof window.hexTrack === "function") {
         window.hexTrack("hc_quote_start", {
           page: "quote",
           section: sourceSection,
           application_slug: appSlug,
-          product_family: productFamily
+          product_family: productFamily,
+          intent_stage: intentStage,
+          industry: industry,
+          priority: priority
         });
       }
 
@@ -361,6 +403,17 @@
         if (!window.fetch) return;
 
         event.preventDefault();
+        var honey = form.querySelector('input[name="company_website"]');
+        if (honey && honey.value && honey.value.trim() !== "") {
+          return;
+        }
+
+        var startValue = startedAtInput ? Number(startedAtInput.value || "0") : 0;
+        if (startValue > 0 && Date.now() - startValue < 4000) {
+          statusText.textContent = "Please take a moment to review details before submitting.";
+          return;
+        }
+
         fallbackMail.hidden = true;
         statusText.textContent = "Submitting your request...";
         submitBtn.disabled = true;
@@ -399,4 +452,8 @@
   </script>
 </body>
 </html>
+
+
+
+
 
