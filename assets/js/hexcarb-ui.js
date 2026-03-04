@@ -84,7 +84,10 @@
 
     var menuButton = header.querySelector("[data-hc-menu-btn]");
     var mobileMenu = header.querySelector("[data-hc-mobile-nav]");
+    var navLinks = header.querySelector(".hc-nav-links");
     var menuOpenClass = "menu-open";
+    var expandedClass = "expanded";
+    var desktopQuery = window.matchMedia("(min-width: 901px)");
 
     function setScrolled() {
       if (window.scrollY > 8) {
@@ -97,6 +100,7 @@
     function closeMenu() {
       if (!menuButton || !mobileMenu) return;
       header.classList.remove(menuOpenClass);
+      header.classList.remove(expandedClass);
       menuButton.setAttribute("aria-expanded", "false");
       menuButton.setAttribute("aria-label", "Open menu");
     }
@@ -108,8 +112,36 @@
       menuButton.setAttribute("aria-label", "Close menu");
     }
 
+    function setExpanded(isExpanded) {
+      if (!desktopQuery.matches || !navLinks || header.classList.contains(menuOpenClass)) {
+        header.classList.remove(expandedClass);
+        return;
+      }
+      header.classList.toggle(expandedClass, Boolean(isExpanded));
+    }
+
     setScrolled();
     window.addEventListener("scroll", setScrolled, { passive: true });
+    window.addEventListener("resize", function () {
+      setExpanded(false);
+    });
+
+    if (navLinks) {
+      navLinks.addEventListener("mouseenter", function () {
+        setExpanded(true);
+      });
+      navLinks.addEventListener("mouseleave", function () {
+        setExpanded(false);
+      });
+      navLinks.addEventListener("focusin", function () {
+        setExpanded(true);
+      });
+      navLinks.addEventListener("focusout", function (event) {
+        if (!navLinks.contains(event.relatedTarget)) {
+          setExpanded(false);
+        }
+      });
+    }
 
     if (menuButton && mobileMenu) {
       menuButton.addEventListener("click", function () {
@@ -178,6 +210,135 @@
 
     targets.forEach(function (el) {
       observer.observe(el);
+    });
+  }
+
+  function initHeroCycle() {
+    var cycles = document.querySelectorAll("[data-hc-hero-cycle]");
+    if (!cycles.length) return;
+
+    cycles.forEach(function (cycle) {
+      var panes = Array.prototype.slice.call(cycle.querySelectorAll("[data-hc-hero-pane]"));
+      var rails = Array.prototype.slice.call(cycle.querySelectorAll("[data-hc-hero-rail]"));
+      if (!panes.length) return;
+
+      var activeIndex = 0;
+      var timer = null;
+      var duration = 10000;
+
+      function setActive(index) {
+        activeIndex = ((index % panes.length) + panes.length) % panes.length;
+
+        panes.forEach(function (pane, paneIndex) {
+          pane.classList.toggle("is-active", paneIndex === activeIndex);
+        });
+
+        rails.forEach(function (rail, railIndex) {
+          rail.classList.remove("is-active");
+          var fill = rail.querySelector(".hc-hero-rail-fill");
+          if (fill) {
+            fill.style.animation = "none";
+            fill.offsetHeight;
+            fill.style.animation = "";
+          }
+          if (railIndex === activeIndex) {
+            rail.classList.add("is-active");
+          }
+        });
+      }
+
+      function stopCycle() {
+        if (timer) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      function startCycle() {
+        stopCycle();
+        if (prefersReducedMotion() || panes.length < 2) return;
+        timer = window.setInterval(function () {
+          setActive(activeIndex + 1);
+        }, duration);
+      }
+
+      setActive(0);
+      startCycle();
+
+      rails.forEach(function (rail, railIndex) {
+        rail.addEventListener("click", function () {
+          setActive(railIndex);
+          startCycle();
+        });
+      });
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          stopCycle();
+        } else {
+          startCycle();
+        }
+      });
+    });
+  }
+
+  function initMonumentGrid() {
+    var grids = document.querySelectorAll("[data-hc-monument-grid]");
+    if (!grids.length) return;
+
+    var desktopQuery = window.matchMedia("(min-width: 901px)");
+
+    grids.forEach(function (grid) {
+      var cards = Array.prototype.slice.call(grid.querySelectorAll(".hc-app-card"));
+      if (!cards.length) return;
+
+      function resetGrid() {
+        grid.style.removeProperty("grid-template-columns");
+        cards.forEach(function (card) {
+          card.classList.remove("is-active");
+        });
+      }
+
+      function activateCard(index) {
+        if (!desktopQuery.matches || prefersReducedMotion()) {
+          resetGrid();
+          return;
+        }
+        var template = cards
+          .map(function (_, cardIndex) {
+            return cardIndex === index ? "2.5fr" : "1fr";
+          })
+          .join(" ");
+
+        grid.style.gridTemplateColumns = template;
+        cards.forEach(function (card, cardIndex) {
+          card.classList.toggle("is-active", cardIndex === index);
+        });
+      }
+
+      cards.forEach(function (card, index) {
+        card.addEventListener("mouseenter", function () {
+          activateCard(index);
+        });
+        card.addEventListener("focusin", function () {
+          activateCard(index);
+        });
+      });
+
+      grid.addEventListener("mouseleave", resetGrid);
+      grid.addEventListener("focusout", function (event) {
+        if (!grid.contains(event.relatedTarget)) {
+          resetGrid();
+        }
+      });
+
+      window.addEventListener("resize", function () {
+        if (!desktopQuery.matches) {
+          resetGrid();
+        }
+      });
+
+      resetGrid();
     });
   }
 
@@ -250,6 +411,8 @@
     initGA();
     initHeader();
     initReveal();
+    initHeroCycle();
+    initMonumentGrid();
     initTrackClicks();
     initTrackForms();
     initAiLinkFallback();
