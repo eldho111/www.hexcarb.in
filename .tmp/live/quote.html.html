@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HexCarb | Request a Quote</title>
+  <meta name="description" content="Structured quote intake for HexCarb applications, material families, quantity bands, and process constraints." />
+  <link rel="canonical" href="https://www.hexcarb.in/quote.html" />
+  <meta property="og:title" content="HexCarb | Request a Quote" />
+  <meta property="og:description" content="Submit your application and process requirements to receive a qualified material recommendation and quote." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.hexcarb.in/quote.html" />
+  <meta property="og:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HexCarb | Request a Quote" />
+  <meta name="twitter:description" content="Share technical and commercial requirements through a guided quote workflow." />
+  <meta name="twitter:image" content="https://www.hexcarb.in/3.png" />
+  <meta name="hc-ga4-id" content="" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "HexCarb Quote Request",
+    "url": "https://www.hexcarb.in/quote.html",
+    "description": "Structured quote funnel for application and product requirements"
+  }
+  </script>
+</head>
+<body class="hc-premium" data-hc-bg-image="/assets/media/ambient/background-1.webp" data-hc-bg-video-disabled="true" style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));">
+  <a class="hc-skip-link" href="#main-content">Skip to content</a>
+  <header class="hc-header">
+    <div class="container hc-nav">
+      <a class="hc-brand" href="/index.html" aria-label="HexCarb home">
+        <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+        <span class="hc-visually-hidden">HexCarb</span>
+      </a>
+
+      <nav class="hc-nav-links" aria-label="Primary">
+        <a href="/index.html" data-nav-path="/">Home</a>
+        <a href="/index.html#technology">Technology</a>
+        <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
+        <a href="/shop.html" data-nav-path="/shop.html">Shop</a>
+        <a href="/index.html#about">About</a>
+        <a href="/quote.html" data-nav-path="/quote.html">Quote</a>
+      </nav>
+
+      <div class="hc-nav-actions">
+        <a class="hc-btn hc-btn-primary" href="/coming-soon.html" data-ai-link="quote_header" data-track-event="hc_ai_engine_click" data-track-params='{"page":"quote","location":"header"}'>AI Engine</a>
+        <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
+          <span class="hc-menu-lines" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
+      <a href="/index.html">Home</a>
+      <a href="/index.html#technology">Technology</a>
+      <a href="/applications/index.html">Applications</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/index.html#about">About</a>
+      <a href="/quote.html">Quote</a>
+      <a href="/coming-soon.html" data-ai-link="quote_mobile">AI Engine</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="hc-page-hero">
+      <div class="container hc-reveal">
+        <span class="hc-kicker">Quote Workflow</span>
+        <h1 style="margin-top:0.8rem;">Share your requirements and get a qualified recommendation</h1>
+        <p>Complete this guided form to route your request by application, material family, quantity band, and process constraints.</p>
+      </div>
+    </section>
+
+    <section class="hc-section" id="quote-form">
+      <div class="container hc-grid hc-grid-2">
+        <div class="hc-reveal">
+          <div class="hc-quote-flow">
+            <div class="hc-step-nav" aria-label="Quote steps">
+              <div class="hc-step-dot active" data-step-dot="1">1. Scope</div>
+              <div class="hc-step-dot" data-step-dot="2">2. Technical</div>
+              <div class="hc-step-dot" data-step-dot="3">3. Contact</div>
+            </div>
+
+            <form id="hc-quote-form" class="hc-form" action="https://formspree.io/f/xgvznzyr" method="POST" data-track-form="quote_funnel_form">
+              <input type="hidden" name="source_page" id="source_page" value="" />
+              <input type="hidden" name="source_section" id="source_section" value="" />
+              <input type="hidden" name="application_slug" id="application_slug" value="" />
+              <input type="hidden" name="product_family" id="product_family" value="" />
+
+              <section class="hc-step-panel" data-step-panel="1">
+                <div class="hc-field-grid">
+                  <label>
+                    <span class="hc-subtle-note">Application pathway</span>
+                    <select name="application_pathway" id="application_pathway" required>
+                      <option value="">Select</option>
+                      <option value="dispersions">Dispersions</option>
+                      <option value="fibers">Fibers</option>
+                      <option value="thermal_interface_materials">Thermal Interface Materials</option>
+                      <option value="swcnt_graphene_hybrid">SWCNT and Graphene Hybrid</option>
+                      <option value="general">General</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span class="hc-subtle-note">Material family</span>
+                    <select name="material_family" id="material_family" required>
+                      <option value="">Select</option>
+                      <option value="HexFlow">HexFlow</option>
+                      <option value="HexWeave">HexWeave</option>
+                      <option value="HexTherm">HexTherm</option>
+                      <option value="HexTubes_HexSheets_HexBlend">HexTubes / HexSheets / HexBlend</option>
+                      <option value="general">General recommendation</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="hc-step-actions">
+                  <button class="hc-btn hc-btn-primary" type="button" data-next-step="2">Continue</button>
+                </div>
+              </section>
+
+              <section class="hc-step-panel" data-step-panel="2" hidden>
+                <div class="hc-field-grid">
+                  <label>
+                    <span class="hc-subtle-note">Quantity band</span>
+                    <select name="quantity_band" required>
+                      <option value="">Select</option>
+                      <option value="lab_less_than_1kg">Lab (&lt; 1 kg)</option>
+                      <option value="pilot_1_to_25kg">Pilot (1-25 kg)</option>
+                      <option value="pre_production_25_to_250kg">Pre-production (25-250 kg)</option>
+                      <option value="production_250kg_plus">Production (250+ kg)</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span class="hc-subtle-note">Timeline</span>
+                    <select name="timeline" required>
+                      <option value="">Select</option>
+                      <option value="immediate_0_2_weeks">Immediate (0-2 weeks)</option>
+                      <option value="near_term_2_6_weeks">Near term (2-6 weeks)</option>
+                      <option value="planned_6_12_weeks">Planned (6-12 weeks)</option>
+                      <option value="long_horizon_12_plus_weeks">Long horizon (12+ weeks)</option>
+                    </select>
+                  </label>
+
+                  <label class="hc-field-grid-full">
+                    <span class="hc-subtle-note">Target properties and process constraints</span>
+                    <textarea name="technical_requirements" required placeholder="Example: target conductivity, viscosity window, cure/dry profile, substrate, thermal delta, mechanical limits"></textarea>
+                  </label>
+                </div>
+
+                <div class="hc-step-actions">
+                  <button class="hc-btn hc-btn-ghost" type="button" data-prev-step="1">Back</button>
+                  <button class="hc-btn hc-btn-primary" type="button" data-next-step="3">Continue</button>
+                </div>
+              </section>
+
+              <section class="hc-step-panel" data-step-panel="3" hidden>
+                <div class="hc-field-grid">
+                  <label>
+                    <span class="hc-subtle-note">Name</span>
+                    <input type="text" name="name" required />
+                  </label>
+
+                  <label>
+                    <span class="hc-subtle-note">Company</span>
+                    <input type="text" name="company" required />
+                  </label>
+
+                  <label>
+                    <span class="hc-subtle-note">Work email</span>
+                    <input type="email" name="email" required />
+                  </label>
+
+                  <label>
+                    <span class="hc-subtle-note">Phone (optional)</span>
+                    <input type="text" name="phone" />
+                  </label>
+
+                  <label class="hc-field-grid-full">
+                    <span class="hc-subtle-note">Additional notes</span>
+                    <textarea name="notes" placeholder="Any NDA context, test methods, qualification milestones, or procurement constraints"></textarea>
+                  </label>
+                </div>
+
+                <div class="hc-step-actions">
+                  <button class="hc-btn hc-btn-ghost" type="button" data-prev-step="2">Back</button>
+                  <button class="hc-btn hc-btn-accent" type="submit" id="quote-submit-btn">Submit Quote Request</button>
+                </div>
+                <p class="hc-inline-fallback" id="quote-status-text">After submission, we route your request to the right technical and commercial owner.</p>
+                <p class="hc-inline-fallback" id="quote-fallback-mail" hidden>If submission fails, email <a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a> with your requirements.</p>
+              </section>
+            </form>
+          </div>
+        </div>
+
+        <aside class="hc-quote-panel hc-reveal">
+          <h3>What happens next</h3>
+          <ul style="margin-top:0.8rem;">
+            <li>Initial triage by application and material family.</li>
+            <li>Technical fit review with process constraints.</li>
+            <li>Quote and documentation path aligned to your stage.</li>
+          </ul>
+          <div class="hc-proof-divider">
+            <span class="hc-proof-chip">Data available on request</span>
+            <p style="margin-top:0.7rem;">Detailed test packs, COA/SDS, and advanced qualification context are shared during review.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hc-footer">
+    <div class="container hc-footer-grid">
+      <div>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
+          <img class="hc-brand-logo" src="/logo.svg" alt="HexCarb" />
+          <span class="hc-visually-hidden">HexCarb</span>
+        </a>
+        <p>Structured quote intake for qualified material recommendation and commercial review.</p>
+      </div>
+      <div>
+        <h4>Links</h4>
+        <ul class="hc-footer-list">
+          <li><a href="/applications/index.html">Applications</a></li>
+          <li><a href="/shop.html">Shop</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="hc-footer-list">
+          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
+          <li><a href="/index.html#contact">General Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container hc-footer-bottom">
+      <span>&copy; <span data-hc-year>2026</span> HexCarb Advanced Materials Private Limited. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="/assets/js/hexcarb-config.js"></script>
+  <script src="/assets/js/hexcarb-ui.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById("hc-quote-form");
+      if (!form) return;
+
+      var query = new URLSearchParams(window.location.search);
+      var stepDots = Array.prototype.slice.call(document.querySelectorAll("[data-step-dot]"));
+      var stepPanels = Array.prototype.slice.call(document.querySelectorAll("[data-step-panel]"));
+      var submitBtn = document.getElementById("quote-submit-btn");
+      var statusText = document.getElementById("quote-status-text");
+      var fallbackMail = document.getElementById("quote-fallback-mail");
+      var currentStep = 1;
+
+      var sourcePage = query.get("source_page") || "unknown";
+      var sourceSection = query.get("source_section") || "unknown";
+      var appSlug = query.get("application_slug") || "general";
+      var productFamily = query.get("product_family") || "general";
+
+      function normalizeApplication(value) {
+        var normalized = String(value || "").toLowerCase();
+        if (normalized === "dispersions" || normalized === "fibers" || normalized === "thermal_interface_materials" || normalized === "swcnt_graphene_hybrid") {
+          return normalized;
+        }
+        return "general";
+      }
+
+      function normalizeFamily(value) {
+        var normalized = String(value || "");
+        var lower = normalized.toLowerCase();
+        if (normalized === "HexFlow" || normalized === "HexWeave" || normalized === "HexTherm" || normalized === "HexTubes_HexSheets_HexBlend" || normalized === "general") {
+          return normalized;
+        }
+        if (lower.indexOf("hexflow") >= 0 || lower.indexOf("hexink") >= 0 || lower.indexOf("hexlayers") >= 0) return "HexFlow";
+        if (lower.indexOf("hexweave") >= 0) return "HexWeave";
+        if (lower.indexOf("hextherm") >= 0) return "HexTherm";
+        if (lower.indexOf("hextubes") >= 0 || lower.indexOf("hexsheets") >= 0 || lower.indexOf("hexblend") >= 0 || lower.indexOf("hexrubber") >= 0) return "HexTubes_HexSheets_HexBlend";
+        return "general";
+      }
+
+      var normalizedApp = normalizeApplication(appSlug);
+      var normalizedFamily = normalizeFamily(productFamily);
+
+      document.getElementById("source_page").value = sourcePage;
+      document.getElementById("source_section").value = sourceSection;
+      document.getElementById("application_slug").value = appSlug;
+      document.getElementById("product_family").value = productFamily;
+
+      var appSelect = document.getElementById("application_pathway");
+      var familySelect = document.getElementById("material_family");
+      if (appSelect) appSelect.value = normalizedApp;
+      if (familySelect) familySelect.value = normalizedFamily;
+
+      if (typeof window.hexTrack === "function") {
+        window.hexTrack("hc_quote_start", {
+          page: "quote",
+          section: sourceSection,
+          application_slug: appSlug,
+          product_family: productFamily
+        });
+      }
+
+      function showStep(stepNumber) {
+        currentStep = stepNumber;
+        stepPanels.forEach(function (panel) {
+          panel.hidden = Number(panel.getAttribute("data-step-panel")) !== stepNumber;
+        });
+        stepDots.forEach(function (dot) {
+          dot.classList.toggle("active", Number(dot.getAttribute("data-step-dot")) === stepNumber);
+        });
+      }
+
+      document.querySelectorAll("[data-next-step]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var target = Number(btn.getAttribute("data-next-step"));
+          var currentPanel = document.querySelector('[data-step-panel="' + String(currentStep) + '"]');
+          if (currentPanel) {
+            var required = currentPanel.querySelectorAll("[required]");
+            for (var i = 0; i < required.length; i += 1) {
+              if (!required[i].checkValidity()) {
+                required[i].reportValidity();
+                statusText.textContent = "Please complete required fields before continuing.";
+                return;
+              }
+            }
+          }
+          if (currentStep === 1 && (!appSelect.value || !familySelect.value)) {
+            statusText.textContent = "Please select pathway and material family before continuing.";
+              return;
+          }
+          if (typeof window.hexTrack === "function") {
+            window.hexTrack("hc_quote_step_complete", {
+              page: "quote",
+              step_id: "step_" + String(currentStep)
+            });
+          }
+          statusText.textContent = "After submission, we route your request to the right technical and commercial owner.";
+          showStep(target);
+        });
+      });
+
+      document.querySelectorAll("[data-prev-step]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          showStep(Number(btn.getAttribute("data-prev-step")));
+        });
+      });
+
+      form.addEventListener("submit", function (event) {
+        if (!window.fetch) return;
+
+        event.preventDefault();
+        fallbackMail.hidden = true;
+        statusText.textContent = "Submitting your request...";
+        submitBtn.disabled = true;
+
+        var formData = new FormData(form);
+        formData.set("application_slug", appSelect.value || appSlug);
+        formData.set("product_family", familySelect.value || productFamily);
+
+        fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: { "Accept": "application/json" }
+        })
+          .then(function (response) {
+            if (!response.ok) throw new Error("Submission failed");
+            if (typeof window.hexTrack === "function") {
+              window.hexTrack("hc_quote_submit_success", {
+                page: "quote",
+                form_id: "quote_funnel_form",
+                application_slug: formData.get("application_slug") || "general"
+              });
+            }
+            var params = new URLSearchParams({
+              application_slug: formData.get("application_slug") || "general",
+              product_family: formData.get("product_family") || "general"
+            });
+            window.location.href = "/thank-you.html?" + params.toString();
+          })
+          .catch(function () {
+            submitBtn.disabled = false;
+            statusText.textContent = "Submission could not be completed right now.";
+            fallbackMail.hidden = false;
+          });
+      });
+    })();
+  </script>
+</body>
+</html>
+
