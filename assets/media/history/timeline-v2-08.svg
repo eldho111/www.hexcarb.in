@@ -1,0 +1,79 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='720' viewBox='0 0 1200 720' role='img' aria-label='GO Structural Model timeline visual'>
+  <defs>
+    <linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#080e15'/>
+      <stop offset='52%' stop-color='#101c2a'/>
+      <stop offset='100%' stop-color='#1f3140'/>
+    </linearGradient>
+    <radialGradient id='glowA' cx='86%' cy='14%' r='56%'>
+      <stop offset='0%' stop-color='#c3a169' stop-opacity='0.22'/>
+      <stop offset='100%' stop-color='#c3a169' stop-opacity='0'/>
+    </radialGradient>
+    <radialGradient id='glowB' cx='8%' cy='88%' r='46%'>
+      <stop offset='0%' stop-color='#79b5cc' stop-opacity='0.18'/>
+      <stop offset='100%' stop-color='#79b5cc' stop-opacity='0'/>
+    </radialGradient>
+    <pattern id='mesh' width='36' height='36' patternUnits='userSpaceOnUse'>
+      <path d='M0 0 H36 M0 0 V36' stroke='rgba(159,183,208,0.08)' stroke-width='1'/>
+    </pattern>
+    <linearGradient id='leftPanel' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='rgba(8,15,23,0.92)'/>
+      <stop offset='100%' stop-color='rgba(10,20,31,0.86)'/>
+    </linearGradient>
+    <linearGradient id='rightPanel' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='rgba(9,16,25,0.92)'/>
+      <stop offset='100%' stop-color='rgba(11,22,34,0.86)'/>
+    </linearGradient>
+    <linearGradient id='bar' x1='0' y1='0' x2='1' y2='0'>
+      <stop offset='0%' stop-color='#79b5cc'/>
+      <stop offset='100%' stop-color='#c3a169'/>
+    </linearGradient>
+    <style>
+      .kicker { font: 700 17px 'Segoe UI', Arial, sans-serif; letter-spacing: 3px; fill: #b9cadd; text-transform: uppercase; }
+      .title { font: 700 50px 'Segoe UI', Arial, sans-serif; fill: #f4f8ff; }
+      .family { font: 600 24px 'Segoe UI', Arial, sans-serif; fill: #d3dfec; }
+      .label { font: 700 14px 'Segoe UI', Arial, sans-serif; letter-spacing: 1.3px; fill: #90a6bd; text-transform: uppercase; }
+      .value { font: 600 28px 'Segoe UI', Arial, sans-serif; fill: #edf3fa; }
+      .year { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #efd9ab; }
+      .sigHead { font: 700 14px 'Segoe UI', Arial, sans-serif; letter-spacing: 1.2px; fill: #d7e3ef; text-transform: uppercase; }
+      .signal { font: 600 17px 'Segoe UI', Arial, sans-serif; fill: #e6eef8; }
+      .signalSub { font: 500 15px 'Segoe UI', Arial, sans-serif; fill: #cad7e4; }
+      .foot { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: #9fb1c4; }
+    </style>
+  </defs>
+
+  <rect width='1200' height='720' fill='url(#bg)'/>
+  <rect width='1200' height='720' fill='url(#mesh)' opacity='0.56'/>
+  <rect width='1200' height='720' fill='url(#glowA)'/>
+  <rect width='1200' height='720' fill='url(#glowB)'/>
+
+  <rect x='10' y='10' width='1180' height='700' rx='20' fill='none' stroke='rgba(168,188,208,0.28)'/>
+
+  <rect x='60' y='58' width='620' height='604' rx='24' fill='url(#leftPanel)' stroke='rgba(172,191,211,0.34)'/>
+  <rect x='700' y='108' width='440' height='500' rx='22' fill='url(#rightPanel)' stroke='rgba(172,191,211,0.32)'/>
+
+  <text x='94' y='114' class='kicker'>HEXCARB HISTORY VISUAL</text>
+  <text x='94' y='176' class='title'><tspan x='94' dy='0'>GO Structural</tspan><tspan x='94' dy='58'>Model</tspan></text>
+  <text x='94' y='286' class='family'><tspan x='94' dy='0'>GO and rGO</tspan></text>
+  <line x1='94' y1='316' x2='646' y2='316' stroke='rgba(176,196,216,0.34)'/>
+
+  <text x='94' y='356' class='label'>Breakthrough</text>
+  <text x='94' y='386' class='value'><tspan x='94' dy='0'>Structure model</tspan></text>
+
+  <text x='94' y='430' class='label'>Confidence</text>
+  <text x='94' y='462' class='value'>Established</text>
+
+  <text x='94' y='528' class='label'>Deployment</text>
+  <text x='94' y='560' class='value'>Deployed</text>
+
+  <rect x='94' y='592' width='500' height='11' rx='5.5' fill='rgba(160,180,200,0.32)'/>
+  <rect x='94' y='592' width='460' height='11' rx='5.5' fill='url(#bar)'/>
+  <text x='94' y='626' class='foot'>Qualification progression</text>
+
+  <text x='728' y='166' class='year'>Milestone year: 1998</text>
+  <text x='728' y='198' class='sigHead'>Key signals</text>
+  <line x1='728' y1='210' x2='1112' y2='210' stroke='rgba(176,196,216,0.32)'/>
+  <text x='728' y='276' class='signal'><tspan x='728' dy='0'>- Spectroscopy-led model</tspan></text><text x='750' y='304' class='signalSub'><tspan x='750' dy='0'>refinement</tspan></text><text x='728' y='342' class='signal'><tspan x='728' dy='0'>- Reduction strategy</tspan></text><text x='750' y='370' class='signalSub'><tspan x='750' dy='0'>controls improved</tspan></text><text x='728' y='408' class='signal'><tspan x='728' dy='0'>- Process reproducibility</tspan></text><text x='750' y='436' class='signalSub'><tspan x='750' dy='0'>improved</tspan></text>
+
+  <text x='728' y='572' class='foot'>Evidence-first timeline module</text>
+</svg>

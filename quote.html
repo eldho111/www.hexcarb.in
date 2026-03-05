@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260305c" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-signature.css" />
 
@@ -48,9 +48,9 @@
 
       <nav class="hc-nav-links" aria-label="Primary">
         <a href="/index.html" data-nav-path="/">Home</a>
-        <a href="/index.html#technology">Technology</a>
+                <a href="/history-of-advanced-nanomaterials.html" data-nav-path="/history-of-advanced-nanomaterials.html">History</a>
         <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
-        <a href="/shop.html" data-nav-path="/shop.html">Shop</a>
+        <a href="/shop.html" data-nav-path="/shop.html">Products</a>
         <a href="/index.html#about">About</a>
         <a href="/quote.html" data-nav-path="/quote.html">Quote</a>
       </nav>
@@ -66,9 +66,9 @@
 
     <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
       <a href="/index.html">Home</a>
-      <a href="/index.html#technology">Technology</a>
+            <a href="/history-of-advanced-nanomaterials.html">History</a>
       <a href="/applications/index.html">Applications</a>
-      <a href="/shop.html">Shop</a>
+      <a href="/shop.html">Products</a>
       <a href="/index.html#about">About</a>
       <a href="/quote.html">Quote</a>
       <a href="/coming-soon.html" data-ai-link="quote_mobile">AI Engine</a>
@@ -144,7 +144,7 @@
                       <option value="">Select</option>
                       <option value="HexFlow">HexFlow</option>
                       <option value="HexWeave">HexWeave</option>
-                      <option value="HexTherm">HexTherm</option>
+                      <option value="HexTIM">HexTIM</option>
                       <option value="HexTubes_HexSheets_HexBlend">HexTubes / HexSheets / HexBlend</option>
                       <option value="general">General recommendation</option>
                     </select>
@@ -260,7 +260,7 @@
         <h4>Links</h4>
         <ul class="hc-footer-list">
           <li><a href="/applications/index.html">Applications</a></li>
-          <li><a href="/shop.html">Shop</a></li>
+          <li><a href="/shop.html">Products</a></li>
           <li><a href="/privacy.html">Privacy Policy</a></li>
         </ul>
       </div>
@@ -278,7 +278,7 @@
   </footer>
 
   <script src="/assets/js/hexcarb-config.js"></script>
-  <script src="/assets/js/hexcarb-ui.js"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20260305c"></script>
   <script src="/assets/js/hexcarb-signature.js"></script>
   <script>
     (function () {
@@ -312,12 +312,12 @@
       function normalizeFamily(value) {
         var normalized = String(value || "");
         var lower = normalized.toLowerCase();
-        if (normalized === "HexFlow" || normalized === "HexWeave" || normalized === "HexTherm" || normalized === "HexTubes_HexSheets_HexBlend" || normalized === "general") {
+        if (normalized === "HexFlow" || normalized === "HexWeave" || normalized === "HexTIM" || normalized === "HexTubes_HexSheets_HexBlend" || normalized === "general") {
           return normalized;
         }
         if (lower.indexOf("hexflow") >= 0 || lower.indexOf("hexink") >= 0 || lower.indexOf("hexlayers") >= 0) return "HexFlow";
         if (lower.indexOf("hexweave") >= 0) return "HexWeave";
-        if (lower.indexOf("hextherm") >= 0) return "HexTherm";
+        if (lower.indexOf("hextim") >= 0 || lower.indexOf("hextherm") >= 0) return "HexTIM";
         if (lower.indexOf("hextubes") >= 0 || lower.indexOf("hexsheets") >= 0 || lower.indexOf("hexblend") >= 0 || lower.indexOf("hexrubber") >= 0) return "HexTubes_HexSheets_HexBlend";
         return "general";
       }
@@ -452,6 +452,13 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 

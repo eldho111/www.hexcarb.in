@@ -2,7 +2,11 @@
   "use strict";
 
   function hasFineHoverPointer() {
-    return window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!window.matchMedia) return false;
+    return (
+      window.matchMedia("(any-hover: hover) and (any-pointer: fine)").matches ||
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    );
   }
 
   function prefersReducedMotion() {

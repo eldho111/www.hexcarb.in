@@ -7,7 +7,15 @@
 
   function initSignatureField() {
     var body = document.body;
-    if (!body || body.getAttribute("data-hc-signature-bg") !== "field") return;
+    if (!body) return;
+
+    var signatureMode = body.getAttribute("data-hc-signature-bg");
+    if (signatureMode === "history") {
+      body.classList.add("hc-signature-history");
+      return;
+    }
+
+    if (signatureMode !== "field") return;
 
     var isDesktop = window.matchMedia && window.matchMedia("(min-width: 901px)").matches;
     if (prefersReducedMotion() || !isDesktop) {

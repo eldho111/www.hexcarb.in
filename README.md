@@ -11,6 +11,7 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
 - `coming-soon.html` - AI Engine launch placeholder
 - `proof.html` - Trust/proof center (partial-assets mode)
 - `materials-selector.html` - Interactive pre-quote recommender
+- `history-of-advanced-nanomaterials.html` - Evidence-first long-scroll timeline page
 - `privacy.html` - Privacy policy
 - `case-studies/` - Case index + seed case template
   - `index.html`
@@ -24,6 +25,7 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
 - `assets/css/` - Shared design system and components
 - `assets/js/` - Shared navigation, reveal, analytics hooks, runtime config, signature interactions
 - `assets/media/` - Optimized WebP ambient and hero media
+- `assets/media/history/` - History timeline local placeholder visuals
 - `assets/icons/` - Favicon and web manifest
 
 Note: AVIF variants are not generated in this local toolchain because AVIF encoder support is unavailable. Current production path uses WebP with PNG fallback.
@@ -41,6 +43,7 @@ Open:
 - `http://localhost:5500/index.html`
 - `http://localhost:5500/shop.html`
 - `http://localhost:5500/applications/index.html`
+- `http://localhost:5500/history-of-advanced-nanomaterials.html`
 
 ## Validation
 
@@ -103,6 +106,50 @@ Tracked events:
 - `hc_proof_asset_click`
 - `hc_case_study_open`
 - `hc_theme_toggle`
+- `hc_history_milestone_view`
+- `hc_history_reference_click`
+- `hc_history_application_click`
+- `hc_history_quote_click`
+- `hc_history_growth_view`
+- `hc_history_fact_view`
+- `hc_history_gap_click`
+
+## History Page Contract
+
+History page route:
+
+- `/history-of-advanced-nanomaterials.html`
+
+History runtime files:
+
+- `assets/js/history-data.js` - normalized milestone dataset
+- `assets/js/history-page.js` - timeline rendering, sticky rail state, era growth bars, facts/gap modules, analytics hooks
+- `assets/css/hexcarb-history.css` - history-specific layout and visual modules
+
+Milestone object shape:
+
+`id`, `year_start`, `year_end`, `year_label`, `title`, `summary`, `material_family`, `breakthrough_type`, `current_use_snapshot`, `confidence_level`, `deployment_level`, `impact_tags[]`, `fact_ids[]`, `image`, `references[]`
+
+Reference object shape:
+
+`reference_id`, `title`, `url`, `source_type`, `publication_year`, `accessed_on`
+
+History supporting datasets:
+
+- `window.HEXCARB_HISTORY_ERAS` - four fixed eras used by the growth panel
+- `window.HEXCARB_HISTORY_FACTS` - evidence-backed wonder fact cards
+- `window.HEXCARB_HISTORY_ADOPTION_GAPS` - citation-backed adoption constraints
+
+History UI contract:
+
+- History page uses `data-hc-signature-bg="history"` to disable decorative node circles and keep a static scientific texture overlay.
+- Timeline rail dots are milestone anchors; era bars are data-semantic density indicators.
+
+Suggested QA for History page:
+
+```powershell
+rg -n "hc_history_growth_view|hc_history_fact_view|hc_history_gap_click" assets/js/history-page.js
+```
 
 ## Background Mapping
 

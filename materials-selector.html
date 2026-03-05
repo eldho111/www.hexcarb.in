@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260305c" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-signature.css" />
 </head>
@@ -38,8 +38,9 @@
 
       <nav class="hc-nav-links" aria-label="Primary">
         <a href="/index.html" data-nav-path="/">Home</a>
+                <a href="/history-of-advanced-nanomaterials.html" data-nav-path="/history-of-advanced-nanomaterials.html">History</a>
         <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
-        <a href="/shop.html" data-nav-path="/shop.html">Shop</a>
+        <a href="/shop.html" data-nav-path="/shop.html">Products</a>
         <a href="/materials-selector.html" data-nav-path="/materials-selector.html">Selector</a>
         <a href="/proof.html" data-nav-path="/proof.html">Proof</a>
       </nav>
@@ -55,8 +56,9 @@
 
     <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
       <a href="/index.html">Home</a>
+            <a href="/history-of-advanced-nanomaterials.html">History</a>
       <a href="/applications/index.html">Applications</a>
-      <a href="/shop.html">Shop</a>
+      <a href="/shop.html">Products</a>
       <a href="/proof.html">Proof</a>
       <a href="/quote.html" data-source-page="selector_mobile" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
       <a href="/coming-soon.html" data-ai-link="selector_mobile">AI Engine</a>
@@ -115,7 +117,7 @@
           <h2 style="margin-top:0.75rem;">Waiting for your selection</h2>
           <p style="margin-top:0.7rem;">Complete the selector to receive a suggested application pathway and product family.</p>
           <div class="hc-btn-row" style="margin-top:1rem;">
-            <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/shop.html">Browse Shop</a>
+            <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/shop.html">Browse Products</a>
           </div>
         </article>
       </div>
@@ -157,7 +159,7 @@
   </footer>
 
   <script src="/assets/js/hexcarb-config.js"></script>
-  <script src="/assets/js/hexcarb-ui.js"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20260305c"></script>
   <script src="/assets/js/hexcarb-signature.js"></script>
   <script>
     (function () {
@@ -173,7 +175,7 @@
         };
 
         if (priority === "thermal") {
-          out.family = "HexTherm";
+          out.family = "HexTIM";
           out.application = "thermal_interface_materials";
           out.note = "Thermal interface pathway prioritized for heat-transfer constraints.";
         } else if (priority === "mechanical") {
@@ -216,7 +218,7 @@
           '<p style="margin-top:0.55rem;" class="hc-muted"><strong>Industry:</strong> ' + industry + ' | <strong>Priority:</strong> ' + priority + '</p>' +
           '<div class="hc-btn-row" style="margin-top:1rem;">' +
             '<a class="hc-btn hc-btn-accent" data-hc-cta-tier="primary" href="' + quoteUrl.pathname + quoteUrl.search + '">Continue to Quote</a>' +
-            '<a class="hc-btn hc-btn-ghost" data-hc-cta-tier="tertiary" href="/shop.html">Open Shop</a>' +
+            '<a class="hc-btn hc-btn-ghost" data-hc-cta-tier="tertiary" href="/shop.html">Open Products</a>' +
           '</div>';
 
         form.dispatchEvent(new CustomEvent("hc:recommendation", {
@@ -232,3 +234,9 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+

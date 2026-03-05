@@ -8,9 +8,19 @@ body[data-hc-signature-bg="field"]::before {
   filter: blur(0.4px) saturate(114%) contrast(108%);
 }
 
+body[data-hc-signature-bg="history"]::before {
+  opacity: 0.37;
+  filter: blur(0.6px) saturate(108%) contrast(106%);
+}
+
 :root[data-theme="dark"] body[data-hc-signature-bg="field"]::before {
   opacity: 0.28;
   filter: blur(0.6px) saturate(96%) brightness(0.48) contrast(118%);
+}
+
+:root[data-theme="dark"] body[data-hc-signature-bg="history"]::before {
+  opacity: 0.24;
+  filter: blur(0.8px) saturate(92%) brightness(0.46) contrast(116%);
 }
 
 body[data-hc-signature-bg="field"]::after {
@@ -21,11 +31,25 @@ body[data-hc-signature-bg="field"]::after {
   animation: hcFieldSweep 20s ease-in-out infinite alternate;
 }
 
+body[data-hc-signature-bg="history"]::after {
+  background:
+    linear-gradient(180deg, rgba(244, 247, 251, 0.18) 0%, rgba(244, 247, 251, 0.3) 36%, rgba(244, 247, 251, 0.42) 100%),
+    radial-gradient(600px 360px at 84% 12%, rgba(142, 106, 53, 0.13), transparent 65%),
+    repeating-linear-gradient(115deg, rgba(15, 25, 36, 0.03) 0, rgba(15, 25, 36, 0.03) 2px, transparent 2px, transparent 10px);
+}
+
 :root[data-theme="dark"] body[data-hc-signature-bg="field"]::after {
   background:
     radial-gradient(760px circle at 86% 10%, rgba(142, 106, 53, 0.22), transparent 52%),
     radial-gradient(660px circle at 10% 86%, rgba(78, 124, 116, 0.2), transparent 50%),
     linear-gradient(180deg, rgba(8, 13, 20, 0.44) 0%, rgba(8, 13, 20, 0.66) 42%, rgba(8, 13, 20, 0.78) 100%);
+}
+
+:root[data-theme="dark"] body[data-hc-signature-bg="history"]::after {
+  background:
+    linear-gradient(180deg, rgba(8, 13, 20, 0.4) 0%, rgba(8, 13, 20, 0.64) 42%, rgba(8, 13, 20, 0.78) 100%),
+    radial-gradient(600px 360px at 84% 12%, rgba(142, 106, 53, 0.14), transparent 66%),
+    repeating-linear-gradient(115deg, rgba(134, 152, 169, 0.07) 0, rgba(134, 152, 169, 0.07) 2px, transparent 2px, transparent 10px);
 }
 
 .hc-signature-canvas {
@@ -43,6 +67,10 @@ body[data-hc-signature-bg="field"]::after {
 }
 
 body.hc-signature-static .hc-signature-canvas {
+  display: none;
+}
+
+body.hc-signature-history .hc-signature-canvas {
   display: none;
 }
 
