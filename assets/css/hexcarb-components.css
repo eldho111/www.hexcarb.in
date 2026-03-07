@@ -1040,6 +1040,82 @@
   backdrop-filter: blur(8px);
 }
 
+.hc-ai-hero-panel {
+  border: 1px solid rgba(15, 25, 36, 0.18);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(520px circle at 94% 10%, rgba(190, 157, 102, 0.22), transparent 46%),
+    linear-gradient(145deg, rgba(7, 15, 24, 0.92) 0%, rgba(10, 20, 31, 0.9) 54%, rgba(20, 34, 48, 0.86) 100%);
+  box-shadow: 0 28px 70px rgba(9, 16, 24, 0.22);
+  color: #fff;
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  backdrop-filter: blur(10px);
+}
+
+.hc-ai-hero-panel h1 {
+  color: #fff;
+  margin-top: 0.75rem;
+  max-width: 13ch;
+}
+
+.hc-ai-hero-lead {
+  margin-top: 1rem;
+  max-width: 62ch;
+  color: rgba(237, 244, 250, 0.92);
+  font-size: 1.05rem;
+}
+
+.hc-ai-hero-support {
+  margin-top: 0.85rem;
+  max-width: 66ch;
+  color: rgba(205, 218, 230, 0.92);
+}
+
+.hc-ai-hero-actions {
+  margin-top: 1.3rem;
+}
+
+.hc-ai-hero-note {
+  margin-top: 0.9rem;
+  color: rgba(196, 210, 223, 0.78);
+  font-size: 0.9rem;
+}
+
+.hc-ai-section-intro {
+  max-width: 760px;
+  margin-bottom: 1.15rem;
+}
+
+.hc-ai-section-intro h2 {
+  margin-top: 0.75rem;
+}
+
+.hc-ai-section-intro p {
+  margin-top: 0.8rem;
+}
+
+.hc-ai-compare {
+  font-family: var(--font-heading);
+  font-size: clamp(1.02rem, 1.5vw, 1.16rem);
+  color: var(--hc-primary);
+}
+
+.hc-ai-strategy-grid .hc-card {
+  min-height: 100%;
+  padding: 1.1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 248, 251, 0.9) 100%);
+  border-color: rgba(145, 163, 180, 0.42);
+}
+
+.hc-ai-strategy-card h3 {
+  margin-bottom: 0.55rem;
+}
+
+.hc-ai-primer-intro {
+  margin-top: 0.85rem;
+  max-width: 62ch;
+}
+
 .hc-ai-primer {
   border: 1px solid rgba(15, 25, 36, 0.16);
   border-radius: var(--radius-lg);
@@ -1106,6 +1182,98 @@
   color: var(--hc-accent);
 }
 
+.hc-ai-vision-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.hc-ai-vision-step {
+  min-height: 100%;
+  border: 1px solid rgba(15, 25, 36, 0.16);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(243, 247, 250, 0.92) 100%);
+  box-shadow: var(--shadow-soft);
+  padding: 1.15rem;
+}
+
+.hc-ai-step-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  min-height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(183, 152, 91, 0.28);
+  background: rgba(183, 152, 91, 0.14);
+  color: #7d612d;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hc-ai-vision-step h3 {
+  margin-top: 0.9rem;
+}
+
+.hc-ai-vision-step p {
+  margin-top: 0.6rem;
+}
+
+.hc-ai-access-card {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(1rem, 3vw, 1.8rem);
+  align-items: center;
+  border: 1px solid rgba(15, 25, 36, 0.18);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(420px circle at 98% 0%, rgba(111, 195, 180, 0.12), transparent 44%),
+    linear-gradient(145deg, rgba(8, 16, 25, 0.92) 0%, rgba(13, 24, 36, 0.88) 55%, rgba(24, 39, 53, 0.82) 100%);
+  padding: clamp(1.2rem, 3vw, 2rem);
+  box-shadow: var(--shadow-lift);
+  color: #fff;
+}
+
+.hc-ai-access-card h2 {
+  color: #fff;
+  margin-top: 0.75rem;
+}
+
+.hc-ai-access-card p {
+  color: rgba(229, 238, 246, 0.9);
+  margin-top: 0.8rem;
+  max-width: 52ch;
+}
+
+.hc-ai-access-actions {
+  justify-content: flex-end;
+}
+
+.hc-ai-credibility-note {
+  max-width: 760px;
+}
+
+.hc-ai-credibility-note p {
+  margin-top: 0.75rem;
+}
+
+.hc-ai-credibility-note a {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-weight: 600;
+  color: var(--hc-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(183, 152, 91, 0.44);
+  text-underline-offset: 0.18rem;
+}
+
+.hc-ai-credibility-note a:hover {
+  color: var(--hc-accent-strong, var(--hc-accent));
+}
+
 :root[data-theme="dark"] .hc-home-hero::after {
   background: radial-gradient(circle at 88% 14%, rgba(183, 152, 91, 0.2), transparent 44%), radial-gradient(circle at 8% 82%, rgba(121, 176, 166, 0.12), transparent 36%);
 }
@@ -1163,6 +1331,34 @@
   background: rgba(10, 18, 28, 0.82);
 }
 
+:root[data-theme="dark"] .hc-ai-hero-panel {
+  border-color: rgba(89, 109, 127, 0.76);
+  background:
+    radial-gradient(540px circle at 96% 8%, rgba(190, 157, 102, 0.18), transparent 44%),
+    linear-gradient(145deg, rgba(5, 11, 18, 0.94) 0%, rgba(7, 15, 24, 0.92) 56%, rgba(15, 26, 37, 0.88) 100%);
+}
+
+:root[data-theme="dark"] .hc-ai-hero-lead,
+:root[data-theme="dark"] .hc-ai-access-card p {
+  color: rgba(232, 240, 247, 0.9);
+}
+
+:root[data-theme="dark"] .hc-ai-hero-support,
+:root[data-theme="dark"] .hc-ai-hero-note {
+  color: rgba(189, 205, 219, 0.84);
+}
+
+:root[data-theme="dark"] .hc-ai-compare,
+:root[data-theme="dark"] .hc-ai-credibility-note a {
+  color: var(--hc-text);
+}
+
+:root[data-theme="dark"] .hc-ai-strategy-grid .hc-card,
+:root[data-theme="dark"] .hc-ai-vision-step {
+  background: linear-gradient(180deg, rgba(10, 18, 28, 0.82) 0%, rgba(8, 15, 24, 0.82) 100%);
+  border-color: rgba(73, 93, 111, 0.8);
+}
+
 :root[data-theme="dark"] .hc-ai-primer {
   border-color: rgba(89, 109, 127, 0.8);
   background: linear-gradient(145deg, rgba(7, 14, 22, 0.9) 0%, rgba(10, 19, 30, 0.88) 62%, rgba(16, 29, 42, 0.84) 100%);
@@ -1171,6 +1367,19 @@
 :root[data-theme="dark"] .hc-ai-primer-item {
   border-color: rgba(89, 109, 127, 0.74);
   background: linear-gradient(145deg, rgba(12, 22, 32, 0.62) 0%, rgba(9, 17, 26, 0.62) 100%);
+}
+
+:root[data-theme="dark"] .hc-ai-step-label {
+  border-color: rgba(183, 152, 91, 0.38);
+  background: rgba(183, 152, 91, 0.12);
+  color: #dfc48d;
+}
+
+:root[data-theme="dark"] .hc-ai-access-card {
+  border-color: rgba(73, 93, 111, 0.8);
+  background:
+    radial-gradient(420px circle at 98% 0%, rgba(111, 195, 180, 0.1), transparent 44%),
+    linear-gradient(145deg, rgba(6, 12, 20, 0.94) 0%, rgba(8, 16, 25, 0.92) 55%, rgba(14, 24, 35, 0.88) 100%);
 }
 
 :root[data-theme="dark"] .hc-ai-ref-list a {
@@ -1204,5 +1413,14 @@
 
   .hc-ai-primer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hc-ai-vision-strip,
+  .hc-ai-access-card {
+    grid-template-columns: 1fr;
+  }
+
+  .hc-ai-access-actions {
+    justify-content: flex-start;
   }
 }
