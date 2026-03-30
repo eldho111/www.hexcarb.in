@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="52 0 378 360" role="img" aria-labelledby="title desc">
   <title id="title">HexCarb favicon</title>
-  <desc id="desc">HexCarb HEX mark from the primary logo with a black to gold gradient.</desc>
+  <desc id="desc">HexCarb HEX mark from the primary logo with a black to gold gradient running from right to left.</desc>
   <defs>
-    <linearGradient id="brand" x1="68" y1="32" x2="414" y2="330" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#151515" />
-      <stop offset="34%" stop-color="#4a3820" />
-      <stop offset="72%" stop-color="#9d753c" />
-      <stop offset="100%" stop-color="#ebc67b" />
+    <linearGradient id="brand" x1="414" y1="180" x2="68" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#000000" />
+      <stop offset="38%" stop-color="#3b2f1b" />
+      <stop offset="72%" stop-color="#8e6a35" />
+      <stop offset="100%" stop-color="#d9ad61" />
     </linearGradient>
   </defs>
   <g transform="translate(0,359) scale(0.1,-0.1)" fill="url(#brand)" stroke="none">
