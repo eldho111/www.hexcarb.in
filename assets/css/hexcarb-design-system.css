@@ -74,6 +74,16 @@
   box-sizing: border-box;
 }
 
+/* ™ trademark — small, raised, unobtrusive */
+.hc-tm {
+  font-size: 0.45em;
+  vertical-align: super;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
 html,
 body {
   margin: 0;

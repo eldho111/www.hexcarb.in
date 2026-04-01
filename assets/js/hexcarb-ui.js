@@ -618,6 +618,36 @@
     });
   }
 
+  function initTrademark() {
+    var walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) {
+      if (n.textContent.indexOf("\u2122") !== -1) nodes.push(n);
+    }
+    nodes.forEach(function (textNode) {
+      var parent = textNode.parentNode;
+      if (!parent || parent.closest(".hc-visually-hidden, script, style, noscript")) return;
+      var frag = document.createDocumentFragment();
+      var parts = textNode.textContent.split("\u2122");
+      parts.forEach(function (part, i) {
+        if (i > 0) {
+          var tm = document.createElement("span");
+          tm.className = "hc-tm";
+          tm.textContent = "\u2122";
+          frag.appendChild(tm);
+        }
+        if (part) frag.appendChild(document.createTextNode(part));
+      });
+      parent.replaceChild(frag, textNode);
+    });
+  }
+
   window.hexTrack = track;
   initThemeMode();
 
@@ -636,5 +666,6 @@
     initAiLinkFallback();
     initPremiumCardInteraction();
     setYearTokens();
+    initTrademark();
   });
 })();
