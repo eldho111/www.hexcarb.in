@@ -648,6 +648,90 @@
     });
   }
 
+  function initCounters() {
+    if (!window.IntersectionObserver) return;
+    var targets = document.querySelectorAll("[data-count-to]");
+    if (!targets.length) return;
+    var animated = false;
+
+    function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function animateCounters() {
+      if (animated) return;
+      animated = true;
+      var duration = prefersReducedMotion() ? 0 : 1200;
+      targets.forEach(function (el) {
+        var end = parseInt(el.getAttribute("data-count-to"), 10) || 0;
+        if (duration === 0) { el.textContent = String(end); return; }
+        var start = performance.now();
+        function tick(now) {
+          var t = Math.min((now - start) / duration, 1);
+          el.textContent = String(Math.round(easeOutQuart(t) * end));
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) animateCounters();
+      });
+    }, { threshold: 0.3 });
+    targets.forEach(function (el) { observer.observe(el); });
+  }
+
+  function initFamilyNav() {
+    var nav = document.getElementById("family-nav");
+    var toc = document.getElementById("toc");
+    if (!nav || !toc || !window.IntersectionObserver) return;
+
+    var links = Array.prototype.slice.call(nav.querySelectorAll("[data-family-target]"));
+    var sections = [];
+    links.forEach(function (link) {
+      var id = link.getAttribute("data-family-target");
+      var section = document.getElementById(id);
+      if (section) sections.push({ id: id, el: section, link: link });
+    });
+
+    // Show/hide sticky nav when TOC scrolls out
+    var tocObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        nav.classList.toggle("is-visible", !entry.isIntersecting);
+      });
+    }, { threshold: 0, rootMargin: "-72px 0px 0px 0px" });
+    tocObserver.observe(toc);
+
+    // Highlight active section
+    var currentActive = null;
+    var sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          if (currentActive) currentActive.classList.remove("is-active");
+          var match = links.filter(function (l) { return l.getAttribute("data-family-target") === id; })[0];
+          if (match) {
+            match.classList.add("is-active");
+            currentActive = match;
+            // Scroll the active pill into view within the nav
+            match.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          }
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "-80px 0px -60% 0px" });
+    sections.forEach(function (s) { sectionObserver.observe(s.el); });
+
+    // Smooth scroll on click
+    links.forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        var id = link.getAttribute("data-family-target");
+        var target = document.getElementById(id);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }
+
   window.hexTrack = track;
   initThemeMode();
 
@@ -667,5 +751,7 @@
     initPremiumCardInteraction();
     setYearTokens();
     initTrademark();
+    initCounters();
+    initFamilyNav();
   });
 })();

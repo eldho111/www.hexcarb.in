@@ -1435,3 +1435,189 @@
     justify-content: flex-start;
   }
 }
+
+/* ─── Hero Stats Bar ─── */
+.hc-hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 1.4rem;
+}
+
+.hc-hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.hc-hero-stat-value {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--hc-accent);
+  line-height: 1.1;
+}
+
+.hc-hero-stat-label {
+  font-size: 0.72rem;
+  color: var(--hc-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .hc-hero-stats {
+    gap: 1.5rem;
+  }
+  .hc-hero-stat-value {
+    font-size: 1.4rem;
+  }
+}
+
+/* ─── Sticky Family Navigator ─── */
+.hc-family-nav {
+  position: sticky;
+  top: 72px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px) saturate(120%);
+  border-bottom: 1px solid var(--hc-border);
+  padding: 0.55rem 0;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dur-base) var(--ease),
+    opacity var(--dur-base) var(--ease);
+}
+
+.hc-family-nav.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hc-family-nav-inner {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hc-family-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.hc-family-nav a {
+  flex-shrink: 0;
+  border: 1px solid var(--hc-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--hc-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+
+.hc-family-nav a.is-active,
+.hc-family-nav a:hover {
+  color: var(--hc-accent);
+  border-color: var(--hc-accent);
+  background: rgba(180, 140, 60, 0.06);
+}
+
+:root[data-theme="dark"] .hc-family-nav {
+  background: rgba(8, 14, 22, 0.92);
+  border-bottom-color: rgba(70, 92, 114, 0.4);
+}
+
+:root[data-theme="dark"] .hc-family-nav a {
+  border-color: rgba(70, 92, 114, 0.5);
+  color: rgba(157, 180, 201, 0.8);
+}
+
+:root[data-theme="dark"] .hc-family-nav a.is-active,
+:root[data-theme="dark"] .hc-family-nav a:hover {
+  color: #f0ce91;
+  border-color: rgba(203, 171, 110, 0.7);
+  background: rgba(180, 140, 60, 0.08);
+}
+
+/* ─── Product Card Badge ─── */
+.hc-product-badge {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.hc-product-badge[data-tier="rd"] {
+  color: var(--hc-accent);
+  border: 1px solid rgba(164, 122, 59, 0.3);
+  background: rgba(180, 140, 60, 0.07);
+}
+
+.hc-product-badge[data-tier="scale"] {
+  color: var(--hc-green);
+  border: 1px solid rgba(61, 143, 130, 0.3);
+  background: rgba(61, 143, 130, 0.07);
+}
+
+.hc-product-badge[data-tier="service"] {
+  color: #6b8db5;
+  border: 1px solid rgba(107, 141, 181, 0.3);
+  background: rgba(107, 141, 181, 0.07);
+}
+
+.hc-product-badge[data-tier="product"] {
+  color: var(--hc-text-muted);
+  border: 1px solid var(--hc-border);
+  background: rgba(196, 208, 222, 0.08);
+}
+
+/* ─── Section Header Icons ─── */
+.hc-family-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 0.45rem;
+  color: var(--hc-accent);
+}
+
+.hc-family-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ─── CTA Button Enhancements ─── */
+@media (hover: hover) {
+  .hc-product-card .quote-btn::after {
+    content: " \2192";
+    display: inline-block;
+    transition: transform var(--dur-fast) var(--ease);
+  }
+
+  .hc-product-card:hover .quote-btn::after {
+    transform: translateX(3px);
+  }
+
+  .hc-product-card:hover .quote-btn {
+    box-shadow: 0 0 16px rgba(180, 140, 60, 0.22);
+  }
+}
