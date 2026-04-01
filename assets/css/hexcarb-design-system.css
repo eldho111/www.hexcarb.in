@@ -13,19 +13,19 @@
   --hc-text-muted: #3f5268;
   --hc-page-bg: #f2f5fa;
 
-  --font-heading: "Sora", "Avenir Next", "Segoe UI", sans-serif;
-  --font-body: "Public Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
   --fs-hero: clamp(2.3rem, 4.8vw, 3.45rem);
-  --lh-hero: 1.14;
+  --lh-hero: 1.16;
   --fs-h1: clamp(2rem, 3.9vw, 2.65rem);
-  --lh-h1: 1.18;
+  --lh-h1: 1.20;
   --fs-h2: clamp(1.72rem, 3vw, 2.1rem);
   --lh-h2: 1.2;
   --fs-h3: clamp(1.3rem, 2.1vw, 1.5rem);
   --lh-h3: 1.28;
   --fs-body: 1rem;
-  --lh-body: 1.62;
+  --lh-body: 1.6;
   --fs-small: 0.875rem;
   --lh-small: 1.58;
 

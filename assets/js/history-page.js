@@ -256,7 +256,7 @@
     group.id = "hc-ref-group-facts";
 
     var head = documentObj.createElement("h3");
-    head.textContent = "Wonder Facts - Reference Pack";
+    head.textContent = "Key Facts — Sources";
     group.appendChild(head);
 
     var list = documentObj.createElement("ol");
@@ -307,7 +307,7 @@
     group.id = "hc-ref-group-gaps";
 
     var head = documentObj.createElement("h3");
-    head.textContent = "Adoption Gap - Reference Pack";
+    head.textContent = "Adoption Challenges — Sources";
     group.appendChild(head);
 
     var list = documentObj.createElement("ol");
@@ -361,7 +361,7 @@
 
     var label = documentObj.createElement("span");
     label.className = "hc-kicker";
-    label.textContent = "Wonder Fact";
+    label.textContent = "Key Fact";
 
     var confidence = documentObj.createElement("span");
     confidence.className = "hc-history-confidence hc-history-confidence-" + (fact.confidence_level || "strong");
@@ -455,7 +455,7 @@
       '<p class="hc-history-era-thesis">' +
       era.thesis +
       "</p>" +
-      '<div class="hc-history-era-track" aria-hidden="true"><span style="height:' +
+      '<div class="hc-history-era-track" aria-hidden="true"><span style="width:' +
       String(Math.max(fillPercent, 8)) +
       '%"></span></div>' +
       '<div class="hc-history-era-meta">' +

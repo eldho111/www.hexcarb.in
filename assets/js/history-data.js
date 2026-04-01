@@ -8,13 +8,13 @@
       year_start: 1958,
       year_end: 1958,
       year_label: "1958",
-      title: "Graphite oxidation methods formalize routes to graphene-oxide precursors",
+      title: "A chemistry recipe that still powers graphene production today",
       summary:
-        "The Hummers oxidation approach helped standardize oxidized graphitic feedstocks, later used in modern graphene-oxide and reduced-graphene workflows.",
+        "The Hummers method for oxidizing graphite — developed in 1958 — remains the starting point for making graphene oxide in labs and factories worldwide.",
       material_family: "Graphene oxide (GO)",
       breakthrough_type: "Synthesis chemistry",
       current_use_snapshot:
-        "GO chemistry remains common in coatings, membranes, composites, and functional ink research pipelines.",
+        "Graphene oxide chemistry is still widely used in coatings, membranes, composites, and conductive inks.",
       image: "/assets/media/history/timeline-v2-01.svg",
       references: [
         {
@@ -33,13 +33,13 @@
       year_start: 1976,
       year_end: 1976,
       year_label: "1976",
-      title: "Vapor-grown carbon fibers establish high-aspect-ratio carbon growth pathways",
+      title: "Growing carbon fibers from gas — the technique behind nanotubes",
       summary:
-        "Catalytic vapor growth work in the 1970s created process knowledge that later informed carbon nanofiber and nanotube manufacturing methods.",
+        "Scientists learned to grow thin carbon fibers from vapor in the 1970s. That same process knowledge later made nanotube manufacturing possible.",
       material_family: "Carbon nanofibers / hybrid carbon systems",
       breakthrough_type: "Process foundation",
       current_use_snapshot:
-        "CNF-derived know-how is still used in conductive additives, structural composites, and precursor process design.",
+        "The techniques developed here are still used to make conductive additives, strong composites, and carbon nanofibers.",
       image: "/assets/media/history/timeline-v2-02.svg",
       references: [
         {
@@ -58,13 +58,13 @@
       year_start: 1985,
       year_end: 1985,
       year_label: "1985",
-      title: "C60 fullerenes are identified as a new carbon allotrope class",
+      title: "A soccer-ball-shaped carbon molecule opens a new era",
       summary:
-        "Discovery of buckminsterfullerene expanded carbon nanomaterial science beyond graphite and diamond, opening molecular-scale carbon design directions.",
+        "The discovery of C60 buckminsterfullerene showed carbon could form perfect molecular cages — expanding possibilities far beyond graphite and diamond.",
       material_family: "Fullerenes",
       breakthrough_type: "Allotrope discovery",
       current_use_snapshot:
-        "Fullerene chemistry remains active in organic electronics, photovoltaic research, and specialized additive systems.",
+        "Fullerenes are still used in organic electronics, solar cell research, and specialty chemical formulations.",
       image: "/assets/media/history/timeline-v2-03.svg",
       references: [
         {
@@ -83,13 +83,13 @@
       year_start: 1988,
       year_end: 1989,
       year_label: "Late 1980s",
-      title: "Detonation routes accelerate nanoscale diamond powder availability",
+      title: "Explosions create nanoscale diamonds — at industrial scale",
       summary:
-        "Detonation synthesis routes gave nanodiamond a scalable entry point for polishing, tribology, and surface-functional systems.",
+        "Controlled detonation methods made it possible to produce nanodiamond particles in bulk — opening the door to ultra-hard polishing and coating applications.",
       material_family: "Nanodiamond",
       breakthrough_type: "Scale-up pathway",
       current_use_snapshot:
-        "Nanodiamond is currently used or evaluated in lubricants, coatings, polishing compounds, and biomedical surface engineering.",
+        "Nanodiamond is used in lubricants, precision polishing, wear-resistant coatings, and biomedical surface treatments.",
       image: "/assets/media/history/timeline-v2-04.svg",
       references: [
         {
@@ -108,13 +108,13 @@
       year_start: 1991,
       year_end: 1991,
       year_label: "1991",
-      title: "Multi-walled carbon nanotubes are reported with high-impact microscopy evidence",
+      title: "The paper that launched the nanotube revolution",
       summary:
-        "Iijima's helical microtubule report became a central milestone for nanotube science and a trigger for rapid global research growth.",
+        "Iijima's 1991 electron microscopy images of multi-walled carbon nanotubes sparked worldwide research and turned nanotubes into a household name in science.",
       material_family: "MWCNT",
       breakthrough_type: "Foundational observation",
       current_use_snapshot:
-        "MWCNT systems are now widely evaluated for conductivity networks, reinforcement, and EMI-related composite design.",
+        "MWCNTs are now used to add conductivity and strength to plastics, coatings, and electromagnetic shielding materials.",
       image: "/assets/media/history/timeline-v2-05.svg",
       references: [
         {
@@ -133,13 +133,13 @@
       year_start: 1993,
       year_end: 1993,
       year_label: "1993",
-      title: "Single-walled nanotube growth is demonstrated using transition-metal catalysts",
+      title: "Single-walled nanotubes — thinner, purer, and electronically tuneable",
       summary:
-        "Catalyst-supported synthesis routes established SWCNT as a practical research material with tunable morphology and high-value electronic behavior.",
+        "Using metal catalysts, researchers grew single-walled carbon nanotubes for the first time — opening the door to controllable electronic properties.",
       material_family: "SWCNT",
       breakthrough_type: "Catalytic synthesis",
       current_use_snapshot:
-        "SWCNTs are now used or assessed for high-performance conductive networks, sensing, and advanced thermal-electrical interfaces.",
+        "SWCNTs are now used in conductive films, sensors, thermal interfaces, and high-performance electronics.",
       image: "/assets/media/history/timeline-v2-06.svg",
       references: [
         {
@@ -158,13 +158,13 @@
       year_start: 1996,
       year_end: 1996,
       year_label: "1996",
-      title: "Crystalline ropes of metallic carbon nanotubes support property-scale studies",
+      title: "Nanotube ropes reveal their true electrical potential",
       summary:
-        "Purified and assembled SWNT rope studies improved understanding of transport and structure-property links relevant to engineering use.",
+        "By assembling purified nanotubes into crystalline ropes, scientists measured their electrical and structural properties — key data for engineering applications.",
       material_family: "SWCNT",
       breakthrough_type: "Characterization advance",
       current_use_snapshot:
-        "Modern SWCNT process qualification still depends on lot-level morphology and transport characterization.",
+        "Quality control for modern SWCNT products still relies on the same characterization methods developed here.",
       image: "/assets/media/history/timeline-v2-07.svg",
       references: [
         {
@@ -183,13 +183,13 @@
       year_start: 1998,
       year_end: 1998,
       year_label: "1998",
-      title: "Graphene oxide structural models are clarified with spectroscopy-led analysis",
+      title: "Understanding graphene oxide — the key to controlling it",
       summary:
-        "Structural interpretation of GO chemistry improved reduction strategies and process controls used in functional graphene derivatives.",
+        "Detailed spectroscopy work revealed the actual structure of graphene oxide, giving chemists better control over how to process and reduce it.",
       material_family: "Graphene oxide (GO)",
       breakthrough_type: "Structure model",
       current_use_snapshot:
-        "GO and rGO systems are currently used in antistatic coatings, membranes, inks, and multifunctional composite studies.",
+        "GO and reduced GO are used today in anti-static coatings, water filtration membranes, conductive inks, and composites.",
       image: "/assets/media/history/timeline-v2-08.svg",
       references: [
         {
@@ -208,13 +208,13 @@
       year_start: 2004,
       year_end: 2004,
       year_label: "2004",
-      title: "Isolated graphene devices trigger a new era of two-dimensional carbon engineering",
+      title: "Graphene isolated for the first time — and it works",
       summary:
-        "The electric-field-effect demonstration in atomically thin carbon accelerated fundamental and applied graphene research worldwide.",
+        "Using sticky tape on graphite, researchers isolated single-atom-thick graphene and proved it conducted electricity — launching a global research boom.",
       material_family: "Graphene",
       breakthrough_type: "Device milestone",
       current_use_snapshot:
-        "Graphene development now spans coatings, thermal pathways, barrier layers, sensors, and electronic interface materials.",
+        "Graphene is now used or tested in coatings, heat spreaders, barrier films, sensors, and flexible electronics.",
       image: "/assets/media/history/timeline-v2-09.svg",
       references: [
         {
@@ -233,13 +233,13 @@
       year_start: 2008,
       year_end: 2008,
       year_label: "2008",
-      title: "Graphene thermal transport results elevate heat-spreading design interest",
+      title: "Graphene conducts heat better than almost anything",
       summary:
-        "Measured high intrinsic thermal conductivity made graphene a key candidate for next-generation heat management architectures.",
+        "Lab measurements showed graphene's thermal conductivity is among the highest ever recorded — making it a top candidate for cooling electronics.",
       material_family: "Graphene",
       breakthrough_type: "Property benchmark",
       current_use_snapshot:
-        "Graphene-derived fillers are currently used or evaluated in TIMs, thermal films, and compact electronics packaging.",
+        "Graphene-based materials are now used in thermal pads, heat-spreading films, and electronics packaging.",
       image: "/assets/media/history/timeline-v2-10.svg",
       references: [
         {
@@ -258,13 +258,13 @@
       year_start: 2009,
       year_end: 2009,
       year_label: "2009",
-      title: "Large-area CVD graphene pathways improve transfer toward manufacturing",
+      title: "Growing graphene on copper foil — a manufacturing breakthrough",
       summary:
-        "Copper-foil CVD demonstrated practical routes to broader-area graphene films, improving manufacturability research.",
+        "By growing graphene on copper foil using chemical vapor deposition, researchers showed it was possible to make large sheets — moving graphene toward real manufacturing.",
       material_family: "Graphene",
       breakthrough_type: "Scale process",
       current_use_snapshot:
-        "Large-area film pathways are now used in R&D and pilot lines for sensors, shielding layers, and specialty coatings.",
+        "CVD graphene films are now used in R&D and pilot production for sensors, shielding, and specialty coatings.",
       image: "/assets/media/history/timeline-v2-01.svg",
       references: [
         {
@@ -283,13 +283,13 @@
       year_start: 2010,
       year_end: 2010,
       year_label: "2010",
-      title: "Graphene receives Nobel-level validation and mainstream technical visibility",
+      title: "Graphene wins the Nobel Prize in Physics",
       summary:
-        "Recognition of graphene breakthroughs accelerated institutional research investment and industrial technology scouting.",
+        "Geim and Novoselov received the 2010 Nobel Prize for their graphene work, bringing massive research funding and industrial interest worldwide.",
       material_family: "Graphene",
       breakthrough_type: "Scientific recognition",
       current_use_snapshot:
-        "The post-2010 cycle increased multi-industry qualification programs for carbon nanomaterial-enabled products.",
+        "The Nobel Prize triggered a wave of industry programs to qualify graphene for commercial products.",
       image: "/assets/media/history/timeline-v2-02.svg",
       references: [
         {
@@ -308,13 +308,13 @@
       year_start: 2012,
       year_end: 2012,
       year_label: "2012",
-      title: "Graphene-based membranes show selective transport behavior",
+      title: "Graphene membranes can filter water while blocking gases",
       summary:
-        "Membrane studies highlighted how atomically thin carbon structures can support selective transport and barrier engineering concepts.",
+        "Research showed that graphene-based membranes allow water to pass through while blocking other molecules — a breakthrough for filtration and barrier applications.",
       material_family: "Graphene / GO",
       breakthrough_type: "Application mechanism",
       current_use_snapshot:
-        "Membrane and barrier concepts are now widely explored in filtration, packaging, and corrosion-control material systems.",
+        "Graphene membranes are being explored for water filtration, protective packaging, and anti-corrosion coatings.",
       image: "/assets/media/history/timeline-v2-03.svg",
       references: [
         {
@@ -333,13 +333,13 @@
       year_start: 2013,
       year_end: 2013,
       year_label: "2013",
-      title: "CNT manufacturing review maps the path from promise to production controls",
+      title: "Nanotubes go commercial — with manufacturing challenges mapped out",
       summary:
-        "Comprehensive manufacturing reviews clarified dispersion, purification, and consistency constraints needed for commercial reliability.",
+        "A landmark review catalogued the real challenges of producing nanotubes at scale: consistency, purity, and dispersion — the roadmap for industrial CNT.",
       material_family: "SWCNT / MWCNT",
       breakthrough_type: "Industrial readiness",
       current_use_snapshot:
-        "Today's procurement-grade CNT programs still rely on the same consistency, purity, and process-window controls.",
+        "The same quality challenges identified here — consistency, purity, dispersion — still define CNT procurement today.",
       image: "/assets/media/history/timeline-v2-04.svg",
       references: [
         {
@@ -358,13 +358,13 @@
       year_start: 2015,
       year_end: 2016,
       year_label: "2015-2016",
-      title: "Layered and hybrid 2D-carbon stacks expand system-level design options",
+      title: "Stacking different 2D materials together — like Lego for atoms",
       summary:
-        "van der Waals assembly concepts reinforced multi-material integration strategies for transport, sensing, and interface control.",
+        "Researchers showed that layering graphene with other 2D materials creates hybrid structures with tuneable properties — a powerful design tool.",
       material_family: "Graphene / hybrid carbon systems",
       breakthrough_type: "System integration",
       current_use_snapshot:
-        "Hybrid stack design is now commonly evaluated in advanced electronics, sensing layers, and functional coatings.",
+        "Hybrid 2D stacks are now being tested in advanced electronics, sensors, and high-performance coatings.",
       image: "/assets/media/history/timeline-v2-05.svg",
       references: [
         {
@@ -383,13 +383,13 @@
       year_start: 2016,
       year_end: 2017,
       year_label: "2016-2017",
-      title: "Conductive composite pathways mature for ESD and EMI-focused product classes",
+      title: "Carbon additives make plastics conductive — at production scale",
       summary:
-        "CNT, graphene, and conductive carbon-black additives advanced in polymer compounding programs targeting electrical conductivity and shielding performance.",
+        "CNT, graphene, and carbon black additives matured to the point where they could reliably add electrical conductivity and EMI shielding to mass-produced plastics.",
       material_family: "CNT / graphene / conductive carbon black systems",
       breakthrough_type: "Application scaling",
       current_use_snapshot:
-        "Conductive carbon networks are currently deployed in selected housings, cables, coatings, and molded compound programs.",
+        "Carbon-based conductive compounds are now in production for device housings, cables, coatings, and molded parts.",
       image: "/assets/media/history/timeline-v2-06.svg",
       references: [
         {
@@ -408,13 +408,13 @@
       year_start: 2018,
       year_end: 2019,
       year_label: "2018-2019",
-      title: "Flexible and wearable architectures increase demand for carbon nano-enabled conductors",
+      title: "Wearable tech needs flexible conductors — carbon delivers",
       summary:
-        "Wearable electronics research accelerated use of lightweight conductive and strain-sensitive carbon nanomaterial networks.",
+        "The rise of smart watches, health monitors, and e-textiles drove demand for lightweight, flexible conductive materials based on carbon nanotubes and graphene.",
       material_family: "SWCNT / graphene / CNF",
       breakthrough_type: "Wearable transition",
       current_use_snapshot:
-        "Carbon nanomaterials are now commonly evaluated for smart textiles, skin-adjacent sensing, and low-mass wiring concepts.",
+        "Carbon nanomaterials are now used in smart textiles, health sensors, and lightweight wiring for wearable devices.",
       image: "/assets/media/history/timeline-v2-07.svg",
       references: [
         {
@@ -433,13 +433,13 @@
       year_start: 2020,
       year_end: 2021,
       year_label: "2020-2021",
-      title: "Energy-storage programs deepen interest in conductive carbon nano-additives",
+      title: "Better batteries need better carbon — nanotubes and graphene step in",
       summary:
-        "Battery and supercapacitor R&D continued to evaluate graphene and nanotube additives for transport pathways and electrode architecture tuning.",
+        "Battery and supercapacitor researchers turned to graphene and nanotube additives to improve conductivity and performance inside electrodes.",
       material_family: "Graphene / CNT",
       breakthrough_type: "Energy integration",
       current_use_snapshot:
-        "Carbon nanomaterials remain active in energy-storage design workflows, especially for conductivity and rate-performance optimization.",
+        "Carbon nanomaterials are actively used in battery and supercapacitor development, especially for improving charge rate and conductivity.",
       image: "/assets/media/history/timeline-v2-08.svg",
       references: [
         {
@@ -458,13 +458,13 @@
       year_start: 2022,
       year_end: 2023,
       year_label: "2022-2023",
-      title: "Thermal interface and packaging programs prioritize carbon-enabled heat-path engineering",
+      title: "Chips get hotter — carbon materials cool them down",
       summary:
-        "As power densities rise, graphene- and nanotube-assisted thermal pathways gain renewed relevance in interface and spreader architectures.",
+        "As processors pack more power into smaller spaces, graphene and nanotube thermal pads and spreaders become critical for keeping electronics cool.",
       material_family: "Graphene / CNT / TIM hybrids",
       breakthrough_type: "Thermal management focus",
       current_use_snapshot:
-        "Current work targets lower thermal resistance, improved bond-line stability, and manufacturable thermal stacks.",
+        "Active development targets better thermal pads, more reliable interfaces, and scalable manufacturing of thermal products.",
       image: "/assets/media/history/timeline-v2-09.svg",
       references: [
         {
@@ -483,13 +483,13 @@
       year_start: 2024,
       year_end: 2026,
       year_label: "2024-2026",
-      title: "Digital and AI-guided materials workflows begin shaping faster formulation cycles",
+      title: "AI meets materials science — faster development, smarter choices",
       summary:
-        "Data-driven screening and surrogate models increasingly support candidate selection, experiment prioritization, and qualification planning.",
+        "Machine learning and data-driven tools now help researchers screen materials faster, prioritise experiments, and reduce time-to-market.",
       material_family: "Hybrid carbon systems",
       breakthrough_type: "Workflow acceleration",
       current_use_snapshot:
-        "Teams now combine physical experiments with data-guided iteration to reduce development loops and improve technical decision quality.",
+        "Leading teams now combine lab experiments with AI-guided iteration to develop materials faster and make better decisions.",
       image: "/assets/media/history/timeline-v2-10.svg",
       references: [
         {
@@ -670,9 +670,9 @@
   windowObj.HEXCARB_HISTORY_FACTS = [
     {
       fact_id: "fact_hummers_route",
-      title: "GO scale begins with old but still relevant oxidation chemistry",
+      title: "A 1958 recipe still powers today's graphene oxide production",
       statement:
-        "The 1958 Hummers route remains a practical baseline for graphite oxide feedstocks used in modern GO and rGO process chains.",
+        "The Hummers oxidation method — nearly 70 years old — is still the most common starting point for making graphene oxide in labs and factories.",
       material_family: "Graphene oxide (GO)",
       confidence_level: "established",
       references: [
@@ -688,9 +688,9 @@
     },
     {
       fact_id: "fact_fullerene_allotrope",
-      title: "Carbon allotrope discoveries repeatedly reset the field",
+      title: "New forms of carbon keep reshaping the industry",
       statement:
-        "Fullerenes (1985), then graphene recognition (2010 Nobel context), show how carbon allotrope discoveries can rapidly reframe materials priorities.",
+        "Fullerenes in 1985, then graphene's Nobel Prize in 2010 — each new carbon discovery rapidly changed what materials scientists thought was possible.",
       material_family: "Fullerenes / Graphene",
       confidence_level: "established",
       references: [
@@ -714,9 +714,9 @@
     },
     {
       fact_id: "fact_cnt_current_density",
-      title: "Nanotubes tolerate extreme current densities in laboratory studies",
+      title: "Nanotubes can carry far more current than copper",
       statement:
-        "Individual nanotubes have demonstrated current-density tolerance well beyond traditional copper limits in foundational transport studies.",
+        "In lab tests, individual carbon nanotubes handle current densities far beyond what copper wires can tolerate — a key reason for their use in electronics.",
       material_family: "SWCNT / MWCNT",
       confidence_level: "strong",
       references: [
@@ -740,9 +740,9 @@
     },
     {
       fact_id: "fact_graphene_strength",
-      title: "Graphene combines atomic thinness with high measured strength",
+      title: "Graphene is one atom thick but stronger than steel",
       statement:
-        "Nanoindentation studies report very high intrinsic strength for monolayer graphene, helping explain sustained interest in reinforced interfaces.",
+        "Lab measurements show monolayer graphene has extraordinary strength for its thickness — one reason it's so valued for reinforced materials and coatings.",
       material_family: "Graphene",
       confidence_level: "established",
       references: [
@@ -758,9 +758,9 @@
     },
     {
       fact_id: "fact_graphene_thermal_transport",
-      title: "Graphene thermal transport data drove TIM and spreader interest",
+      title: "Graphene is one of the best heat conductors ever measured",
       statement:
-        "High intrinsic thermal conductivity measurements pushed graphene into heat-spreading and interface-material research programs.",
+        "Graphene's exceptional thermal conductivity drove its adoption into heat spreaders and thermal interface materials for electronics cooling.",
       material_family: "Graphene / TIM",
       confidence_level: "strong",
       references: [
@@ -776,9 +776,9 @@
     },
     {
       fact_id: "fact_graphene_impermeability",
-      title: "Atomically thin graphene-based membranes can be selective barriers",
+      title: "Graphene membranes let water through but block gases",
       statement:
-        "Experimental work showed selective transport behavior in graphene-based membranes, expanding barrier and membrane application pathways.",
+        "Graphene-based membranes can selectively filter molecules — letting water pass while blocking helium — opening up filtration and barrier applications.",
       material_family: "Graphene / GO",
       confidence_level: "strong",
       references: [
@@ -802,9 +802,9 @@
     },
     {
       fact_id: "fact_large_area_graphene",
-      title: "Large-area CVD was a pivotal manufacturing step",
+      title: "Growing graphene on copper foil changed the game",
       statement:
-        "Copper-foil CVD enabled larger-area graphene film routes, moving field momentum from laboratory flakes toward manufacturing-relevant workflows.",
+        "CVD on copper foil made it possible to grow large sheets of graphene — moving it from tiny lab flakes to manufacturing-ready films.",
       material_family: "Graphene",
       confidence_level: "strong",
       references: [
@@ -820,9 +820,9 @@
     },
     {
       fact_id: "fact_cnt_commercial_signal",
-      title: "CNTs moved from novelty to commercial materials engineering",
+      title: "Nanotubes went from lab curiosity to commercial material",
       statement:
-        "By the early 2010s, review evidence already showed carbon nanotubes entering selected commercial pathways with persistent scale and consistency constraints.",
+        "By the early 2010s, carbon nanotubes were already in commercial products — though challenges with scale and consistency remained.",
       material_family: "CNT",
       confidence_level: "established",
       references: [
@@ -838,9 +838,9 @@
     },
     {
       fact_id: "fact_2d_integration_challenge",
-      title: "Material promise is high, but integration remains the hard part",
+      title: "The material works — getting it into products is the challenge",
       statement:
-        "Recent perspective work highlights integration, process compatibility, and reliability as key hurdles for broader 2D-material deployment.",
+        "The biggest hurdles for 2D materials aren't performance — they're integration, process compatibility, and long-term reliability in real products.",
       material_family: "Graphene / 2D hybrids",
       confidence_level: "strong",
       references: [
@@ -856,9 +856,9 @@
     },
     {
       fact_id: "fact_iso_standardization_need",
-      title: "Standard language and metrology remain essential for procurement trust",
+      title: "Without standards, buyers and sellers can't agree on quality",
       statement:
-        "Terminology and characterization standards are still a prerequisite for consistent qualification between suppliers, labs, and production teams.",
+        "Shared terminology and testing standards (like ISO specs) are essential for suppliers, labs, and production teams to work together reliably.",
       material_family: "Cross-material",
       confidence_level: "established",
       references: [
@@ -874,9 +874,9 @@
     },
     {
       fact_id: "fact_energy_pathways",
-      title: "Carbon nanomaterials remain central in energy device optimization",
+      title: "Batteries and supercapacitors rely on carbon nanomaterials",
       statement:
-        "Graphene and related hybrid systems continue to be evaluated for transport pathways and electrode architecture in energy conversion and storage.",
+        "Graphene and nanotube additives improve how batteries and supercapacitors conduct electricity and store energy — a major active research area.",
       material_family: "Graphene / CNT",
       confidence_level: "strong",
       references: [
@@ -892,9 +892,9 @@
     },
     {
       fact_id: "fact_ai_materials_acceleration",
-      title: "AI workflows can shorten candidate-screening loops, but need strong data discipline",
+      title: "AI speeds up material discovery — but still needs real experiments",
       statement:
-        "Materials informatics methods can accelerate screening and prioritization when paired with robust experimental validation and process context.",
+        "Machine learning helps screen candidates faster and prioritise experiments, but the results only matter when validated by real lab testing.",
       material_family: "Hybrid carbon systems",
       confidence_level: "emerging",
       references: [
@@ -913,10 +913,10 @@
   windowObj.HEXCARB_HISTORY_ADOPTION_GAPS = [
     {
       gap_id: "gap_purity_consistency",
-      title: "Purity and lot-to-lot consistency still limit scale confidence",
+      title: "Every batch needs to be the same — and that's still hard",
       summary:
-        "Programs often stall between pilot and volume production when morphology, impurity profile, or dispersion behavior drifts across lots.",
-      constraint_type: "process_consistency",
+        "Scaling up often stalls when batches aren't consistent. Small changes in purity, shape, or how the material disperses can derail a production run.",
+      constraint_type: "Batch consistency",
       references: [
         {
           reference_id: "gap_devolder_2013",
@@ -930,10 +930,10 @@
     },
     {
       gap_id: "gap_dispersion_interface",
-      title: "Dispersion and interface engineering remain application-critical bottlenecks",
+      title: "Mixing nanomaterials evenly into products is harder than it sounds",
       summary:
-        "Material performance depends on matrix compatibility, functionalization route, and stable microstructure after processing.",
-      constraint_type: "dispersion_interface",
+        "Performance depends on how well the material blends with its host — the right chemistry, even distribution, and stability through processing.",
+      constraint_type: "Dispersion & mixing",
       references: [
         {
           reference_id: "gap_nature_roadmap_2012",
@@ -947,10 +947,10 @@
     },
     {
       gap_id: "gap_qualification_cycles",
-      title: "Qualification cycles are long for regulated and reliability-heavy sectors",
+      title: "Getting approved takes time — especially in aerospace and electronics",
       summary:
-        "Electronics, aerospace, and energy teams require evidence packages, protocol alignment, and repeatability data before procurement scale-up.",
-      constraint_type: "qualification_timeline",
+        "Industries like aerospace and electronics need extensive testing, documentation, and repeatability data before they'll buy at scale.",
+      constraint_type: "Qualification timeline",
       references: [
         {
           reference_id: "gap_akinwande_2019",
@@ -972,10 +972,10 @@
     },
     {
       gap_id: "gap_cost_performance",
-      title: "Cost-to-performance windows are still use-case specific",
+      title: "The cost only makes sense if the performance gain is big enough",
       summary:
-        "These materials are powerful, but deployment depends on total-system value, process compatibility, and required reliability margins.",
-      constraint_type: "commercial_tradeoff",
+        "Carbon nanomaterials are powerful, but whether they're worth the cost depends on the specific application, process fit, and reliability needs.",
+      constraint_type: "Cost vs. performance",
       references: [
         {
           reference_id: "gap_devolder_2013_b",
