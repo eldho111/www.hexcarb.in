@@ -6,16 +6,16 @@
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb™ | Request a Quote</title>
-  <meta name="description" content="Structured quote intake for HexCarb™ applications, material families, quantity bands, and process constraints." />
+  <meta name="description" content="Request a quote for HexCarb™ carbon nanomaterials. Tell us what you need and we'll recommend the right material." />
   <link rel="canonical" href="https://www.hexcarb.in/quote.html" />
   <meta property="og:title" content="HexCarb™ | Request a Quote" />
-  <meta property="og:description" content="Submit your application and process requirements to receive a qualified material recommendation and quote." />
+  <meta property="og:description" content="Tell us about your application and requirements. We'll recommend the right HexCarb™ material and send you a quote." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.hexcarb.in/quote.html" />
   <meta property="og:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="HexCarb™ | Request a Quote" />
-  <meta name="twitter:description" content="Share technical and commercial requirements through a guided quote workflow." />
+  <meta name="twitter:description" content="Tell us about your application and requirements. We'll recommend the right HexCarb™ material and send you a quote." />
   <meta name="twitter:image" content="https://www.hexcarb.in/assets/media/social/og-default.webp" />
   <meta name="hc-ga4-id" content="" />
 
@@ -78,26 +78,21 @@
   <main id="main-content">
     <section class="hc-page-hero">
       <div class="container hc-reveal">
-        <span class="hc-kicker">Quote Workflow</span>
-        <h1 style="margin-top:0.8rem;">Share your requirements and get a qualified recommendation</h1>
-        <p>Complete this guided form to route your request by application, material family, quantity band, and process constraints.</p>
-        <div class="hc-hero-badges">
-          <span class="hc-hero-badge">Technical Field Qualification</span>
-          <span class="hc-hero-badge">Procurement-Ready Context</span>
-          <span class="hc-hero-badge">Partial Proof Asset Mode</span>
-        </div>
+        <span class="hc-kicker">Get a Quote</span>
+        <h1 style="margin-top:0.8rem;">Tell us what you need</h1>
+        <p>Three quick steps — your application, technical details, and contact info. We'll get back to you with a material recommendation and pricing.</p>
       </div>
     </section>
 
     <section class="hc-command-strip-wrap">
       <div class="container">
         <div class="hc-command-strip hc-reveal" data-hc-proof-state="partial">
-          <span class="hc-kicker" style="color:rgba(255,255,255,0.9);">Before You Submit</span>
-          <h2 style="margin-top:0.65rem;">Add trust context for higher-quality review from day one</h2>
+          <span class="hc-kicker" style="color:rgba(255,255,255,0.9);">Not sure which material?</span>
+          <h2 style="margin-top:0.65rem;">These tools can help you decide before requesting a quote</h2>
           <div class="hc-command-actions">
-            <a class="hc-btn hc-btn-accent" href="/proof.html">Open Proof Center</a>
-            <a class="hc-btn hc-btn-ghost" href="/case-studies/index.html">Browse Case Narratives</a>
-            <a class="hc-btn hc-btn-ghost" href="/materials-selector.html">Run Materials Selector</a>
+            <a class="hc-btn hc-btn-accent" href="/materials-selector.html">Materials Selector</a>
+            <a class="hc-btn hc-btn-ghost" href="/case-studies/index.html">Case Studies</a>
+            <a class="hc-btn hc-btn-ghost" href="/proof.html">Test Data &amp; Proof</a>
           </div>
         </div>
       </div>
@@ -108,8 +103,8 @@
         <div class="hc-reveal">
           <div class="hc-quote-flow">
             <div class="hc-step-nav" aria-label="Quote steps">
-              <div class="hc-step-dot active" data-step-dot="1">1. Scope</div>
-              <div class="hc-step-dot" data-step-dot="2">2. Technical</div>
+              <div class="hc-step-dot active" data-step-dot="1">1. Application</div>
+              <div class="hc-step-dot" data-step-dot="2">2. Details</div>
               <div class="hc-step-dot" data-step-dot="3">3. Contact</div>
             </div>
 
@@ -127,7 +122,7 @@
               <section class="hc-step-panel" data-step-panel="1">
                 <div class="hc-field-grid">
                   <label>
-                    <span class="hc-subtle-note">Application pathway</span>
+                    <span class="hc-subtle-note">Application area</span>
                     <select name="application_pathway" id="application_pathway" required>
                       <option value="">Select</option>
                       <option value="dispersions">Dispersions</option>
@@ -159,7 +154,7 @@
               <section class="hc-step-panel" data-step-panel="2" hidden>
                 <div class="hc-field-grid">
                   <label>
-                    <span class="hc-subtle-note">Quantity band</span>
+                    <span class="hc-subtle-note">Quantity needed</span>
                     <select name="quantity_band" required>
                       <option value="">Select</option>
                       <option value="lab_less_than_1kg">Lab (&lt; 1 kg)</option>
@@ -181,8 +176,8 @@
                   </label>
 
                   <label class="hc-field-grid-full">
-                    <span class="hc-subtle-note">Target properties and process constraints</span>
-                    <textarea name="technical_requirements" required placeholder="Example: target conductivity, viscosity window, cure/dry profile, substrate, thermal delta, mechanical limits"></textarea>
+                    <span class="hc-subtle-note">What are you trying to achieve?</span>
+                    <textarea name="technical_requirements" required placeholder="e.g. improve thermal conductivity of a paste, reinforce a polymer composite, conductive coating on flexible substrate, etc."></textarea>
                   </label>
                 </div>
 
@@ -216,7 +211,7 @@
 
                   <label class="hc-field-grid-full">
                     <span class="hc-subtle-note">Additional notes</span>
-                    <textarea name="notes" placeholder="Any NDA context, test methods, qualification milestones, or procurement constraints"></textarea>
+                    <textarea name="notes" placeholder="Anything else we should know — deadlines, test methods, NDA needs, specific specs, etc."></textarea>
                   </label>
                 </div>
 
@@ -224,7 +219,7 @@
                   <button class="hc-btn hc-btn-ghost" type="button" data-prev-step="2">Back</button>
                   <button class="hc-btn hc-btn-accent" type="submit" id="quote-submit-btn">Submit Quote Request</button>
                 </div>
-                <p class="hc-inline-fallback" id="quote-status-text">After submission, we route your request to the right technical and commercial owner.</p>
+                <p class="hc-inline-fallback" id="quote-status-text">We'll review your request and get back to you within 1–2 business days.</p>
                 <p class="hc-inline-fallback" id="quote-fallback-mail" hidden>If submission fails, email <a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a> with your requirements.</p>
               </section>
             </form>
@@ -234,13 +229,12 @@
         <aside class="hc-quote-panel hc-reveal">
           <h3>What happens next</h3>
           <ul style="margin-top:0.8rem;">
-            <li>Initial triage by application and material family.</li>
-            <li>Technical fit review with process constraints.</li>
-            <li>Quote and documentation path aligned to your stage.</li>
+            <li>We review your application and requirements.</li>
+            <li>We recommend the right material and grade.</li>
+            <li>You receive pricing and lead time within 1–2 business days.</li>
           </ul>
           <div class="hc-proof-divider">
-            <span class="hc-proof-chip">Data available on request</span>
-            <p style="margin-top:0.7rem;">Detailed test packs, COA/SDS, and advanced qualification context are shared during review.</p>
+            <p style="margin-top:0.7rem;">Technical data sheets, certificates of analysis, and safety data sheets are shared during the review process.</p>
           </div>
         </aside>
       </div>
@@ -254,7 +248,7 @@
           <img class="hc-brand-logo" src="/logo-gradient.svg" alt="HexCarb™" />
           <span class="hc-visually-hidden">HexCarb™</span>
         </a>
-        <p>Structured quote intake for qualified material recommendation and commercial review.</p>
+        <p>Enterprise nanocarbon systems for thermal, electrical, and structural programs.</p>
       </div>
       <div>
         <h4>Links</h4>
@@ -385,7 +379,7 @@
             }
           }
           if (currentStep === 1 && (!appSelect.value || !familySelect.value)) {
-            statusText.textContent = "Please select pathway and material family before continuing.";
+            statusText.textContent = "Please select an application area and material family to continue.";
               return;
           }
           if (typeof window.hexTrack === "function") {
@@ -394,7 +388,7 @@
               step_id: "step_" + String(currentStep)
             });
           }
-          statusText.textContent = "After submission, we route your request to the right technical and commercial owner.";
+          statusText.textContent = "We'll review your request and get back to you within 1–2 business days.";
           showStep(target);
         });
       });
