@@ -80,7 +80,7 @@
   flex: 1 1 0;
   height: 2px;
   border-radius: 999px;
-  background: rgba(15, 25, 36, 0.14);
+  background: rgba(15, 25, 36, 0.22);
   overflow: hidden;
 }
 
@@ -277,10 +277,11 @@
 
 .hc-stat {
   border: 1px solid var(--hc-border);
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.88);
   border-radius: var(--radius-sm);
   padding: 0.85rem;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(15, 25, 36, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .hc-stat strong {
@@ -462,7 +463,7 @@
   border: 1px solid rgba(164, 181, 201, 0.42);
   border-radius: 22px;
   background:
-    linear-gradient(145deg, rgba(10, 18, 28, 0.9) 0%, rgba(16, 27, 40, 0.86) 54%, rgba(25, 39, 56, 0.88) 100%),
+    linear-gradient(145deg, rgba(10, 18, 28, 0.96) 0%, rgba(16, 27, 40, 0.94) 54%, rgba(25, 39, 56, 0.95) 100%),
     radial-gradient(620px circle at 94% 8%, rgba(183, 152, 91, 0.22), transparent 62%);
   backdrop-filter: blur(12px) saturate(125%);
   -webkit-backdrop-filter: blur(12px) saturate(125%);
@@ -1276,6 +1277,10 @@
 
 :root[data-theme="dark"] .hc-home-hero::after {
   background: radial-gradient(circle at 88% 14%, rgba(183, 152, 91, 0.2), transparent 44%), radial-gradient(circle at 8% 82%, rgba(121, 176, 166, 0.12), transparent 36%);
+}
+
+:root[data-theme="dark"] .hc-hero-rail {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 :root[data-theme="dark"] .hc-stat {
