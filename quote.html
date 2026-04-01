@@ -293,13 +293,19 @@
       var fallbackMail = document.getElementById("quote-fallback-mail");
       var currentStep = 1;
 
-      var sourcePage = query.get("source_page") || "unknown";
-      var sourceSection = query.get("source_section") || "unknown";
+      function sanitizeParam(value, allowed, fallback) {
+        var v = String(value || "").toLowerCase().replace(/[^a-z0-9_\-]/g, "");
+        if (allowed && allowed.indexOf(v) === -1) return fallback;
+        return v || fallback;
+      }
+
+      var sourcePage = sanitizeParam(query.get("source_page"), null, "unknown");
+      var sourceSection = sanitizeParam(query.get("source_section"), null, "unknown");
       var appSlug = query.get("application_slug") || "general";
       var productFamily = query.get("product_family") || "general";
-      var intentStage = query.get("intent_stage") || "evaluate";
-      var industry = query.get("industry") || "other";
-      var priority = query.get("priority") || "performance";
+      var intentStage = sanitizeParam(query.get("intent_stage"), ["evaluate", "specify", "purchase", "research"], "evaluate");
+      var industry = sanitizeParam(query.get("industry"), ["aerospace", "automotive", "electronics", "energy", "infrastructure", "wearables", "other"], "other");
+      var priority = sanitizeParam(query.get("priority"), ["performance", "cost", "scalability", "timeline"], "performance");
 
       function normalizeApplication(value) {
         var normalized = String(value || "").toLowerCase();
@@ -422,12 +428,19 @@
         formData.set("application_slug", appSelect.value || appSlug);
         formData.set("product_family", familySelect.value || productFamily);
 
+        var timeout = window.setTimeout(function () {
+          submitBtn.disabled = false;
+          statusText.textContent = "Request timed out. Please try again or email us directly.";
+          fallbackMail.hidden = false;
+        }, 30000);
+
         fetch(form.action, {
           method: "POST",
           body: formData,
           headers: { "Accept": "application/json" }
         })
           .then(function (response) {
+            window.clearTimeout(timeout);
             if (!response.ok) throw new Error("Submission failed");
             if (typeof window.hexTrack === "function") {
               window.hexTrack("hc_quote_submit_success", {
@@ -443,6 +456,7 @@
             window.location.href = "/thank-you.html?" + params.toString();
           })
           .catch(function () {
+            window.clearTimeout(timeout);
             submitBtn.disabled = false;
             statusText.textContent = "Submission could not be completed right now.";
             fallbackMail.hidden = false;
