@@ -649,7 +649,6 @@
   }
 
   function initCounters() {
-    if (!window.IntersectionObserver) return;
     var targets = document.querySelectorAll("[data-count-to]");
     if (!targets.length) return;
     var animated = false;
@@ -673,12 +672,19 @@
       });
     }
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) animateCounters();
-      });
-    }, { threshold: 0.3 });
-    targets.forEach(function (el) { observer.observe(el); });
+    // Use IntersectionObserver on the parent container if available
+    var container = targets[0].closest(".hc-hero-stats");
+    if (window.IntersectionObserver && container) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { animateCounters(); observer.disconnect(); }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(container);
+    } else {
+      // Fallback: animate after short delay
+      setTimeout(animateCounters, 800);
+    }
   }
 
   function initFamilyNav() {
