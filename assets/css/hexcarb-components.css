@@ -87,7 +87,7 @@
 .hc-hero-rail-fill {
   width: 0;
   height: 100%;
-  background: linear-gradient(90deg, var(--hc-green) 0%, var(--hc-accent) 100%);
+  background: linear-gradient(90deg, var(--hc-green) 0%, var(--hc-accent-bright) 100%);
 }
 
 .hc-hero-rail.is-active .hc-hero-rail-fill {
@@ -109,8 +109,8 @@
   display: block;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid rgba(15, 25, 36, 0.28);
-  box-shadow: 0 20px 44px rgba(15, 25, 36, 0.25);
+  border: 1px solid rgba(11, 20, 32, 0.22);
+  box-shadow: 0 24px 52px rgba(11, 20, 32, 0.3), 0 8px 20px rgba(11, 20, 32, 0.15);
   min-height: 380px;
   isolation: isolate;
   transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
@@ -276,12 +276,13 @@
 }
 
 .hc-stat {
-  border: 1px solid var(--hc-border);
+  border: 1px solid rgba(196, 208, 222, 0.6);
   background: rgba(255, 255, 255, 0.88);
   border-radius: var(--radius-sm);
   padding: 0.85rem;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(15, 25, 36, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: 0 6px 16px rgba(11, 20, 32, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .hc-stat strong {
@@ -460,19 +461,21 @@
 .hc-command-strip {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(164, 181, 201, 0.42);
+  border: 1px solid rgba(140, 160, 182, 0.3);
   border-radius: 22px;
   background:
-    linear-gradient(145deg, rgba(10, 18, 28, 0.96) 0%, rgba(16, 27, 40, 0.94) 54%, rgba(25, 39, 56, 0.95) 100%),
-    radial-gradient(620px circle at 94% 8%, rgba(183, 152, 91, 0.22), transparent 62%);
-  backdrop-filter: blur(12px) saturate(125%);
-  -webkit-backdrop-filter: blur(12px) saturate(125%);
+    radial-gradient(700px circle at 92% 6%, rgba(200, 160, 70, 0.14), transparent 55%),
+    radial-gradient(400px circle at 5% 90%, rgba(61, 143, 130, 0.06), transparent 50%),
+    linear-gradient(145deg, rgba(8, 14, 22, 0.97) 0%, rgba(14, 24, 36, 0.96) 54%, rgba(20, 34, 50, 0.97) 100%);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
   color: #fff;
   padding: clamp(1.2rem, 2.6vw, 1.85rem);
   box-shadow:
-    0 28px 60px rgba(5, 11, 18, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -1px 0 rgba(8, 15, 24, 0.56);
+    0 32px 64px rgba(5, 11, 18, 0.48),
+    0 8px 20px rgba(5, 11, 18, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(8, 15, 24, 0.6);
 }
 
 .hc-command-strip::before {
@@ -505,14 +508,15 @@
 .hc-command-pane {
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(170, 189, 210, 0.34);
+  border: 1px solid rgba(160, 180, 200, 0.22);
   border-radius: 16px;
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.04) 46%, rgba(7, 12, 19, 0.24) 100%);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 46%, rgba(7, 12, 19, 0.28) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(8, 15, 24, 0.4);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(8, 15, 24, 0.44),
+    0 4px 16px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
   min-height: 292px;
 }
 
@@ -546,12 +550,13 @@
   grid-template-columns: auto 1fr;
   gap: 0.65rem;
   align-items: start;
-  border: 1px solid rgba(172, 191, 211, 0.33);
+  border: 1px solid rgba(160, 180, 200, 0.2);
   border-radius: var(--radius-sm);
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 52%, rgba(7, 12, 19, 0.28) 100%);
-  backdrop-filter: blur(4px);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 52%, rgba(7, 12, 19, 0.3) 100%);
+  backdrop-filter: blur(6px);
   padding: 0.75rem 0.86rem;
   min-height: 80px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .hc-command-point-id {
@@ -561,13 +566,14 @@
   min-width: 34px;
   height: 34px;
   border-radius: 999px;
-  border: 1px solid rgba(203, 171, 110, 0.62);
-  background: linear-gradient(145deg, rgba(183, 152, 91, 0.32) 0%, rgba(183, 152, 91, 0.16) 100%);
+  border: 1px solid rgba(200, 160, 80, 0.55);
+  background: linear-gradient(145deg, rgba(200, 160, 70, 0.34) 0%, rgba(180, 140, 60, 0.18) 100%);
   font-family: var(--font-heading);
   font-size: 0.76rem;
   letter-spacing: 0.06em;
-  color: #f4dfb5;
+  color: #f5dfa8;
   line-height: 1;
+  box-shadow: 0 0 12px rgba(200, 160, 70, 0.1);
 }
 
 .hc-command-point h3 {
