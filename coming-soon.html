@@ -26,6 +26,19 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260401a" />
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css" />
   <link rel="stylesheet" href="/assets/css/hexcarb-signature.css" />
+  <style>
+    body.hc-premium::before {
+      background-size: auto 110%;
+      background-position: center center;
+      background-repeat: no-repeat;
+      opacity: 0.26;
+      filter: blur(6px) saturate(130%) contrast(108%);
+    }
+    :root[data-theme="dark"] body.hc-premium::before {
+      opacity: 0.18;
+      filter: blur(6px) saturate(120%) brightness(0.4) contrast(125%);
+    }
+  </style>
 </head>
 <body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-image="/3.png" data-hc-bg-video-disabled="true" style="--hc-ambient-image: url('/3.png');">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
