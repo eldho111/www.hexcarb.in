@@ -150,7 +150,7 @@ body.hc-signature-history .hc-signature-canvas {
 .hc-proof-link {
   margin-top: 0.7rem;
   display: inline-block;
-  color: var(--hc-green);
+  color: var(--hc-accent-ink, var(--hc-accent));
   font-family: var(--font-heading);
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -159,6 +159,18 @@ body.hc-signature-history .hc-signature-canvas {
 
 .hc-proof-link:hover {
   color: var(--hc-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.hc-signature-static::after {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-hc-signature-bg="field"]::after {
+    animation: none;
+  }
 }
 
 @keyframes hcFieldSweep {

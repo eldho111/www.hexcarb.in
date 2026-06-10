@@ -13,6 +13,54 @@
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
+  // Shared rAF scheduler: callers register named jobs that run at most once per frame.
+  var rafJobs = {};
+  var rafPending = false;
+
+  function scheduleFrame(name, job) {
+    rafJobs[name] = job;
+    if (rafPending) return;
+    rafPending = true;
+    window.requestAnimationFrame(function () {
+      rafPending = false;
+      var jobs = rafJobs;
+      rafJobs = {};
+      Object.keys(jobs).forEach(function (key) {
+        jobs[key]();
+      });
+    });
+  }
+
+  // Shared one-shot IntersectionObserver: fires onEnter once per element, then forgets it.
+  var sharedObserver = null;
+  var observedCallbacks = window.WeakMap ? new WeakMap() : null;
+
+  function hcObserve(el, onEnter) {
+    if (!("IntersectionObserver" in window) || !observedCallbacks) {
+      onEnter(el);
+      return;
+    }
+    if (!sharedObserver) {
+      sharedObserver = new IntersectionObserver(
+        function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var callback = observedCallbacks.get(entry.target);
+            obs.unobserve(entry.target);
+            observedCallbacks.delete(entry.target);
+            if (callback) callback(entry.target);
+          });
+        },
+        {
+          threshold: 0.12,
+          rootMargin: "0px 0px -40px 0px"
+        }
+      );
+    }
+    observedCallbacks.set(el, onEnter);
+    sharedObserver.observe(el);
+  }
+
   function isValidGaId(id) {
     return /^G-[A-Z0-9]{6,}$/i.test(String(id || "").trim());
   }
@@ -313,33 +361,10 @@
   }
 
   function initReveal() {
-    var targets = document.querySelectorAll(".hc-reveal");
-    if (!targets.length) return;
-
-    if (!("IntersectionObserver" in window)) {
-      targets.forEach(function (el) {
-        el.classList.add("in-view");
+    document.querySelectorAll(".hc-reveal").forEach(function (el) {
+      hcObserve(el, function (target) {
+        target.classList.add("in-view");
       });
-      return;
-    }
-
-    var observer = new IntersectionObserver(
-      function (entries, obs) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.12,
-        rootMargin: "0px 0px -40px 0px"
-      }
-    );
-
-    targets.forEach(function (el) {
-      observer.observe(el);
     });
   }
 
@@ -579,24 +604,47 @@
   function initPremiumCardInteraction() {
     if (prefersReducedMotion() || !hasFineHoverPointer()) return;
 
-    var cards = document.querySelectorAll(".hc-card, .hc-app-card");
-    if (!cards.length) return;
+    var activeCard = null;
+    var lastX = 0;
+    var lastY = 0;
 
-    cards.forEach(function (card) {
-      card.addEventListener("pointermove", function (event) {
-        var rect = card.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
-        var x = ((event.clientX - rect.left) / rect.width) * 100;
-        var y = ((event.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty("--hc-mx", x.toFixed(2) + "%");
-        card.style.setProperty("--hc-my", y.toFixed(2) + "%");
-      });
+    function clearCard(card) {
+      card.style.removeProperty("--hc-mx");
+      card.style.removeProperty("--hc-my");
+    }
 
-      card.addEventListener("pointerleave", function () {
-        card.style.removeProperty("--hc-mx");
-        card.style.removeProperty("--hc-my");
-      });
-    });
+    function paintGlow() {
+      if (!activeCard) return;
+      var rect = activeCard.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var x = ((lastX - rect.left) / rect.width) * 100;
+      var y = ((lastY - rect.top) / rect.height) * 100;
+      activeCard.style.setProperty("--hc-mx", x.toFixed(2) + "%");
+      activeCard.style.setProperty("--hc-my", y.toFixed(2) + "%");
+    }
+
+    document.addEventListener("pointermove", function (event) {
+      var card = event.target && event.target.closest
+        ? event.target.closest(".hc-card, .hc-app-card")
+        : null;
+
+      if (activeCard && activeCard !== card) {
+        clearCard(activeCard);
+      }
+      activeCard = card;
+      if (!card) return;
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+      scheduleFrame("cardGlow", paintGlow);
+    }, { passive: true });
+
+    document.addEventListener("pointerout", function (event) {
+      if (!activeCard) return;
+      if (event.relatedTarget && activeCard.contains(event.relatedTarget)) return;
+      clearCard(activeCard);
+      activeCard = null;
+    }, { passive: true });
   }
 
   function initAiLinkFallback() {
@@ -651,40 +699,42 @@
   function initCounters() {
     var targets = document.querySelectorAll("[data-count-to]");
     if (!targets.length) return;
-    var animated = false;
 
     function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
 
-    function animateCounters() {
-      if (animated) return;
-      animated = true;
+    function animateCounter(el) {
+      var end = parseInt(el.getAttribute("data-count-to"), 10) || 0;
       var duration = prefersReducedMotion() ? 0 : 1200;
-      targets.forEach(function (el) {
-        var end = parseInt(el.getAttribute("data-count-to"), 10) || 0;
-        if (duration === 0) { el.textContent = String(end); return; }
-        var start = performance.now();
-        function tick(now) {
-          var t = Math.min((now - start) / duration, 1);
-          el.textContent = String(Math.round(easeOutQuart(t) * end));
-          if (t < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      });
+      if (duration === 0) { el.textContent = String(end); return; }
+      var start = performance.now();
+      function tick(now) {
+        var t = Math.min((now - start) / duration, 1);
+        el.textContent = String(Math.round(easeOutQuart(t) * end));
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     }
 
-    // Use IntersectionObserver on the parent container if available
-    var container = targets[0].closest(".hc-hero-stats");
-    if (window.IntersectionObserver && container) {
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) { animateCounters(); observer.disconnect(); }
-        });
-      }, { threshold: 0.1 });
-      observer.observe(container);
-    } else {
-      // Fallback: animate after short delay
-      setTimeout(animateCounters, 800);
-    }
+    // Group counters by stats container so each group fires together on scroll-in.
+    var groups = [];
+    targets.forEach(function (el) {
+      var container = el.closest(".hc-hero-stats, .hc-home-stats") || el;
+      var group = null;
+      for (var i = 0; i < groups.length; i++) {
+        if (groups[i].container === container) { group = groups[i]; break; }
+      }
+      if (!group) {
+        group = { container: container, els: [] };
+        groups.push(group);
+      }
+      group.els.push(el);
+    });
+
+    groups.forEach(function (group) {
+      hcObserve(group.container, function () {
+        group.els.forEach(animateCounter);
+      });
+    });
   }
 
   function initFamilyNav() {

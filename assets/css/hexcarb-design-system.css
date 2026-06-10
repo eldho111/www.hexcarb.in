@@ -55,6 +55,10 @@
 
   --shadow-soft: 0 10px 30px rgba(11, 20, 32, 0.1), 0 2px 6px rgba(11, 20, 32, 0.06);
   --shadow-lift: 0 20px 44px rgba(11, 20, 32, 0.16), 0 4px 12px rgba(11, 20, 32, 0.08);
+
+  /* Accent darkened for AA-readable text on light surfaces. */
+  --hc-accent-ink: #8a6526;
+  --hc-focus-ring: #8a6526;
 }
 
 :root[data-theme="dark"] {
@@ -68,6 +72,9 @@
   --hc-accent-glow: rgba(200, 160, 70, 0.12);
   --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.42), 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-lift: 0 20px 44px rgba(0, 0, 0, 0.52), 0 4px 14px rgba(0, 0, 0, 0.28);
+
+  --hc-accent-ink: #d9b15f;
+  --hc-focus-ring: #d9b15f;
 }
 
 * {
@@ -190,9 +197,15 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--hc-accent-bright);
+  /* Inner bg-colored halo keeps the ring visible on gold/dark fills alike. */
+  outline: 2px solid var(--hc-focus-ring);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(160, 121, 62, 0.22);
+  box-shadow: 0 0 0 3px var(--hc-bg);
+}
+
+.hc-btn-accent:focus-visible,
+.hc-btn-primary:focus-visible {
+  outline-color: var(--hc-heading);
 }
 
 img,
