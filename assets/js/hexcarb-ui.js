@@ -647,6 +647,48 @@
     }, { passive: true });
   }
 
+  function initMagneticButtons() {
+    if (prefersReducedMotion() || !hasFineHoverPointer()) return;
+    if (!document.querySelector("[data-hc-magnetic]")) return;
+
+    var activeBtn = null;
+    var lastX = 0;
+    var lastY = 0;
+    var MAX_PULL = 3;
+
+    function paintMagnet() {
+      if (!activeBtn) return;
+      var rect = activeBtn.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var dx = ((lastX - (rect.left + rect.width / 2)) / (rect.width / 2)) * MAX_PULL;
+      var dy = ((lastY - (rect.top + rect.height / 2)) / (rect.height / 2)) * MAX_PULL;
+      activeBtn.style.transform = "translate(" + dx.toFixed(2) + "px, " + dy.toFixed(2) + "px)";
+    }
+
+    document.addEventListener("pointermove", function (event) {
+      var btn = event.target && event.target.closest
+        ? event.target.closest("[data-hc-magnetic]")
+        : null;
+
+      if (activeBtn && activeBtn !== btn) {
+        activeBtn.style.transform = "";
+      }
+      activeBtn = btn;
+      if (!btn) return;
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+      scheduleFrame("magnetic", paintMagnet);
+    }, { passive: true });
+
+    document.addEventListener("pointerout", function (event) {
+      if (!activeBtn) return;
+      if (event.relatedTarget && activeBtn.contains(event.relatedTarget)) return;
+      activeBtn.style.transform = "";
+      activeBtn = null;
+    }, { passive: true });
+  }
+
   function initAiLinkFallback() {
     document.querySelectorAll("[data-ai-link]").forEach(function (link) {
       if (link.hasAttribute("data-track-event")) return;
@@ -805,6 +847,7 @@
     initTrackForms();
     initAiLinkFallback();
     initPremiumCardInteraction();
+    initMagneticButtons();
     setYearTokens();
     initTrademark();
     initCounters();

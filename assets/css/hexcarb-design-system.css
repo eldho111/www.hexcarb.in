@@ -290,6 +290,54 @@ video {
   background: linear-gradient(90deg, var(--hc-accent-bright), var(--hc-accent));
 }
 
+/* Scroll-driven accents — progressive enhancement, no JS, no fallback needed. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hc-kicker::before {
+      animation: hcKickerGrow linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+
+    .hc-header::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      transform-origin: left;
+      transform: scaleX(0);
+      background: linear-gradient(90deg, var(--hc-green), var(--hc-accent-bright));
+      animation: hcScrollProgress linear both;
+      animation-timeline: scroll(root);
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes hcKickerGrow {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+
+  to {
+    width: 28px;
+    opacity: 1;
+  }
+}
+
+@keyframes hcScrollProgress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
 .hc-grid {
   display: grid;
   gap: var(--space-md);
