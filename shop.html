@@ -116,6 +116,24 @@
       </div>
     </section>
 
+    <div class="hc-shop-filterbar" data-hc-shop-filterbar>
+      <div class="container hc-shop-filterbar-inner">
+        <div class="hc-shop-search-wrap">
+          <label class="hc-visually-hidden" for="hc-shop-search">Search products</label>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <input type="search" id="hc-shop-search" placeholder="Search products, formats, specs&hellip;" autocomplete="off" />
+        </div>
+        <div class="hc-filter-chips" role="group" aria-label="Filter by readiness tier">
+          <button type="button" class="hc-filter-chip is-active" data-filter-tier="all" aria-pressed="true">All</button>
+          <button type="button" class="hc-filter-chip" data-filter-tier="rd" aria-pressed="false">R&amp;D</button>
+          <button type="button" class="hc-filter-chip" data-filter-tier="scale" aria-pressed="false">Scale</button>
+          <button type="button" class="hc-filter-chip" data-filter-tier="service" aria-pressed="false">Service</button>
+          <button type="button" class="hc-filter-chip" data-filter-tier="product" aria-pressed="false">Product</button>
+        </div>
+        <span class="hc-shop-count" id="hc-shop-count" aria-live="polite"></span>
+      </div>
+    </div>
+
     <nav class="hc-family-nav" id="family-nav" aria-label="Product families">
       <div class="container hc-family-nav-inner">
         <a href="#hextubes-s" data-family-target="hextubes-s">HexTubes SW</a>
@@ -468,6 +486,7 @@
         }
 
         var clone = template.content.cloneNode(true);
+        var cardEl = clone.querySelector(".hc-product-card");
         clone.querySelector("h3").textContent = name;
         clone.querySelector(".hc-unit").textContent = unit;
         clone.querySelector(".hc-product-price").textContent = price;
@@ -487,6 +506,11 @@
           }
           badge.setAttribute("data-tier", tier);
           badge.textContent = tier === "rd" ? "R&D" : tier === "scale" ? "Scale" : tier === "service" ? "Service" : "Product";
+        }
+
+        if (cardEl) {
+          cardEl.dataset.tier = tier || "product";
+          cardEl.dataset.search = (name + " " + unit + " " + features.join(" ") + " " + section).toLowerCase();
         }
 
         var list = clone.querySelector(".hc-product-features");
@@ -570,6 +594,110 @@
 
         item.replaceWith(clone);
       });
+
+      initShopFilter();
+
+      function initShopFilter() {
+        var cards = Array.prototype.slice.call(document.querySelectorAll(".hc-product-card"));
+        var input = document.getElementById("hc-shop-search");
+        var chips = Array.prototype.slice.call(document.querySelectorAll(".hc-filter-chip"));
+        var countNode = document.getElementById("hc-shop-count");
+        if (!cards.length || !input) return;
+
+        var total = cards.length;
+        var activeTier = "all";
+        var query = "";
+        var debounceTimer = null;
+
+        function setCardVisible(card, show) {
+          if (show) {
+            if (!card.classList.contains("is-filtered-out") && !card.classList.contains("is-hiding")) return;
+            card.classList.remove("is-filtered-out");
+            window.requestAnimationFrame(function () {
+              card.classList.remove("is-hiding");
+            });
+          } else {
+            if (card.classList.contains("is-filtered-out")) return;
+            card.classList.add("is-hiding");
+            window.setTimeout(function () {
+              if (card.classList.contains("is-hiding")) card.classList.add("is-filtered-out");
+            }, 220);
+          }
+        }
+
+        function apply() {
+          var visible = 0;
+          var shown = [];
+
+          cards.forEach(function (card) {
+            var matchTier = activeTier === "all" || card.dataset.tier === activeTier;
+            var matchQuery = !query || (card.dataset.search || "").indexOf(query) !== -1;
+            var show = matchTier && matchQuery;
+            if (show) visible += 1;
+            shown.push(show);
+            setCardVisible(card, show);
+          });
+
+          document.querySelectorAll("main section.hc-section").forEach(function (section) {
+            var sectionCards = section.querySelectorAll(".hc-product-card");
+            if (!sectionCards.length) return;
+            var any = false;
+            sectionCards.forEach(function (card) {
+              if (shown[cards.indexOf(card)]) any = true;
+            });
+            section.classList.toggle("is-section-empty", !any);
+
+            section.querySelectorAll(".hc-card .hc-product-grid").forEach(function (grid) {
+              var group = grid.closest(".hc-card");
+              var groupAny = false;
+              grid.querySelectorAll(".hc-product-card").forEach(function (card) {
+                if (shown[cards.indexOf(card)]) groupAny = true;
+              });
+              if (group) group.classList.toggle("is-group-empty", !groupAny);
+            });
+
+            var pill = document.querySelector('#family-nav [data-family-target="' + section.id + '"]');
+            if (pill) pill.classList.toggle("is-dimmed", !any);
+            var tocLink = document.querySelector('.hc-shop-toc a[href="#' + section.id + '"]');
+            if (tocLink) tocLink.classList.toggle("is-dimmed", !any);
+          });
+
+          if (countNode) {
+            countNode.textContent = (query || activeTier !== "all")
+              ? visible + " of " + total + " products"
+              : total + " products";
+          }
+          return visible;
+        }
+
+        input.addEventListener("input", function () {
+          window.clearTimeout(debounceTimer);
+          debounceTimer = window.setTimeout(function () {
+            query = input.value.trim().toLowerCase();
+            var visible = apply();
+            if (typeof window.hexTrack === "function" && query) {
+              window.hexTrack("hc_shop_filter", { query_len: query.length, tier: activeTier, results: visible });
+            }
+          }, 120);
+        });
+
+        chips.forEach(function (chip) {
+          chip.addEventListener("click", function () {
+            activeTier = chip.getAttribute("data-filter-tier") || "all";
+            chips.forEach(function (other) {
+              var on = other === chip;
+              other.classList.toggle("is-active", on);
+              other.setAttribute("aria-pressed", on ? "true" : "false");
+            });
+            var visible = apply();
+            if (typeof window.hexTrack === "function") {
+              window.hexTrack("hc_shop_filter", { query_len: query.length, tier: activeTier, results: visible });
+            }
+          });
+        });
+
+        apply();
+      }
     })();
   </script>
 </body>
