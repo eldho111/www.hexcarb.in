@@ -81,6 +81,10 @@
         <span class="hc-kicker">Get a Quote</span>
         <h1 style="margin-top:0.8rem;">Tell us what you need</h1>
         <p>Three quick steps — your application, technical details, and contact info. We'll get back to you with a material recommendation and pricing.</p>
+        <div class="hc-quote-context-chip" id="hc-quote-context" hidden>
+          <span id="hc-quote-context-label"></span>
+          <button type="button" id="hc-quote-context-clear" aria-label="Clear pre-filled selection">&times;</button>
+        </div>
       </div>
     </section>
 
@@ -102,11 +106,15 @@
       <div class="container hc-grid hc-grid-2">
         <div class="hc-reveal">
           <div class="hc-quote-flow">
+            <div class="hc-quote-progress" aria-hidden="true">
+              <span class="hc-quote-progress-fill" id="hc-quote-progress-fill"></span>
+            </div>
             <div class="hc-step-nav" aria-label="Quote steps">
               <div class="hc-step-dot active" data-step-dot="1">1. Application</div>
               <div class="hc-step-dot" data-step-dot="2">2. Details</div>
               <div class="hc-step-dot" data-step-dot="3">3. Contact</div>
             </div>
+            <p class="hc-quote-prefill-note" id="hc-quote-prefill-note" hidden>Step 1 is pre-filled from your selection — review or continue.</p>
 
             <form id="hc-quote-form" class="hc-form" action="https://formspree.io/f/xgvznzyr" method="POST" data-track-form="quote_funnel_form" data-hc-antispam="true" data-hc-min-submit-ms="4000" data-hc-status-id="quote-status-text">
               <input type="hidden" name="source_page" id="source_page" value="" />
@@ -342,6 +350,51 @@
         startedAtInput.value = String(Date.now());
       }
 
+      // Quantity band handed over from the materials selector.
+      var quantityBand = sanitizeParam(query.get("quantity_band"), [
+        "lab_less_than_1kg", "pilot_1_to_25kg", "pre_production_25_to_250kg", "production_250kg_plus"
+      ], "");
+      var quantitySelect = form.querySelector('select[name="quantity_band"]');
+      if (quantityBand && quantitySelect) {
+        quantitySelect.value = quantityBand;
+      }
+
+      // Process constraints captured in the selector seed the notes field.
+      var selectorConstraints = String(query.get("selector_constraints") || "").slice(0, 180);
+      var notesField = form.querySelector('textarea[name="notes"]');
+      if (selectorConstraints.trim() && notesField && !notesField.value) {
+        notesField.value = "From materials selector: " + selectorConstraints.trim() + "\n\n";
+      }
+
+      // Context chip: show what the visitor is quoting and where it came from.
+      var contextChip = document.getElementById("hc-quote-context");
+      var contextLabel = document.getElementById("hc-quote-context-label");
+      var contextClear = document.getElementById("hc-quote-context-clear");
+      var prefillNote = document.getElementById("hc-quote-prefill-note");
+      var sourceNames = {
+        shop: "Products",
+        materials_selector: "Materials Selector",
+        home: "Home",
+        applications: "Applications"
+      };
+
+      if (normalizedFamily !== "general" && contextChip && contextLabel) {
+        var fromLabel = sourceNames[sourcePage] ? " · from " + sourceNames[sourcePage] : "";
+        contextLabel.textContent = "Quoting: " + String(productFamily).replace(/_/g, " / ") + fromLabel;
+        contextChip.hidden = false;
+        if (prefillNote) prefillNote.hidden = false;
+        if (contextClear) {
+          contextClear.addEventListener("click", function () {
+            contextChip.hidden = true;
+            if (prefillNote) prefillNote.hidden = true;
+            if (appSelect) appSelect.value = "general";
+            if (familySelect) familySelect.value = "general";
+            document.getElementById("application_slug").value = "general";
+            document.getElementById("product_family").value = "general";
+          });
+        }
+      }
+
       if (typeof window.hexTrack === "function") {
         window.hexTrack("hc_quote_start", {
           page: "quote",
@@ -354,15 +407,62 @@
         });
       }
 
-      function showStep(stepNumber) {
-        currentStep = stepNumber;
-        stepPanels.forEach(function (panel) {
-          panel.hidden = Number(panel.getAttribute("data-step-panel")) !== stepNumber;
-        });
+      var progressFill = document.getElementById("hc-quote-progress-fill");
+      var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function updateStepChrome(stepNumber) {
         stepDots.forEach(function (dot) {
           dot.classList.toggle("active", Number(dot.getAttribute("data-step-dot")) === stepNumber);
         });
+        if (progressFill) {
+          progressFill.style.width = String((stepNumber / stepPanels.length) * 100) + "%";
+        }
       }
+
+      function focusFirstField(panel) {
+        var field = panel.querySelector("select, input:not([type='hidden']), textarea");
+        if (field && typeof field.focus === "function") {
+          try { field.focus({ preventScroll: true }); } catch (err) { field.focus(); }
+        }
+      }
+
+      function showStep(stepNumber) {
+        var direction = stepNumber > currentStep ? 1 : -1;
+        var fromStep = currentStep;
+        currentStep = stepNumber;
+        updateStepChrome(stepNumber);
+
+        var target = null;
+        var leaving = null;
+        stepPanels.forEach(function (panel) {
+          var n = Number(panel.getAttribute("data-step-panel"));
+          if (n === stepNumber) target = panel;
+          if (n === fromStep && n !== stepNumber) leaving = panel;
+        });
+        if (!target) return;
+
+        if (reducedMotion || !leaving || fromStep === stepNumber) {
+          stepPanels.forEach(function (panel) {
+            panel.hidden = panel !== target;
+          });
+          if (leaving) focusFirstField(target);
+          return;
+        }
+
+        target.classList.add(direction > 0 ? "is-entering-next" : "is-entering-prev");
+        leaving.classList.add("is-leaving");
+        window.setTimeout(function () {
+          leaving.hidden = true;
+          leaving.classList.remove("is-leaving");
+          target.hidden = false;
+          // Reflow so the entering transform transition actually plays.
+          void target.offsetWidth;
+          target.classList.remove("is-entering-next", "is-entering-prev");
+          focusFirstField(target);
+        }, 180);
+      }
+
+      updateStepChrome(1);
 
       document.querySelectorAll("[data-next-step]").forEach(function (btn) {
         btn.addEventListener("click", function () {

@@ -927,6 +927,122 @@
   display: none !important;
 }
 
+/* ─── Quote: progress + animated step transitions ─── */
+.hc-quote-progress {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(142, 106, 53, 0.16);
+  margin-bottom: 0.8rem;
+  overflow: hidden;
+}
+
+.hc-quote-progress-fill {
+  display: block;
+  height: 100%;
+  width: 33.33%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--hc-green) 0%, var(--hc-accent-bright) 100%);
+  transition: width var(--dur-slow) var(--ease);
+}
+
+.hc-step-panel {
+  transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+}
+
+.hc-step-panel.is-leaving {
+  opacity: 0;
+  transform: translateX(-10px);
+  pointer-events: none;
+}
+
+.hc-step-panel.is-entering-next {
+  opacity: 0;
+  transform: translateX(14px);
+}
+
+.hc-step-panel.is-entering-prev {
+  opacity: 0;
+  transform: translateX(-14px);
+}
+
+.hc-quote-prefill-note {
+  margin: 0 0 0.9rem;
+  font-size: 0.84rem;
+  color: var(--hc-accent-ink, var(--hc-accent));
+}
+
+.hc-quote-context-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+  padding: 0.42rem 0.55rem 0.42rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(142, 106, 53, 0.45);
+  background: rgba(180, 140, 60, 0.1);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--hc-accent-ink, var(--hc-accent));
+}
+
+.hc-quote-context-chip button {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(142, 106, 53, 0.18);
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.hc-quote-context-chip button:hover {
+  background: rgba(142, 106, 53, 0.32);
+}
+
+/* ─── Materials selector: result card ─── */
+#selector-result {
+  transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+}
+
+#selector-result.hc-result-updating {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.hc-selector-result-title {
+  margin-top: 0.75rem;
+}
+
+.hc-selector-result-note {
+  margin-top: 0.7rem;
+}
+
+.hc-selector-why {
+  margin: 0.8rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--hc-text-muted);
+  font-size: 0.93rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.hc-selector-alt {
+  margin-top: 0.7rem;
+  font-size: 0.88rem;
+}
+
+.hc-selector-result-actions {
+  margin-top: 1rem;
+}
+
 .hc-field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

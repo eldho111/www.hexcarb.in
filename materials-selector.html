@@ -100,6 +100,28 @@
               </select>
             </label>
 
+            <label>
+              <span class="hc-subtle-note">Quantity needed</span>
+              <select id="selector-quantity">
+                <option value="">Select (optional)</option>
+                <option value="lab_less_than_1kg">Lab (&lt; 1 kg)</option>
+                <option value="pilot_1_to_25kg">Pilot (1-25 kg)</option>
+                <option value="pre_production_25_to_250kg">Pre-production (25-250 kg)</option>
+                <option value="production_250kg_plus">Production (250+ kg)</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="hc-subtle-note">Target format</span>
+              <select id="selector-format">
+                <option value="">Select (optional)</option>
+                <option value="powder">Powder</option>
+                <option value="dispersion">Dispersion / ink</option>
+                <option value="film_coating">Film / coating</option>
+                <option value="fiber">Fiber / textile</option>
+              </select>
+            </label>
+
             <label class="hc-field-grid-full">
               <span class="hc-subtle-note">Process constraints</span>
               <textarea id="selector-constraints" placeholder="Example: substrate type, viscosity limit, thermal budget, line speed"></textarea>
@@ -120,6 +142,18 @@
             <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/shop.html">Browse Products</a>
           </div>
         </article>
+
+        <template id="hc-selector-result-template">
+          <span class="hc-proof-meta">Recommendation</span>
+          <h2 class="hc-selector-result-title"></h2>
+          <p class="hc-selector-result-note"></p>
+          <ul class="hc-selector-why"></ul>
+          <p class="hc-selector-alt hc-muted" hidden></p>
+          <div class="hc-btn-row hc-selector-result-actions">
+            <a class="hc-btn hc-btn-accent" data-hc-cta-tier="primary" data-result-quote>Continue to Quote</a>
+            <a class="hc-btn hc-btn-ghost" data-hc-cta-tier="tertiary" data-result-shop>Browse in Products</a>
+          </div>
+        </template>
       </div>
     </section>
   </main>
@@ -165,39 +199,154 @@
     (function () {
       var form = document.getElementById("hc-materials-selector");
       var result = document.getElementById("selector-result");
-      if (!form || !result) return;
+      var template = document.getElementById("hc-selector-result-template");
+      if (!form || !result || !template) return;
 
-      function recommend(industry, priority) {
-        var out = {
+      // Declarative rules, scored by how many `when` conditions match.
+      // Most specific matching rule wins; the empty rule is the fallback.
+      var HC_SELECTOR_RULES = [
+        {
+          when: { priority: "electrical", industry: "wearables" },
+          family: "HexWeave",
+          application: "fibers",
+          anchor: "#hexweave",
+          note: "Conductive fiber pathway for wearable and textile-integrated systems.",
+          alt: "Alternative: HexFlow conductive dispersions if you move to printed traces."
+        },
+        {
+          when: { priority: "electrical", format: "fiber" },
+          family: "HexWeave",
+          application: "fibers",
+          anchor: "#hexweave",
+          note: "Conductive fiber pathway matched to your fiber/textile target format.",
+          alt: "Alternative: HexFlow dispersions for coating-based conductivity."
+        },
+        {
+          when: { priority: "thermal" },
+          family: "HexTIM",
+          application: "thermal_interface_materials",
+          anchor: "#hextim",
+          note: "Thermal interface pathway prioritized for heat-transfer constraints.",
+          alt: "Alternative: HexFlow thermal dispersions for coating-led heat spreading."
+        },
+        {
+          when: { priority: "mechanical" },
+          family: "HexTubes_HexSheets_HexBlend",
+          application: "swcnt_graphene_hybrid",
+          anchor: "#hextubes-s",
+          note: "Hybrid reinforcement pathway prioritized for structural stability.",
+          alt: "Alternative: HexBlend masterbatches for melt-processed composites."
+        },
+        {
+          when: { priority: "electrical" },
           family: "HexFlow",
           application: "dispersions",
-          note: "Dispersion-led pathway for process and coating control."
-        };
+          anchor: "#hexflow-a",
+          note: "Electrical performance pathway tuned for conductive continuity.",
+          alt: "Alternative: HexInk for printed electronics and patterned traces."
+        },
+        {
+          when: {},
+          family: "HexFlow",
+          application: "dispersions",
+          anchor: "#hexflow-a",
+          note: "Dispersion-led pathway for process and coating control.",
+          alt: ""
+        }
+      ];
 
-        if (priority === "thermal") {
-          out.family = "HexTIM";
-          out.application = "thermal_interface_materials";
-          out.note = "Thermal interface pathway prioritized for heat-transfer constraints.";
-        } else if (priority === "mechanical") {
-          out.family = "HexTubes_HexSheets_HexBlend";
-          out.application = "swcnt_graphene_hybrid";
-          out.note = "Hybrid reinforcement pathway prioritized for structural stability.";
-        } else if (priority === "electrical") {
-          out.family = industry === "wearables" ? "HexWeave" : "HexFlow";
-          out.application = industry === "wearables" ? "fibers" : "dispersions";
-          out.note = "Electrical performance pathway tuned for conductive continuity.";
+      var WHY_PRIORITY = {
+        thermal: "Heat-transfer priority maps to interface materials with controlled contact resistance.",
+        electrical: "Conductive continuity favors high-aspect-ratio networks at low loading.",
+        mechanical: "Reinforcement targets favor hybrid CNT/graphene morphology control."
+      };
+
+      var WHY_INDUSTRY = {
+        electronics: "Electronics programs typically need batch traceability and tight spec windows.",
+        wearables: "Wearable systems need flexible, washfast conductive formats.",
+        aerospace: "Aerospace qualification favors documented lots and pilot-bridge volumes.",
+        energy: "Energy applications benefit from electrode-grade consistency."
+      };
+
+      var WHY_QUANTITY = {
+        lab_less_than_1kg: "Lab quantities (< 1 kg) keep early screening fast with vial/pack formats.",
+        pilot_1_to_25kg: "Pilot volumes map to pouch/bag formats with process-window guidance.",
+        pre_production_25_to_250kg: "Pre-production volumes engage qualification and lot-continuity planning.",
+        production_250kg_plus: "Production volumes start a commercial onboarding route with supply terms."
+      };
+
+      var WHY_FORMAT = {
+        powder: "Powder format gives maximum formulation freedom on your line.",
+        dispersion: "Pre-dispersed format removes the hardest processing step.",
+        film_coating: "Film/coating targets favor dispersion rheology tuned for your coater.",
+        fiber: "Fiber targets need spinnable, textile-compatible conductive systems."
+      };
+
+      function recommend(input) {
+        var best = null;
+        var bestScore = -1;
+        HC_SELECTOR_RULES.forEach(function (rule) {
+          var keys = Object.keys(rule.when);
+          for (var i = 0; i < keys.length; i += 1) {
+            if (input[keys[i]] !== rule.when[keys[i]]) return;
+          }
+          if (keys.length > bestScore) {
+            bestScore = keys.length;
+            best = rule;
+          }
+        });
+        return best || HC_SELECTOR_RULES[HC_SELECTOR_RULES.length - 1];
+      }
+
+      function buildWhy(input) {
+        var why = [];
+        if (WHY_PRIORITY[input.priority]) why.push(WHY_PRIORITY[input.priority]);
+        if (WHY_INDUSTRY[input.industry]) why.push(WHY_INDUSTRY[input.industry]);
+        if (WHY_QUANTITY[input.quantity]) why.push(WHY_QUANTITY[input.quantity]);
+        if (WHY_FORMAT[input.format]) why.push(WHY_FORMAT[input.format]);
+        return why;
+      }
+
+      function renderResult(rec, input, quoteUrl) {
+        var clone = template.content.cloneNode(true);
+        clone.querySelector(".hc-selector-result-title").textContent = rec.family.replace(/_/g, " / ");
+        clone.querySelector(".hc-selector-result-note").textContent = rec.note;
+
+        var whyList = clone.querySelector(".hc-selector-why");
+        buildWhy(input).forEach(function (reason) {
+          var li = document.createElement("li");
+          li.textContent = reason;
+          whyList.appendChild(li);
+        });
+
+        var altNode = clone.querySelector(".hc-selector-alt");
+        if (rec.alt) {
+          altNode.textContent = rec.alt;
+          altNode.hidden = false;
         }
 
-        return out;
+        clone.querySelector("[data-result-quote]").href = quoteUrl.pathname + quoteUrl.search;
+        clone.querySelector("[data-result-shop]").href = "/shop.html" + (rec.anchor || "");
+
+        result.classList.add("hc-result-updating");
+        window.setTimeout(function () {
+          result.innerHTML = "";
+          result.appendChild(clone);
+          result.classList.remove("hc-result-updating");
+        }, 180);
       }
 
       form.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        var industry = document.getElementById("selector-industry").value || "other";
-        var priority = document.getElementById("selector-priority").value || "performance";
+        var input = {
+          industry: document.getElementById("selector-industry").value || "other",
+          priority: document.getElementById("selector-priority").value || "performance",
+          quantity: document.getElementById("selector-quantity").value || "",
+          format: document.getElementById("selector-format").value || ""
+        };
         var constraints = document.getElementById("selector-constraints").value || "";
-        var rec = recommend(industry, priority);
+        var rec = recommend(input);
 
         var quoteUrl = new URL("/quote.html", window.location.origin);
         quoteUrl.searchParams.set("source_page", "materials_selector");
@@ -205,26 +354,21 @@
         quoteUrl.searchParams.set("application_slug", rec.application);
         quoteUrl.searchParams.set("product_family", rec.family);
         quoteUrl.searchParams.set("intent_stage", "evaluate");
-        quoteUrl.searchParams.set("industry", industry);
-        quoteUrl.searchParams.set("priority", priority);
+        quoteUrl.searchParams.set("industry", input.industry);
+        quoteUrl.searchParams.set("priority", input.priority);
+        if (input.quantity) {
+          quoteUrl.searchParams.set("quantity_band", input.quantity);
+        }
         if (constraints.trim()) {
           quoteUrl.searchParams.set("selector_constraints", constraints.trim().slice(0, 180));
         }
 
-        result.innerHTML = '' +
-          '<span class="hc-proof-meta">Recommendation</span>' +
-          '<h2 style="margin-top:0.75rem;">' + rec.family.replaceAll('_', ' / ') + '</h2>' +
-          '<p style="margin-top:0.7rem;">' + rec.note + '</p>' +
-          '<p style="margin-top:0.55rem;" class="hc-muted"><strong>Industry:</strong> ' + industry + ' | <strong>Priority:</strong> ' + priority + '</p>' +
-          '<div class="hc-btn-row" style="margin-top:1rem;">' +
-            '<a class="hc-btn hc-btn-accent" data-hc-cta-tier="primary" href="' + quoteUrl.pathname + quoteUrl.search + '">Continue to Quote</a>' +
-            '<a class="hc-btn hc-btn-ghost" data-hc-cta-tier="tertiary" href="/shop.html">Open Products</a>' +
-          '</div>';
+        renderResult(rec, input, quoteUrl);
 
         form.dispatchEvent(new CustomEvent("hc:recommendation", {
           bubbles: true,
           detail: {
-            industry: industry,
+            industry: input.industry,
             application_slug: rec.application,
             recommended_family: rec.family
           }
