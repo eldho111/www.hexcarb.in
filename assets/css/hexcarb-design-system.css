@@ -338,6 +338,43 @@ video {
   }
 }
 
+/* Flow rhythm — contextual spacing that replaces per-element inline margins. */
+.hc-kicker + h1,
+.hc-kicker + h2,
+.hc-kicker + h3 {
+  margin-top: 0.75rem;
+}
+
+h1 + p,
+h2 + p,
+h3 + p {
+  margin-top: 0.7rem;
+}
+
+.hc-card h2 + p,
+.hc-card h3 + p {
+  margin-top: 0.55rem;
+}
+
+.hc-card p + .hc-product-grid,
+.hc-card p + ul,
+.hc-card p + ol {
+  margin-top: 0.9rem;
+}
+
+.hc-section h2 ~ .hc-card {
+  margin-top: 1rem;
+}
+
+.hc-section h2 + .hc-grid,
+.hc-section p + .hc-grid {
+  margin-top: 1rem;
+}
+
+.hc-btn-row {
+  margin-top: 1rem;
+}
+
 .hc-grid {
   display: grid;
   gap: var(--space-md);
