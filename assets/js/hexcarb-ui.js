@@ -127,9 +127,9 @@
   }
 
   function initThemeMode() {
-    // Dark is the brand default; a visitor's explicit toggle choice wins.
+    // Light is the brand default; a visitor's explicit toggle choice wins.
     var stored = getStoredTheme();
-    var initial = stored === "dark" || stored === "light" ? stored : "dark";
+    var initial = stored === "dark" || stored === "light" ? stored : "light";
     applyTheme(initial);
   }
 
@@ -681,32 +681,18 @@
       }
 
       if (macro) {
-        // Minimal-geometric composition: a few LARGE hexagons cropping the
-        // section edge — one bold outline, one flat fill, one hairline.
+        // One calm, confident large outline cropping the section edge,
+        // echoed by a single hairline — minimal, not busy.
         var mx = size * (0.5 + rand() * 0.2);
         var my = size * (0.42 + rand() * 0.2);
-        addHex(mx, my, 130 + rand() * 80, rand() * 24, {
-          stroke: "rgba(" + GOLD + ",0.62)",
-          strokeWidth: "3"
-        });
-        addHex(mx * 0.92, my * 1.06, 130 + rand() * 80, rand() * 24, {
-          stroke: "rgba(" + GOLD + ",0.2)",
+        addHex(mx, my, 140 + rand() * 70, rand() * 18, {
+          stroke: "rgba(" + GOLD + ",0.3)",
           strokeWidth: "1.5"
         });
-        addHex(
-          mx + (rand() - 0.5) * 220,
-          my + 120 + rand() * 80,
-          80 + rand() * 70,
-          rand() * 24,
-          { fill: "rgba(" + (rand() < 0.5 ? TEAL : GOLD) + ",0.14)" }
-        );
-        addHex(
-          mx - 130 - rand() * 90,
-          my - 40 - rand() * 60,
-          46 + rand() * 50,
-          rand() * 24,
-          { stroke: "rgba(" + TEAL + ",0.5)", strokeWidth: "1.4" }
-        );
+        addHex(mx * 0.86, my * 1.12, 90 + rand() * 60, rand() * 18, {
+          stroke: "rgba(" + GOLD + ",0.14)",
+          strokeWidth: "1"
+        });
       } else {
         // Random walk from the middle outward: hexagons cluster loosely,
         // overlap, and thin out — no grid, no symmetry.
@@ -719,12 +705,12 @@
           var color = rand() < 0.3 ? TEAL : GOLD;
           if (rand() < 0.28) {
             addHex(x, y, r, rand() * 30, {
-              fill: "rgba(" + color + "," + (0.05 + rand() * 0.07).toFixed(3) + ")"
+              fill: "rgba(" + color + "," + (0.03 + rand() * 0.05).toFixed(3) + ")"
             });
           } else {
             addHex(x, y, r, rand() * 30, {
-              stroke: "rgba(" + color + "," + (0.12 + rand() * 0.18).toFixed(3) + ")",
-              strokeWidth: (0.8 + rand() * 0.9).toFixed(2)
+              stroke: "rgba(" + color + "," + (0.08 + rand() * 0.1).toFixed(3) + ")",
+              strokeWidth: (0.8 + rand() * 0.7).toFixed(2)
             });
           }
 

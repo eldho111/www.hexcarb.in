@@ -61,8 +61,8 @@
   --hc-focus-ring: #8a6526;
 
   /* Seamless pointy-top honeycomb tile (one hexagon + bottom stem). */
-  --hc-hexgrid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(14,24,34,0.12)' stroke-width='1'/%3E%3C/svg%3E");
-  --hc-hexgrid-panel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(218,230,242,0.07)' stroke-width='1'/%3E%3C/svg%3E");
+  --hc-hexgrid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(14,24,34,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+  --hc-hexgrid-panel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(218,230,242,0.06)' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 :root[data-theme="dark"] {
@@ -80,8 +80,7 @@
   --hc-accent-ink: #d9b15f;
   --hc-focus-ring: #d9b15f;
 
-  --hc-hexgrid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(206,222,238,0.17)' stroke-width='1'/%3E%3C/svg%3E");
-  --hc-hexgrid-panel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(218,230,242,0.13)' stroke-width='1'/%3E%3C/svg%3E");
+  --hc-hexgrid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(206,222,238,0.08)' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 * {
@@ -130,8 +129,9 @@ body.hc-premium::before {
   pointer-events: none;
   background-image: var(--hc-hexgrid);
   background-size: 72px auto;
-  -webkit-mask-image: radial-gradient(140% 110% at 84% 4%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 50%, transparent 86%);
-  mask-image: radial-gradient(140% 110% at 84% 4%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 50%, transparent 86%);
+  /* Whisper of texture in the top-right corner only. */
+  -webkit-mask-image: radial-gradient(60% 48% at 92% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
+  mask-image: radial-gradient(60% 48% at 92% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
 }
 
 /* Flat asymmetric color washes — minimal geometric, no glow. */
@@ -233,15 +233,12 @@ video {
 }
 
 .hc-soft-bg {
-  background-color: rgba(237, 242, 247, 0.62);
-  background-image: var(--hc-hexgrid);
-  background-size: 72px auto;
+  background: rgba(237, 242, 247, 0.62);
   backdrop-filter: blur(6px);
 }
 
 .hc-split-bg {
-  background-image: var(--hc-hexgrid), linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0%, rgba(237, 242, 247, 0.48) 100%);
-  background-size: 72px auto, auto;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0%, rgba(237, 242, 247, 0.48) 100%);
   backdrop-filter: blur(6px);
 }
 
@@ -1027,12 +1024,11 @@ h3 + p {
 }
 
 :root[data-theme="dark"] .hc-soft-bg {
-  background-color: rgba(12, 21, 30, 0.58);
+  background: rgba(12, 21, 30, 0.58);
 }
 
 :root[data-theme="dark"] .hc-split-bg {
-  background-image: var(--hc-hexgrid), linear-gradient(180deg, rgba(11, 19, 28, 0.5) 0%, rgba(14, 24, 34, 0.5) 100%);
-  background-size: 72px auto, auto;
+  background: linear-gradient(180deg, rgba(11, 19, 28, 0.5) 0%, rgba(14, 24, 34, 0.5) 100%);
 }
 
 :root[data-theme="dark"] .hc-card {
