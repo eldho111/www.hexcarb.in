@@ -11,7 +11,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 88% 14%, rgba(183, 152, 91, 0.18), transparent 44%), radial-gradient(circle at 8% 82%, rgba(15, 25, 36, 0.08), transparent 36%);
+  background: linear-gradient(118deg, transparent 58%, rgba(183, 152, 91, 0.06) 100%);
   pointer-events: none;
 }
 
@@ -41,19 +41,13 @@
   border: 1px solid rgba(164, 122, 59, 0.28);
   overflow: hidden;
   isolation: isolate;
-  background:
-    radial-gradient(420px circle at 80% 16%, rgba(183, 152, 91, 0.14), transparent 52%),
-    radial-gradient(360px circle at 14% 88%, rgba(61, 143, 130, 0.1), transparent 50%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(237, 242, 247, 0.7) 100%);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(237, 242, 247, 0.7) 100%);
   box-shadow: var(--shadow-soft);
 }
 
 :root[data-theme="dark"] .hc-hero-visual {
   border-color: rgba(200, 160, 70, 0.26);
-  background:
-    radial-gradient(420px circle at 80% 16%, rgba(183, 152, 91, 0.16), transparent 52%),
-    radial-gradient(360px circle at 14% 88%, rgba(61, 143, 130, 0.12), transparent 50%),
-    linear-gradient(160deg, rgba(13, 23, 34, 0.85) 0%, rgba(8, 14, 22, 0.85) 100%);
+  background: linear-gradient(160deg, rgba(13, 23, 34, 0.85) 0%, rgba(8, 14, 22, 0.85) 100%);
 }
 
 .hc-hex-lattice-canvas {
@@ -90,7 +84,7 @@
 .hc-hero-visual-cta:hover {
   transform: translateY(-3px);
   border-color: rgba(183, 152, 91, 0.7);
-  box-shadow: 0 18px 38px rgba(11, 20, 32, 0.24), 0 0 0 6px rgba(183, 152, 91, 0.1);
+  box-shadow: 0 18px 38px rgba(11, 20, 32, 0.24);
 }
 
 .hc-hero-visual-cta-kicker {
@@ -183,15 +177,14 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 700;
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28), 0 0 0 0 rgba(240, 212, 141, 0.5);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
   transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease), filter var(--dur-base) var(--ease);
-  animation: hcEnginePulse 2.2s ease-in-out infinite;
 }
 
 .hc-engine-dramatic-btn:hover {
   transform: translateY(-3px) scale(1.015);
   filter: saturate(108%);
-  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.34), 0 0 0 10px rgba(240, 212, 141, 0.12);
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.34);
 }
 
 .hc-engine-dramatic-btn::before {
@@ -206,16 +199,6 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.72);
-}
-
-@keyframes hcEnginePulse {
-  0%,
-  100% {
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28), 0 0 0 0 rgba(240, 212, 141, 0.22);
-  }
-  50% {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.34), 0 0 0 9px rgba(240, 212, 141, 0.14);
-  }
 }
 
 .hc-home-stats {
@@ -270,7 +253,10 @@
   color: #fff;
   padding: 1.15rem;
   box-shadow: var(--shadow-soft);
-  background: linear-gradient(150deg, #0f1924 8%, #20384f 58%, #2e4f6a 100%);
+  background-image:
+    var(--hc-hexgrid-panel),
+    linear-gradient(150deg, #0f1924 8%, #20384f 58%, #2e4f6a 100%);
+  background-size: 64px auto, auto;
   transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
 }
 
@@ -290,7 +276,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: radial-gradient(280px circle at var(--hc-mx, 50%) var(--hc-my, 50%), rgba(183, 152, 91, 0.24), transparent 52%);
+  background: radial-gradient(280px circle at var(--hc-mx, 50%) var(--hc-my, 50%), rgba(218, 230, 242, 0.09), transparent 52%);
   transition: opacity var(--dur-base) var(--ease);
   pointer-events: none;
 }
@@ -413,29 +399,24 @@
   overflow: hidden;
   border: 1px solid rgba(140, 160, 182, 0.3);
   border-radius: 22px;
-  background:
-    radial-gradient(700px circle at 92% 6%, rgba(200, 160, 70, 0.14), transparent 55%),
-    radial-gradient(400px circle at 5% 90%, rgba(61, 143, 130, 0.06), transparent 50%),
-    linear-gradient(145deg, rgba(8, 14, 22, 0.97) 0%, rgba(14, 24, 36, 0.96) 54%, rgba(20, 34, 50, 0.97) 100%);
-  backdrop-filter: blur(14px) saturate(130%);
-  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  background: linear-gradient(145deg, rgba(8, 14, 22, 0.97) 0%, rgba(15, 26, 39, 0.97) 100%);
   color: #fff;
   padding: clamp(1.2rem, 2.6vw, 1.85rem);
   box-shadow:
-    0 32px 64px rgba(5, 11, 18, 0.48),
-    0 8px 20px rgba(5, 11, 18, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(8, 15, 24, 0.6);
+    0 24px 48px rgba(5, 11, 18, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* Sport-surface honeycomb texture, fading off one corner. */
 .hc-command-strip::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.01) 30%, rgba(255, 255, 255, 0.06) 100%),
-    radial-gradient(360px circle at 2% 14%, rgba(255, 255, 255, 0.08), transparent 62%);
+  background-image: var(--hc-hexgrid-panel);
+  background-size: 72px auto;
+  -webkit-mask-image: radial-gradient(130% 130% at 90% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.3) 52%, transparent 82%);
+  mask-image: radial-gradient(130% 130% at 90% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.3) 52%, transparent 82%);
 }
 
 .hc-command-strip h2,
@@ -1650,9 +1631,6 @@
     transform: translateX(3px);
   }
 
-  .hc-product-card:hover .quote-btn {
-    box-shadow: 0 0 16px rgba(180, 140, 60, 0.22);
-  }
 }
 
 /* ─── Shop Filter Bar ─── */

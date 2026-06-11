@@ -127,24 +127,10 @@
   }
 
   function initThemeMode() {
+    // Dark is the brand default; a visitor's explicit toggle choice wins.
     var stored = getStoredTheme();
-    var initial = stored === "dark" || stored === "light" ? stored : getSystemTheme();
+    var initial = stored === "dark" || stored === "light" ? stored : "dark";
     applyTheme(initial);
-
-    if (!stored && window.matchMedia) {
-      var media = window.matchMedia("(prefers-color-scheme: dark)");
-      var onChange = function (event) {
-        if (getStoredTheme()) return;
-        applyTheme(event.matches ? "dark" : "light");
-        updateThemeToggleState(document.querySelector("[data-hc-theme-toggle]"));
-      };
-
-      if (typeof media.addEventListener === "function") {
-        media.addEventListener("change", onChange);
-      } else if (typeof media.addListener === "function") {
-        media.addListener(onChange);
-      }
-    }
   }
 
   function initThemeToggle() {
@@ -656,7 +642,9 @@
     var TEAL = "61,143,130";
 
     hosts.forEach(function (host, hostIndex) {
-      var corner = host.getAttribute("data-hc-hexdecor") || "tr";
+      var spec = (host.getAttribute("data-hc-hexdecor") || "tr").split("-");
+      var corner = spec[0];
+      var macro = spec[1] === "macro";
       // Seeded LCG so each cluster is organic but stable across reloads.
       var seed = (hostIndex + 1) * 9973 + 7919;
       function rand() {
@@ -664,45 +652,87 @@
         return seed / 2147483648;
       }
 
-      var size = 280;
+      var size = macro ? 520 : 280;
       var svg = document.createElementNS(SVG_NS, "svg");
       svg.setAttribute("viewBox", "0 0 " + size + " " + size);
-      svg.setAttribute("class", "hc-hexdecor hc-hexdecor-" + corner);
+      svg.setAttribute(
+        "class",
+        "hc-hexdecor hc-hexdecor-" + corner + (macro ? " hc-hexdecor--macro" : "")
+      );
 
-      // Random walk from the middle outward: hexagons cluster loosely,
-      // overlap, and thin out — no grid, no symmetry.
-      var x = size * (0.35 + rand() * 0.3);
-      var y = size * (0.35 + rand() * 0.3);
-      var count = 8 + Math.floor(rand() * 5);
-
-      for (var i = 0; i < count; i += 1) {
-        var r = 9 + rand() * 27;
-        var rotation = rand() * 30;
+      function addHex(cx, cy, r, rotationDeg, paint) {
         var points = [];
         for (var k = 0; k < 6; k += 1) {
-          var angle = (Math.PI / 3) * k + Math.PI / 6 + (rotation * Math.PI) / 180;
+          var angle = (Math.PI / 3) * k + Math.PI / 6 + (rotationDeg * Math.PI) / 180;
           points.push(
-            (x + r * Math.cos(angle)).toFixed(1) + "," + (y + r * Math.sin(angle)).toFixed(1)
+            (cx + r * Math.cos(angle)).toFixed(1) + "," + (cy + r * Math.sin(angle)).toFixed(1)
           );
         }
-
         var poly = document.createElementNS(SVG_NS, "polygon");
         poly.setAttribute("points", points.join(" "));
-        var color = rand() < 0.3 ? TEAL : GOLD;
-        if (rand() < 0.28) {
-          poly.setAttribute("fill", "rgba(" + color + "," + (0.05 + rand() * 0.07).toFixed(3) + ")");
-          poly.setAttribute("stroke", "none");
+        poly.setAttribute("fill", paint.fill || "none");
+        if (paint.stroke) {
+          poly.setAttribute("stroke", paint.stroke);
+          poly.setAttribute("stroke-width", paint.strokeWidth || "1");
         } else {
-          poly.setAttribute("fill", "none");
-          poly.setAttribute("stroke", "rgba(" + color + "," + (0.12 + rand() * 0.18).toFixed(3) + ")");
-          poly.setAttribute("stroke-width", (0.8 + rand() * 0.9).toFixed(2));
+          poly.setAttribute("stroke", "none");
         }
         svg.appendChild(poly);
+      }
 
-        var walkAngle = rand() * Math.PI * 2;
-        var walkDist = r * (1.05 + rand() * 1.3);
-        x = Math.min(size - 12, Math.max(12, x + Math.cos(walkAngle) * walkDist));
-        y = Math.min(size - 12, Math.max(12, y + Math.sin(walkAngle) * walkDist));
+      if (macro) {
+        // Minimal-geometric composition: a few LARGE hexagons cropping the
+        // section edge — one bold outline, one flat fill, one hairline.
+        var mx = size * (0.5 + rand() * 0.2);
+        var my = size * (0.42 + rand() * 0.2);
+        addHex(mx, my, 130 + rand() * 80, rand() * 24, {
+          stroke: "rgba(" + GOLD + ",0.62)",
+          strokeWidth: "3"
+        });
+        addHex(mx * 0.92, my * 1.06, 130 + rand() * 80, rand() * 24, {
+          stroke: "rgba(" + GOLD + ",0.2)",
+          strokeWidth: "1.5"
+        });
+        addHex(
+          mx + (rand() - 0.5) * 220,
+          my + 120 + rand() * 80,
+          80 + rand() * 70,
+          rand() * 24,
+          { fill: "rgba(" + (rand() < 0.5 ? TEAL : GOLD) + ",0.14)" }
+        );
+        addHex(
+          mx - 130 - rand() * 90,
+          my - 40 - rand() * 60,
+          46 + rand() * 50,
+          rand() * 24,
+          { stroke: "rgba(" + TEAL + ",0.5)", strokeWidth: "1.4" }
+        );
+      } else {
+        // Random walk from the middle outward: hexagons cluster loosely,
+        // overlap, and thin out — no grid, no symmetry.
+        var x = size * (0.35 + rand() * 0.3);
+        var y = size * (0.35 + rand() * 0.3);
+        var count = 8 + Math.floor(rand() * 5);
+
+        for (var i = 0; i < count; i += 1) {
+          var r = 9 + rand() * 27;
+          var color = rand() < 0.3 ? TEAL : GOLD;
+          if (rand() < 0.28) {
+            addHex(x, y, r, rand() * 30, {
+              fill: "rgba(" + color + "," + (0.05 + rand() * 0.07).toFixed(3) + ")"
+            });
+          } else {
+            addHex(x, y, r, rand() * 30, {
+              stroke: "rgba(" + color + "," + (0.12 + rand() * 0.18).toFixed(3) + ")",
+              strokeWidth: (0.8 + rand() * 0.9).toFixed(2)
+            });
+          }
+
+          var walkAngle = rand() * Math.PI * 2;
+          var walkDist = r * (1.05 + rand() * 1.3);
+          x = Math.min(size - 12, Math.max(12, x + Math.cos(walkAngle) * walkDist));
+          y = Math.min(size - 12, Math.max(12, y + Math.sin(walkAngle) * walkDist));
+        }
       }
 
       var wrap = document.createElement("div");
