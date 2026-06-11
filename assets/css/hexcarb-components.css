@@ -1780,3 +1780,84 @@ section.is-section-empty {
     flex-basis: 100%;
   }
 }
+
+
+/* ===== Hexagonal shape language =====
+   corner-shape: bevel turns radii into straight cuts, so pills become
+   elongated hexagons and cards get hex-cut corners - while borders,
+   shadows, and focus outlines still follow the shape. Browsers without
+   support keep the rounded fallback. Lives at the end of the last-loaded
+   stylesheet so these radii win the cascade. */
+@supports (corner-shape: bevel) {
+  .hc-btn,
+  .hc-filter-chip,
+  .hc-product-badge,
+  .hc-proof-meta,
+  .hc-step-dot,
+  .hc-quote-context-chip,
+  .hc-family-nav a,
+  .hc-shop-toc a,
+  #hc-shop-search {
+    corner-shape: bevel;
+    border-radius: 999px;
+  }
+
+  .hc-btn {
+    padding-inline: 1.35rem;
+    white-space: nowrap;
+  }
+
+  .hc-filter-chip,
+  .hc-family-nav a,
+  .hc-shop-toc a {
+    padding-inline: 1rem;
+  }
+
+  .hc-product-badge {
+    padding-inline: 0.8rem;
+  }
+
+  /* Panels and cards: asymmetric hex-cut corners. The even/odd flip keys
+     off DOM position, so the cut corner varies card to card - deliberately
+     not symmetric. */
+  .hc-card,
+  .hc-quote-flow,
+  .hc-quote-panel,
+  .hc-engine-panel,
+  .hc-hero-visual,
+  .hc-command-strip,
+  .hc-proof-item,
+  .hc-stat,
+  .hc-hero-stat,
+  .hc-thank-card {
+    corner-shape: bevel;
+    border-radius: 22px 8px 22px 8px;
+  }
+
+  .hc-card:nth-child(even),
+  .hc-proof-item:nth-child(even),
+  .hc-stat:nth-child(even),
+  .hc-hero-stat:nth-child(even) {
+    border-radius: 8px 22px 8px 22px;
+  }
+
+  .hc-command-point,
+  .hc-ai-vision-step {
+    corner-shape: bevel;
+    border-radius: 16px 6px 16px 6px;
+  }
+
+  .hc-command-point:nth-child(even),
+  .hc-ai-vision-step:nth-child(even) {
+    border-radius: 6px 16px 6px 16px;
+  }
+
+  .hc-hero-visual {
+    border-radius: 34px 12px 34px 12px;
+  }
+
+  .hc-hero-visual-cta {
+    corner-shape: bevel;
+    border-radius: 18px 7px 18px 7px;
+  }
+}

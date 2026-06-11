@@ -70,11 +70,22 @@
       colors.bondAlpha = dark ? 0.32 : 0.22;
     }
 
+    var filledCells = [];
+
+    // Deterministic per-cell noise so the irregularity is stable per layout.
+    function cellNoise(row, col) {
+      var n = Math.sin(row * 127.1 + col * 311.7) * 43758.5453;
+      return n - Math.floor(n);
+    }
+
     // Honeycomb geometry: hexagon centers on an axial grid, vertices deduped
-    // by rounded key so neighbouring cells share nodes and bonds.
+    // by rounded key so neighbouring cells share nodes and bonds. Roughly a
+    // sixth of the cells are skipped and a few are softly filled, so the
+    // lattice reads as an organic patch rather than a uniform grid.
     function buildLattice() {
       nodes = [];
       edges = [];
+      filledCells = [];
       var nodeIndex = {};
       var edgeIndex = {};
       var radius = Math.max(30, Math.min(width, height) / 9);
@@ -87,19 +98,33 @@
         var key = Math.round(x) + ":" + Math.round(y);
         if (nodeIndex[key] !== undefined) return nodeIndex[key];
         var id = nodes.length;
-        nodes.push({ hx: x, hy: y, x: x, y: y, vx: 0, vy: 0 });
+        nodes.push({
+          hx: x,
+          hy: y,
+          x: x,
+          y: y,
+          vx: 0,
+          vy: 0,
+          size: 1.3 + cellNoise(Math.round(x), Math.round(y)) * 1.1
+        });
         nodeIndex[key] = id;
         return id;
       }
 
       for (var row = -1; row < rows; row += 1) {
         for (var col = -1; col < cols; col += 1) {
+          var noise = cellNoise(row, col);
+          if (noise < 0.16) continue;
+
           var cx = col * hexW + (row % 2 ? hexW / 2 : 0);
           var cy = row * hexH;
           var ring = [];
           for (var k = 0; k < 6; k += 1) {
             var angle = Math.PI / 180 * (60 * k - 30);
             ring.push(nodeAt(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)));
+          }
+          if (noise > 0.93) {
+            filledCells.push(ring);
           }
           for (var e = 0; e < 6; e += 1) {
             var a = ring[e];
@@ -190,6 +215,19 @@
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
+      // Softly filled cells give the honeycomb its organic patchiness.
+      for (var f = 0; f < filledCells.length; f += 1) {
+        var ring = filledCells[f];
+        ctx.fillStyle = rgba(colors.node, 0.06);
+        ctx.beginPath();
+        ctx.moveTo(nodes[ring[0]].x, nodes[ring[0]].y);
+        for (var v = 1; v < 6; v += 1) {
+          ctx.lineTo(nodes[ring[v]].x, nodes[ring[v]].y);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+
       for (var i = 0; i < edges.length; i += 1) {
         var a = nodes[edges[i].a];
         var b = nodes[edges[i].b];
@@ -241,7 +279,7 @@
 
       for (var k = 0; k < nodes.length; k += 1) {
         var n = nodes[k];
-        var r = 1.7;
+        var r = n.size;
         var nodeAlpha = 0.5;
         if (pointer.active) {
           var ndx = n.x - pointer.x;
@@ -249,7 +287,7 @@
           var nd = Math.sqrt(ndx * ndx + ndy * ndy);
           if (nd < INFLUENCE) {
             var glow = 1 - nd / INFLUENCE;
-            r = 1.7 + glow * 1.6;
+            r = n.size + glow * 1.6;
             nodeAlpha = 0.5 + glow * 0.5;
           }
         }

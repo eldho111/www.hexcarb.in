@@ -284,10 +284,53 @@ video {
 
 .hc-kicker::before {
   content: "";
-  width: 28px;
-  height: 2px;
-  border-radius: 1px;
-  background: linear-gradient(90deg, var(--hc-accent-bright), var(--hc-accent));
+  width: 11px;
+  height: 12px;
+  flex-shrink: 0;
+  clip-path: polygon(50% 0, 100% 27%, 100% 73%, 50% 100%, 0 73%, 0 27%);
+  background: linear-gradient(135deg, var(--hc-accent-bright), var(--hc-accent));
+}
+
+/* Asymmetric stagger: stats sit at slightly different heights on desktop. */
+@media (min-width: 661px) {
+  .hc-home-stats .hc-stat:nth-child(2),
+  .hc-hero-stats .hc-hero-stat:nth-child(2) {
+    transform: translateY(9px);
+  }
+
+  .hc-home-stats .hc-stat:nth-child(3),
+  .hc-hero-stats .hc-hero-stat:nth-child(3) {
+    transform: translateY(-5px);
+  }
+}
+
+/* Scattered honeycomb decorations (built by initHexDecor) */
+.hc-hexdecor-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-hc-hexdecor] > :not(.hc-hexdecor-wrap) {
+  position: relative;
+  z-index: 1;
+}
+
+.hc-hexdecor {
+  position: absolute;
+  width: clamp(190px, 26vw, 330px);
+  height: auto;
+}
+
+.hc-hexdecor-tr { top: -48px; right: -56px; }
+.hc-hexdecor-tl { top: -48px; left: -56px; }
+.hc-hexdecor-br { bottom: -48px; right: -56px; }
+.hc-hexdecor-bl { bottom: -52px; left: -50px; }
+
+:root[data-theme="dark"] .hc-hexdecor {
+  opacity: 0.8;
 }
 
 /* Scroll-driven accents — progressive enhancement, no JS, no fallback needed. */
@@ -318,12 +361,12 @@ video {
 
 @keyframes hcKickerGrow {
   from {
-    width: 0;
+    transform: scale(0) rotate(-60deg);
     opacity: 0;
   }
 
   to {
-    width: 28px;
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }

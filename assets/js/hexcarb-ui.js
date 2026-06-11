@@ -647,6 +647,76 @@
     }, { passive: true });
   }
 
+  function initHexDecor() {
+    var hosts = document.querySelectorAll("[data-hc-hexdecor]");
+    if (!hosts.length) return;
+
+    var SVG_NS = "http://www.w3.org/2000/svg";
+    var GOLD = "164,122,59";
+    var TEAL = "61,143,130";
+
+    hosts.forEach(function (host, hostIndex) {
+      var corner = host.getAttribute("data-hc-hexdecor") || "tr";
+      // Seeded LCG so each cluster is organic but stable across reloads.
+      var seed = (hostIndex + 1) * 9973 + 7919;
+      function rand() {
+        seed = (seed * 1103515245 + 12345) % 2147483648;
+        return seed / 2147483648;
+      }
+
+      var size = 280;
+      var svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("viewBox", "0 0 " + size + " " + size);
+      svg.setAttribute("class", "hc-hexdecor hc-hexdecor-" + corner);
+
+      // Random walk from the middle outward: hexagons cluster loosely,
+      // overlap, and thin out — no grid, no symmetry.
+      var x = size * (0.35 + rand() * 0.3);
+      var y = size * (0.35 + rand() * 0.3);
+      var count = 8 + Math.floor(rand() * 5);
+
+      for (var i = 0; i < count; i += 1) {
+        var r = 9 + rand() * 27;
+        var rotation = rand() * 30;
+        var points = [];
+        for (var k = 0; k < 6; k += 1) {
+          var angle = (Math.PI / 3) * k + Math.PI / 6 + (rotation * Math.PI) / 180;
+          points.push(
+            (x + r * Math.cos(angle)).toFixed(1) + "," + (y + r * Math.sin(angle)).toFixed(1)
+          );
+        }
+
+        var poly = document.createElementNS(SVG_NS, "polygon");
+        poly.setAttribute("points", points.join(" "));
+        var color = rand() < 0.3 ? TEAL : GOLD;
+        if (rand() < 0.28) {
+          poly.setAttribute("fill", "rgba(" + color + "," + (0.05 + rand() * 0.07).toFixed(3) + ")");
+          poly.setAttribute("stroke", "none");
+        } else {
+          poly.setAttribute("fill", "none");
+          poly.setAttribute("stroke", "rgba(" + color + "," + (0.12 + rand() * 0.18).toFixed(3) + ")");
+          poly.setAttribute("stroke-width", (0.8 + rand() * 0.9).toFixed(2));
+        }
+        svg.appendChild(poly);
+
+        var walkAngle = rand() * Math.PI * 2;
+        var walkDist = r * (1.05 + rand() * 1.3);
+        x = Math.min(size - 12, Math.max(12, x + Math.cos(walkAngle) * walkDist));
+        y = Math.min(size - 12, Math.max(12, y + Math.sin(walkAngle) * walkDist));
+      }
+
+      var wrap = document.createElement("div");
+      wrap.className = "hc-hexdecor-wrap";
+      wrap.setAttribute("aria-hidden", "true");
+      wrap.appendChild(svg);
+
+      if (getComputedStyle(host).position === "static") {
+        host.style.position = "relative";
+      }
+      host.appendChild(wrap);
+    });
+  }
+
   function initMagneticButtons() {
     if (prefersReducedMotion() || !hasFineHoverPointer()) return;
     if (!document.querySelector("[data-hc-magnetic]")) return;
@@ -848,6 +918,7 @@
     initAiLinkFallback();
     initPremiumCardInteraction();
     initMagneticButtons();
+    initHexDecor();
     setYearTokens();
     initTrademark();
     initCounters();
