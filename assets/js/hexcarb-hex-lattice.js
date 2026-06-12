@@ -54,6 +54,7 @@
     var pointer = { x: -9999, y: -9999, active: false };
     var pulse = null;
     var pulseTimer = null;
+    var ripples = [];
     var colors = {
       bond: { r: 164, g: 122, b: 59 },
       node: { r: 164, g: 122, b: 59 },
@@ -187,8 +188,26 @@
     }
 
     var INFLUENCE = 140;
+    var RIPPLE_SPEED = 0.32; // px per ms
+    var RIPPLE_WIDTH = 46;
 
-    function physics() {
+    // Returns 0..1 proximity of a point to any active ripple wavefront.
+    function rippleHeat(x, y, now) {
+      var heat = 0;
+      for (var i = 0; i < ripples.length; i += 1) {
+        var ripple = ripples[i];
+        var radius = (now - ripple.t0) * RIPPLE_SPEED;
+        var dx = x - ripple.x;
+        var dy = y - ripple.y;
+        var band = Math.abs(Math.sqrt(dx * dx + dy * dy) - radius);
+        if (band < RIPPLE_WIDTH) {
+          heat = Math.max(heat, 1 - band / RIPPLE_WIDTH);
+        }
+      }
+      return heat;
+    }
+
+    function physics(now) {
       for (var i = 0; i < nodes.length; i += 1) {
         var n = nodes[i];
         var fx = (n.hx - n.x) * 0.02;
@@ -205,11 +224,33 @@
           }
         }
 
+        // Ripples nudge nodes outward as the wavefront passes.
+        if (ripples.length) {
+          var heat = rippleHeat(n.x, n.y, now);
+          if (heat > 0) {
+            for (var rI = 0; rI < ripples.length; rI += 1) {
+              var rdx = n.x - ripples[rI].x;
+              var rdy = n.y - ripples[rI].y;
+              var rd = Math.sqrt(rdx * rdx + rdy * rdy);
+              if (rd > 0.001) {
+                fx += (rdx / rd) * heat * 0.5;
+                fy += (rdy / rd) * heat * 0.5;
+              }
+            }
+          }
+        }
+
         n.vx = (n.vx + fx) * 0.86;
         n.vy = (n.vy + fy) * 0.86;
         n.x += n.vx;
         n.y += n.vy;
       }
+
+      // Retire ripples that have left the canvas.
+      var maxRadius = Math.sqrt(width * width + height * height) + RIPPLE_WIDTH;
+      ripples = ripples.filter(function (ripple) {
+        return (now - ripple.t0) * RIPPLE_SPEED < maxRadius;
+      });
     }
 
     function draw() {
@@ -228,22 +269,35 @@
         ctx.fill();
       }
 
+      var drawNow = performance.now();
+
       for (var i = 0; i < edges.length; i += 1) {
         var a = nodes[edges[i].a];
         var b = nodes[edges[i].b];
         var alpha = colors.bondAlpha;
         var lineColor = colors.bond;
         var lineWidth = 1;
+        var midX = (a.x + b.x) / 2;
+        var midY = (a.y + b.y) / 2;
 
         if (pointer.active) {
-          var mx = (a.x + b.x) / 2 - pointer.x;
-          var my = (a.y + b.y) / 2 - pointer.y;
+          var mx = midX - pointer.x;
+          var my = midY - pointer.y;
           var md = Math.sqrt(mx * mx + my * my);
           if (md < INFLUENCE) {
             var heat = 1 - md / INFLUENCE;
             alpha = colors.bondAlpha + heat * 0.55;
             lineColor = colors.node;
             lineWidth = 1 + heat * 0.8;
+          }
+        }
+
+        if (ripples.length) {
+          var waveHeat = rippleHeat(midX, midY, drawNow);
+          if (waveHeat > 0) {
+            alpha = Math.max(alpha, colors.bondAlpha + waveHeat * 0.6);
+            lineColor = colors.glow;
+            lineWidth = Math.max(lineWidth, 1 + waveHeat * 1);
           }
         }
 
@@ -291,6 +345,13 @@
             nodeAlpha = 0.5 + glow * 0.5;
           }
         }
+        if (ripples.length) {
+          var nodeWave = rippleHeat(n.x, n.y, drawNow);
+          if (nodeWave > 0) {
+            r = Math.max(r, n.size + nodeWave * 1.4);
+            nodeAlpha = Math.max(nodeAlpha, 0.5 + nodeWave * 0.5);
+          }
+        }
         ctx.fillStyle = rgba(colors.node, nodeAlpha);
         ctx.beginPath();
         ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
@@ -298,8 +359,8 @@
       }
     }
 
-    function tick() {
-      physics();
+    function tick(ts) {
+      physics(ts || performance.now());
       draw();
       raf = window.requestAnimationFrame(tick);
     }
@@ -331,6 +392,18 @@
       pointer.active = false;
       pointer.x = -9999;
       pointer.y = -9999;
+    }, { passive: true });
+
+    // Click sends an energy wave through the network (skip the CTA chip).
+    mount.addEventListener("pointerdown", function (event) {
+      if (event.target && event.target.closest && event.target.closest(".hc-hero-visual-cta")) return;
+      var rect = mount.getBoundingClientRect();
+      ripples.push({
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        t0: performance.now()
+      });
+      if (ripples.length > 3) ripples.shift();
     }, { passive: true });
 
     document.addEventListener("visibilitychange", function () {

@@ -633,6 +633,80 @@
     }, { passive: true });
   }
 
+  function initHeroTilt() {
+    if (prefersReducedMotion() || !hasFineHoverPointer()) return;
+    if (!window.matchMedia("(min-width: 901px)").matches) return;
+    var panel = document.querySelector(".hc-hero-visual");
+    if (!panel) return;
+
+    var lastX = 0;
+    var lastY = 0;
+    var active = false;
+    var MAX_TILT = 3;
+
+    function paintTilt() {
+      if (!active) return;
+      var rect = panel.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var rx = ((lastY - rect.top) / rect.height - 0.5) * -MAX_TILT;
+      var ry = ((lastX - rect.left) / rect.width - 0.5) * MAX_TILT;
+      panel.style.transform =
+        "perspective(1100px) rotateX(" + rx.toFixed(2) + "deg) rotateY(" + ry.toFixed(2) + "deg)";
+    }
+
+    panel.addEventListener("pointermove", function (event) {
+      lastX = event.clientX;
+      lastY = event.clientY;
+      active = true;
+      scheduleFrame("heroTilt", paintTilt);
+    }, { passive: true });
+
+    panel.addEventListener("pointerleave", function () {
+      active = false;
+      panel.style.transform = "";
+    }, { passive: true });
+  }
+
+  function initHeroHeadline() {
+    var heading = document.querySelector(".hc-heading-hero");
+    if (!heading || prefersReducedMotion()) return;
+
+    var text = heading.textContent.trim();
+    if (!text) return;
+    heading.setAttribute("aria-label", text);
+
+    var wrap = document.createElement("span");
+    wrap.setAttribute("aria-hidden", "true");
+    var words = text.split(/\s+/);
+    words.forEach(function (word, index) {
+      var span = document.createElement("span");
+      span.className = "hc-word";
+      span.textContent = word;
+      span.style.transitionDelay = String(index * 45) + "ms";
+      wrap.appendChild(span);
+      if (index < words.length - 1) {
+        wrap.appendChild(document.createTextNode(" "));
+      }
+    });
+
+    heading.textContent = "";
+    heading.appendChild(wrap);
+    void heading.offsetWidth;
+
+    function assemble() {
+      heading.classList.add("is-assembled");
+    }
+
+    // If the tab starts hidden, hold the entrance until it is first seen.
+    if (document.hidden) {
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) window.setTimeout(assemble, 80);
+      }, { once: true });
+    } else {
+      window.setTimeout(assemble, 60);
+    }
+  }
+
   function initHexDecor() {
     var hosts = document.querySelectorAll("[data-hc-hexdecor]");
     if (!hosts.length) return;
@@ -935,6 +1009,8 @@
     initPremiumCardInteraction();
     initMagneticButtons();
     initHexDecor();
+    initHeroTilt();
+    initHeroHeadline();
     setYearTokens();
     initTrademark();
     initCounters();

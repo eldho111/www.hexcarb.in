@@ -1768,6 +1768,60 @@ section.is-section-empty {
 }
 
 
+/* ─── Hero interaction refinements ─── */
+.hc-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.45em);
+  transition: opacity 480ms var(--ease), transform 480ms var(--ease);
+}
+
+.hc-heading-hero.is-assembled .hc-word {
+  opacity: 1;
+  transform: none;
+}
+
+/* Snappy transform so the pointer tilt tracks without reveal-system lag. */
+.hc-hero-visual.in-view {
+  transition: transform 180ms var(--ease);
+  will-change: transform;
+}
+
+/* ─── Pillar cards: self-drawing hexagon icon ─── */
+.hc-pillar-icon {
+  display: inline-flex;
+  margin-bottom: 0.6rem;
+  color: var(--hc-accent);
+}
+
+.hc-pillar-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.hc-pillar-icon polygon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-dasharray: 62;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 700ms var(--ease);
+}
+
+.hc-pillar-icon svg {
+  transition: transform 500ms var(--ease);
+}
+
+@media (hover: hover) {
+  .hc-card:hover .hc-pillar-icon svg {
+    transform: rotate(30deg);
+  }
+
+  .hc-card:hover .hc-pillar-icon polygon {
+    stroke-dashoffset: 124;
+  }
+}
+
 /* ─── Metric callouts (comparative claims, CarbonFly-style) ─── */
 .hc-metric-band {
   padding-block: clamp(2.4rem, 5vw, 4rem);
@@ -1781,8 +1835,31 @@ section.is-section-empty {
 }
 
 .hc-metric {
-  border-top: 2px solid rgba(164, 122, 59, 0.45);
+  position: relative;
+  border-top: 2px solid rgba(164, 122, 59, 0.35);
   padding-top: 0.9rem;
+}
+
+/* Hover: a bright gold rule draws across and the number lifts. */
+.hc-metric::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, var(--hc-accent-bright), var(--hc-accent));
+  transition: width 480ms var(--ease);
+}
+
+@media (hover: hover) {
+  .hc-metric:hover::before {
+    width: 100%;
+  }
+
+  .hc-metric:hover strong {
+    transform: translateY(-3px);
+  }
 }
 
 .hc-metric strong {
@@ -1793,6 +1870,7 @@ section.is-section-empty {
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--hc-heading);
+  transition: transform 320ms var(--ease);
 }
 
 .hc-metric > span {
