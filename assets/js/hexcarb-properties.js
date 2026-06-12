@@ -203,22 +203,26 @@
 
     var STAGES = [
       "Carbon fiber yarn — about 1 mm. You can hold this.",
-      "Inside: bundles of tubes — about 1 µm across.",
-      "One carbon nanotube — about 10 nm. 10,000× thinner than hair.",
+      "Inside: bundles of nanotubes — about 1 µm across.",
+      "A single nanotube — about 1.5 nm wide. 50,000× thinner than a hair.",
       "The wall itself: carbon atoms, 0.142 nm apart. Pure hexagons."
     ];
+    var MAG_MAX_LOG = Math.log10(7000000); // ×7,000,000 from 1 mm to bond scale
 
-    var surface = setupCanvas(mount, draw);
+    var surface = setupCanvas(mount, function () { lattice = null; });
     var ctx = surface.ctx;
     var lattice = null;
     var progress = 0;
     var lastStage = -1;
+    var pointer = { x: 0.5, y: 0.5 };
+    var clock = 0;
 
     function ensureLattice() {
       lattice = buildHoneycomb(surface.box.w, surface.box.h, Math.max(26, surface.box.w / 16), 0, 0);
     }
 
     function drawStage(i, alpha, scale) {
+      if (alpha <= 0.01) return;
       var w = surface.box.w;
       var h = surface.box.h;
       ctx.save();
@@ -226,65 +230,104 @@
       ctx.translate(w / 2, h / 2);
       ctx.scale(scale, scale);
       ctx.translate(-w / 2, -h / 2);
-      var ink = rgba(THEME.ink, 0.8);
-      var soft = rgba(THEME.muted, 0.5);
 
       if (i === 0) {
-        // Twisted yarn: several thick interleaved strands.
-        for (var s = 0; s < 5; s += 1) {
-          ctx.strokeStyle = s % 2 ? soft : ink;
-          ctx.lineWidth = 14 - s * 1.6;
+        // Twisted yarn: gradient-shaded strands with a drifting weave.
+        for (var s = 0; s < 6; s += 1) {
+          var grad = ctx.createLinearGradient(0, h * 0.3, 0, h * 0.7);
+          grad.addColorStop(0, rgba(THEME.muted, 0.25));
+          grad.addColorStop(0.45, rgba(THEME.ink, 0.85));
+          grad.addColorStop(0.55, rgba(THEME.ink, 0.95));
+          grad.addColorStop(1, rgba(THEME.muted, 0.3));
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 15 - s * 1.4;
           ctx.lineCap = "round";
           ctx.beginPath();
           for (var x = -20; x <= w + 20; x += 8) {
-            var y = h / 2 + Math.sin(x / 60 + s * 1.4) * (16 + s * 5);
+            var y = h / 2 + Math.sin(x / 64 + s * 1.35 + clock * 0.0002) * (16 + s * 5.5);
             if (x === -20) ctx.moveTo(x, y); else ctx.lineTo(x, y);
           }
           ctx.stroke();
         }
+        // Specular highlight along the top of the bundle.
+        ctx.strokeStyle = rgba({ r: 255, g: 255, b: 255 }, THEME.dark ? 0.16 : 0.65);
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        for (var hxx = -20; hxx <= w + 20; hxx += 10) {
+          var hy = h / 2 - 20 + Math.sin(hxx / 64 + clock * 0.0002) * 14;
+          if (hxx === -20) ctx.moveTo(hxx, hy); else ctx.lineTo(hxx, hy);
+        }
+        ctx.stroke();
       } else if (i === 1) {
-        // Parallel tube bundle.
-        for (var t = 0; t < 12; t += 1) {
-          var yy = h * 0.14 + t * (h * 0.72 / 11);
-          ctx.strokeStyle = t % 3 === 0 ? rgba(THEME.accent, 0.55) : soft;
-          ctx.lineWidth = 7;
+        // Bundle: perspective-tapered tubes with end ellipses.
+        for (var t = 0; t < 13; t += 1) {
+          var yy = h * 0.12 + t * (h * 0.76 / 12);
+          var sway = Math.sin(clock * 0.0004 + t) * 2.5;
+          var near = t % 3 === 0;
+          var color = near ? THEME.accent : THEME.muted;
+          var bodyGrad = ctx.createLinearGradient(0, yy - 5, 0, yy + 5);
+          bodyGrad.addColorStop(0, rgba(color, near ? 0.7 : 0.42));
+          bodyGrad.addColorStop(0.5, rgba(color, near ? 0.4 : 0.22));
+          bodyGrad.addColorStop(1, rgba(color, near ? 0.7 : 0.42));
+          ctx.strokeStyle = bodyGrad;
+          ctx.lineWidth = near ? 9 : 6;
           ctx.lineCap = "round";
           ctx.beginPath();
-          ctx.moveTo(w * 0.06, yy + Math.sin(t) * 4);
-          ctx.lineTo(w * 0.94, yy + Math.cos(t) * 4);
+          ctx.moveTo(w * 0.05, yy + sway);
+          ctx.lineTo(w * 0.95, yy - sway);
+          ctx.stroke();
+          ctx.strokeStyle = rgba(color, near ? 0.85 : 0.5);
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.ellipse(w * 0.95, yy - sway, 3.4, near ? 5 : 3.4, 0, 0, Math.PI * 2);
           ctx.stroke();
         }
       } else if (i === 2) {
-        // One large tube with a hint of lattice texture.
+        // A single tube with a chiral hexagon wrap and a specular band.
         var top = h * 0.3;
         var bottom = h * 0.7;
-        ctx.strokeStyle = ink;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(w * 0.05, top);
-        ctx.lineTo(w * 0.95, top);
-        ctx.moveTo(w * 0.05, bottom);
-        ctx.lineTo(w * 0.95, bottom);
-        ctx.stroke();
-        ctx.strokeStyle = rgba(THEME.accent, 0.4);
+        var mid = (top + bottom) / 2;
+        var radius = (bottom - top) / 2;
+        // Wall shading.
+        var shellGrad = ctx.createLinearGradient(0, top, 0, bottom);
+        shellGrad.addColorStop(0, rgba(THEME.muted, 0.18));
+        shellGrad.addColorStop(0.22, rgba({ r: 255, g: 255, b: 255 }, THEME.dark ? 0.07 : 0.5));
+        shellGrad.addColorStop(0.6, rgba(THEME.muted, 0.08));
+        shellGrad.addColorStop(1, rgba(THEME.muted, 0.24));
+        ctx.fillStyle = shellGrad;
+        ctx.fillRect(w * 0.05, top, w * 0.9, bottom - top);
+        // Chiral wrap: two crossing helix families → hexagon rhythm.
+        ctx.strokeStyle = rgba(THEME.accent, 0.45);
         ctx.lineWidth = 1.2;
-        for (var hx = w * 0.08; hx < w * 0.92; hx += 26) {
-          ctx.beginPath();
-          ctx.moveTo(hx, top + 6);
-          ctx.lineTo(hx + 13, (top + bottom) / 2);
-          ctx.lineTo(hx, bottom - 6);
-          ctx.moveTo(hx + 13, (top + bottom) / 2);
-          ctx.lineTo(hx + 26, (top + bottom) / 2);
-          ctx.stroke();
+        var pitch = 30;
+        for (var d = -1; d <= 1; d += 2) {
+          for (var x0 = w * 0.05 - radius * 2; x0 < w * 0.95; x0 += pitch) {
+            ctx.beginPath();
+            for (var ph = 0; ph <= Math.PI; ph += 0.2) {
+              var px = x0 + (ph / Math.PI) * pitch * 2.2;
+              var py = mid + d * Math.cos(ph) * radius;
+              if (px < w * 0.05 || px > w * 0.95) continue;
+              if (ph === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+          }
         }
-        ctx.strokeStyle = ink;
-        ctx.lineWidth = 3;
+        // Outline + cap.
+        ctx.strokeStyle = rgba(THEME.ink, 0.85);
+        ctx.lineWidth = 2.6;
         ctx.beginPath();
-        ctx.ellipse(w * 0.95, h / 2, 14, (bottom - top) / 2, 0, 0, Math.PI * 2);
+        ctx.moveTo(w * 0.05, top); ctx.lineTo(w * 0.95, top);
+        ctx.moveTo(w * 0.05, bottom); ctx.lineTo(w * 0.95, bottom);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(w * 0.95, mid, 13, radius, 0, 0, Math.PI * 2);
         ctx.stroke();
       } else {
-        // Atomic honeycomb.
+        // Atomic honeycomb with shimmer + pointer parallax.
         if (!lattice) ensureLattice();
+        var par = { x: (pointer.x - 0.5) * 12, y: (pointer.y - 0.5) * 12 };
+        ctx.save();
+        ctx.translate(par.x, par.y);
         ctx.strokeStyle = rgba(THEME.muted, 0.55);
         ctx.lineWidth = 1.4;
         lattice.edges.forEach(function (edge) {
@@ -295,25 +338,99 @@
           ctx.lineTo(nb.x, nb.y);
           ctx.stroke();
         });
-        ctx.fillStyle = rgba(THEME.accent, 0.85);
-        lattice.nodes.forEach(function (node) {
+        lattice.nodes.forEach(function (node, idx) {
+          var pulse = 0.75 + Math.sin(clock * 0.002 + idx * 1.7) * 0.25;
+          ctx.fillStyle = rgba(THEME.accent, 0.55 + pulse * 0.35);
           ctx.beginPath();
-          ctx.arc(node.x, node.y, 3.2, 0, Math.PI * 2);
+          ctx.arc(node.x, node.y, 2.6 + pulse * 1.2, 0, Math.PI * 2);
           ctx.fill();
         });
+        ctx.restore();
       }
       ctx.restore();
+    }
+
+    function formatMag(mag) {
+      if (mag < 1000) return "×" + Math.round(mag);
+      return "×" + Math.round(mag).toLocaleString("en-US");
+    }
+
+    function formatSize(mag) {
+      var nm = 1e6 / mag; // 1 mm = 1e6 nm
+      if (nm >= 1e6) return "1 mm";
+      if (nm >= 1000) return (nm / 1000).toFixed(nm >= 10000 ? 0 : 1) + " µm";
+      return nm >= 10 ? Math.round(nm) + " nm" : nm.toFixed(1) + " nm";
+    }
+
+    function drawChrome() {
+      var w = surface.box.w;
+      var h = surface.box.h;
+      var mag = Math.pow(10, progress * MAG_MAX_LOG);
+
+      // Magnification counter, top-right.
+      ctx.textAlign = "right";
+      ctx.fillStyle = rgba(THEME.ink, 0.92);
+      ctx.font = "600 " + Math.max(20, Math.min(30, w / 26)) + "px 'Space Grotesk', sans-serif";
+      ctx.fillText(formatMag(mag), w - 18, 36);
+      ctx.font = "10px Inter, sans-serif";
+      ctx.fillStyle = rgba(THEME.muted, 0.85);
+      ctx.fillText("MAGNIFICATION", w - 18, 52);
+      ctx.textAlign = "left";
+
+      // Log-scale ruler along the bottom.
+      var pad = 56;
+      var y = h - 24;
+      ctx.strokeStyle = rgba(THEME.muted, 0.5);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(pad, y);
+      ctx.lineTo(w - pad, y);
+      ctx.stroke();
+      ctx.font = "10px Inter, sans-serif";
+      ctx.fillStyle = rgba(THEME.muted, 0.85);
+      [["1 mm", 0], ["1 µm", Math.log10(1000) / MAG_MAX_LOG], ["1 nm", Math.log10(1e6) / MAG_MAX_LOG]].forEach(function (tick) {
+        var tx = pad + (w - pad * 2) * tick[1];
+        ctx.beginPath();
+        ctx.moveTo(tx, y - 4);
+        ctx.lineTo(tx, y + 4);
+        ctx.stroke();
+        ctx.fillText(tick[0], tx - 10, y + 16);
+      });
+      // Hexagon marker at the current scale.
+      var mx = pad + (w - pad * 2) * progress;
+      ctx.fillStyle = rgba(THEME.bright, 1);
+      ctx.beginPath();
+      for (var k = 0; k < 6; k += 1) {
+        var a = Math.PI / 3 * k + Math.PI / 6;
+        var px = mx + 6 * Math.cos(a);
+        var py = y + 6 * Math.sin(a);
+        if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = rgba(THEME.ink, 0.9);
+      ctx.font = "600 11px 'Space Grotesk', sans-serif";
+      ctx.fillText(formatSize(mag), mx + 12, y - 8);
     }
 
     function draw() {
       if (!surface.box.w) return;
       if (!lattice) ensureLattice();
-      ctx.clearRect(0, 0, surface.box.w, surface.box.h);
+      var w = surface.box.w;
+      var h = surface.box.h;
+      ctx.clearRect(0, 0, w, h);
+
       var f = progress * (STAGES.length - 1);
       var i = Math.min(STAGES.length - 2, Math.floor(f));
       var local = f - i;
       drawStage(i, 1 - local, 1 + local * 0.4);
       drawStage(i + 1, local, 0.7 + local * 0.3);
+
+      // Depth cue: the deeper you zoom, the darker the field.
+      ctx.fillStyle = "rgba(8,14,22," + (progress * (THEME.dark ? 0.34 : 0.16)).toFixed(3) + ")";
+      ctx.fillRect(0, 0, w, h);
+
+      drawChrome();
 
       var stage = Math.round(f);
       if (stage !== lastStage) {
@@ -321,6 +438,11 @@
         if (caption) caption.textContent = STAGES[stage];
       }
     }
+
+    makeLoop(mount, function (ts) {
+      clock = ts;
+      draw();
+    });
 
     var ticking = false;
     function onScroll() {
@@ -334,15 +456,19 @@
         var p = Math.min(1, Math.max(0, -rect.top / range));
         if (Math.abs(p - progress) > 0.001) {
           progress = p;
-          draw();
           markInteract("scale", "scrub");
         }
       });
     }
 
+    mount.addEventListener("pointermove", function (event) {
+      var rect = mount.getBoundingClientRect();
+      pointer.x = (event.clientX - rect.left) / rect.width;
+      pointer.y = (event.clientY - rect.top) / rect.height;
+    }, { passive: true });
+
     window.addEventListener("scroll", onScroll, { passive: true });
     themeListeners.push(function () { draw(); });
-    draw();
     if (caption) caption.textContent = STAGES[0];
   }
 
@@ -357,9 +483,83 @@
     var load = 0;          // current animated load 0..1
     var targetLoad = 0;
     var plastic = 0;       // permanent steel deformation
+    var maxLoad = 0;       // highest load reached (drives the recorded curve)
     var broken = false;
     var dragging = false;
     var dragStartY = 0;
+    var YIELD = 0.45;      // steel yield point (normalized)
+    var FRACTURE = 0.92;   // steel fracture point
+
+    function steelStress(strain) {
+      // Elastic → yield plateau with slight hardening → fracture.
+      if (strain <= YIELD) return strain * 1.0;
+      return YIELD + (strain - YIELD) * 0.25;
+    }
+
+    function drawStressStrain() {
+      var w = surface.box.w;
+      var h = surface.box.h;
+      var gx = w * 0.6;
+      var gy = 16;
+      var gw = w * 0.34;
+      var gh = h * 0.3;
+
+      ctx.fillStyle = THEME.dark ? "rgba(8,14,22,0.55)" : "rgba(255,255,255,0.7)";
+      ctx.fillRect(gx - 8, gy - 6, gw + 16, gh + 30);
+      ctx.strokeStyle = rgba(THEME.muted, 0.5);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(gx, gy);
+      ctx.lineTo(gx, gy + gh);
+      ctx.lineTo(gx + gw, gy + gh);
+      ctx.stroke();
+      ctx.font = "9px Inter, sans-serif";
+      ctx.fillStyle = rgba(THEME.muted, 0.9);
+      ctx.fillText("stress", gx + 2, gy + 8);
+      ctx.fillText("strain →", gx + gw - 38, gy + gh + 12);
+
+      function plot(stressFn, upTo, color, slope) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        for (var s = 0; s <= upTo; s += 0.02) {
+          var px = gx + s * gw;
+          var py = gy + gh - Math.min(1, stressFn(s) * slope) * (gh - 6);
+          if (s === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+
+      var recorded = Math.max(maxLoad, 0.02);
+      // Steel: recorded curve up to the furthest strain reached.
+      plot(steelStress, broken ? FRACTURE : recorded, rgba(THEME.muted, 0.95), 1.15);
+      if (broken) {
+        var fx = gx + FRACTURE * gw;
+        var fy = gy + gh - Math.min(1, steelStress(FRACTURE) * 1.15) * (gh - 6);
+        ctx.strokeStyle = rgba(THEME.hot, 1);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(fx - 4, fy - 4); ctx.lineTo(fx + 4, fy + 4);
+        ctx.moveTo(fx + 4, fy - 4); ctx.lineTo(fx - 4, fy + 4);
+        ctx.stroke();
+      }
+      // CNT: steep, purely elastic, keeps going past steel's fracture.
+      plot(function (s) { return s; }, recorded, rgba(THEME.accent, 0.95), 2.1);
+
+      // Operating points at the current load.
+      if (load > 0.02 && !broken) {
+        ctx.fillStyle = rgba(THEME.muted, 1);
+        ctx.beginPath();
+        ctx.arc(gx + load * gw, gy + gh - Math.min(1, steelStress(load) * 1.15) * (gh - 6), 2.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (load > 0.02) {
+        ctx.fillStyle = rgba(THEME.accent, 1);
+        ctx.beginPath();
+        ctx.arc(gx + load * gw, gy + gh - Math.min(1, load * 2.1) * (gh - 6), 2.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
     function beamGeometry(yMid, defl, brokenBeam) {
       // Returns a list of {x, y} centerline points for a clamped beam.
@@ -477,12 +677,15 @@
       ctx.fillStyle = rgba(THEME.muted, 0.85);
       ctx.font = "11px Inter, sans-serif";
       ctx.fillText("drag down to load ↓", w / 2 + 16, handleY + 12 + load * 26);
+
+      drawStressStrain();
     }
 
     var loop = makeLoop(mount, function () {
       var prev = load;
       load += (targetLoad - load) * 0.14;
-      if (!broken && load > 0.92) {
+      maxLoad = Math.max(maxLoad, load);
+      if (!broken && load > FRACTURE) {
         broken = true;
         if (resetBtn) resetBtn.hidden = false;
         markInteract("strength", "snap");
@@ -514,6 +717,7 @@
         plastic = 0;
         load = 0;
         targetLoad = 0;
+        maxLoad = 0;
         resetBtn.hidden = true;
         draw();
       });
@@ -535,6 +739,7 @@
     var ctx = surface.ctx;
     var holding = false;
     var particles = [];
+    var sparks = [];
     var delivered = { copper: 0, cnt: 0 };
 
     function laneY(lane) {
@@ -570,18 +775,31 @@
       var w = surface.box.w;
       var h = surface.box.h;
       if (!w) return;
-      ctx.clearRect(0, 0, w, h);
-      drawLane("COPPER", laneY("copper"), THEME.muted);
-      drawLane("CARBON NANOTUBE", laneY("cnt"), THEME.accent);
+      // Translucent wipe instead of a clear: electrons leave fading streaks.
+      ctx.fillStyle = THEME.dark ? "rgba(12,21,32,0.26)" : "rgba(255,255,255,0.3)";
+      ctx.fillRect(0, 0, w, h);
+      drawLane("COPPER — electrons scatter every ~40 nm", laneY("copper"), THEME.muted);
+      drawLane("CARBON NANOTUBE — ballistic transport", laneY("cnt"), THEME.accent);
 
       particles.forEach(function (p) {
-        ctx.fillStyle = p.lane === "cnt" ? rgba(THEME.teal, 0.9) : rgba(THEME.muted, 0.8);
+        ctx.fillStyle = p.lane === "cnt" ? rgba(THEME.teal, 0.95) : rgba(THEME.muted, 0.85);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.lane === "cnt" ? 2.4 : 2.8, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      ctx.fillStyle = rgba(THEME.muted, 0.85);
+      // Scattering events flash briefly.
+      for (var i = sparks.length - 1; i >= 0; i -= 1) {
+        var s = sparks[i];
+        ctx.fillStyle = rgba(THEME.hot, s.life * 0.8);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 1.6 + (1 - s.life) * 3, 0, Math.PI * 2);
+        ctx.fill();
+        s.life -= 0.06;
+        if (s.life <= 0) sparks.splice(i, 1);
+      }
+
+      ctx.fillStyle = rgba(THEME.muted, 0.95);
       ctx.font = "11px Inter, sans-serif";
       ctx.fillText(holding ? "current flowing…" : "press and hold to apply current", w * 0.08, h - 12);
     }
@@ -592,9 +810,13 @@
       for (var i = particles.length - 1; i >= 0; i -= 1) {
         var p = particles[i];
         if (p.lane === "copper") {
-          // Scattering: random walk, sometimes bounced back.
-          p.x += p.v * (Math.random() < 0.12 ? -0.8 : 1);
+          // Scattering: random walk, sometimes bounced back with a spark.
+          var scattered = Math.random() < 0.12;
+          p.x += p.v * (scattered ? -0.8 : 1);
           p.y += (Math.random() - 0.5) * 3;
+          if (scattered && sparks.length < 40) {
+            sparks.push({ x: p.x, y: p.y, life: 1 });
+          }
           var base = laneY("copper");
           if (p.y < base - 13) p.y = base - 13;
           if (p.y > base + 13) p.y = base + 13;
@@ -668,7 +890,17 @@
       });
     }
 
+    var clock = 0;
+
     function drawNet(net) {
+      // Phonons: hot atoms vibrate — jitter amplitude tracks temperature.
+      var jx = [];
+      var jy = [];
+      net.nodes.forEach(function (n, idx) {
+        var amp = n.t * 2.4;
+        jx[idx] = n.x + Math.sin(clock * 0.025 + idx * 2.1) * amp;
+        jy[idx] = n.y + Math.cos(clock * 0.031 + idx * 1.3) * amp;
+      });
       net.edges.forEach(function (edge) {
         var a = net.nodes[edge.a];
         var b = net.nodes[edge.b];
@@ -677,8 +909,8 @@
         ctx.strokeStyle = rgba(color, 0.35 + heat * 0.6);
         ctx.lineWidth = 1 + heat * 1.4;
         ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
+        ctx.moveTo(jx[edge.a], jy[edge.a]);
+        ctx.lineTo(jx[edge.b], jy[edge.b]);
         ctx.stroke();
       });
     }
@@ -697,7 +929,8 @@
       drawNet(ref);
     }
 
-    makeLoop(mount, function () {
+    makeLoop(mount, function (ts) {
+      clock = ts / 16;
       if (!main) return;
       if (pointer.on) {
         inject(main, pointer.x, pointer.y, 0.25);
@@ -934,6 +1167,485 @@
     draw();
   }
 
+  /* ── 7. Real-world perspectives: one stage, five jobs ── */
+  function initPerspectivesDemo() {
+    var mount = document.querySelector('[data-demo="perspectives"]');
+    if (!mount) return;
+    var chips = Array.prototype.slice.call(document.querySelectorAll("[data-persp]"));
+    var toggles = Array.prototype.slice.call(document.querySelectorAll("[data-cnt-toggle]"));
+    var sliderWrap = document.getElementById("hc-persp-slider-wrap");
+    var slider = document.getElementById("hc-persp-slider");
+    var titleNode = document.getElementById("hc-persp-title");
+    var descNode = document.getElementById("hc-persp-desc");
+    var factsNode = document.getElementById("hc-persp-facts");
+    var linkNode = document.getElementById("hc-persp-link");
+
+    var surface = setupCanvas(mount, function () { seeded = null; });
+    var ctx = surface.ctx;
+    var state = {
+      key: "battery",
+      withCNT: true,
+      density: 0.55,
+      clock: 0,
+      fade: 0,
+      pointer: { x: 0.5, y: 0.5, on: false }
+    };
+    var seeded = null;
+
+    function seededRandom(seedStart) {
+      var seed = seedStart;
+      return function () {
+        seed = (seed * 1103515245 + 12345) % 2147483648;
+        return seed / 2147483648;
+      };
+    }
+
+    function ensureSeeds() {
+      if (seeded) return;
+      var w = surface.box.w;
+      var h = surface.box.h;
+      var rand = seededRandom(48271);
+      seeded = { particles: [], rods: [], cracks: [] };
+      for (var i = 0; i < 26; i += 1) {
+        seeded.particles.push({
+          x: w * (0.08 + rand() * 0.84),
+          y: h * (0.12 + rand() * 0.55),
+          r: 9 + rand() * 13
+        });
+      }
+      for (var j = 0; j < 130; j += 1) {
+        var angle = rand() * Math.PI;
+        var len = 26 + rand() * 30;
+        var cx = w * (0.06 + rand() * 0.88);
+        var cy = h * (0.12 + rand() * 0.68);
+        seeded.rods.push({
+          x1: cx - Math.cos(angle) * len / 2, y1: cy - Math.sin(angle) * len / 2,
+          x2: cx + Math.cos(angle) * len / 2, y2: cy + Math.sin(angle) * len / 2,
+          order: rand()
+        });
+      }
+    }
+
+    var PERSPECTIVES = {
+      battery: {
+        title: "Battery electrode — conductive additive",
+        desc: "Active cathode particles store the energy, but they barely conduct. A sparse CNT web wires every particle to the current collector.",
+        facts: [
+          "Under 1 wt% CNT replaces 3–5 wt% carbon black — more space for active material.",
+          "A connected network sustains faster charge and discharge rates."
+        ],
+        link: "/shop.html#hexflow-a",
+        label: "HexFlow dispersions",
+        draw: function () {
+          ensureSeeds();
+          var w = surface.box.w;
+          var h = surface.box.h;
+          // Current collector.
+          ctx.fillStyle = rgba(THEME.muted, 0.5);
+          ctx.fillRect(w * 0.05, h * 0.82, w * 0.9, 7);
+          ctx.font = "9px Inter, sans-serif";
+          ctx.fillStyle = rgba(THEME.muted, 0.9);
+          ctx.fillText("current collector", w * 0.05, h * 0.82 + 20);
+
+          // CNT web: connect each particle to its nearest lower neighbour, chain to collector.
+          if (state.withCNT) {
+            ctx.strokeStyle = rgba(THEME.accent, 0.6);
+            ctx.lineWidth = 1.1;
+            seeded.particles.forEach(function (p) {
+              var best = null;
+              var bestD = 1e9;
+              seeded.particles.forEach(function (q) {
+                if (q === p || q.y <= p.y) return;
+                var d = (q.x - p.x) * (q.x - p.x) + (q.y - p.y) * (q.y - p.y);
+                if (d < bestD) { bestD = d; best = q; }
+              });
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              if (best && bestD < (w * 0.3) * (w * 0.3)) {
+                ctx.lineTo(best.x, best.y);
+              } else {
+                ctx.lineTo(p.x + (p.x > w / 2 ? 10 : -10), h * 0.82);
+              }
+              ctx.stroke();
+            });
+            // Charge pulses drifting down the web.
+            var t = (state.clock % 1400) / 1400;
+            seeded.particles.forEach(function (p, idx) {
+              if (idx % 3 !== 0) return;
+              var py = p.y + (h * 0.82 - p.y) * ((t + idx * 0.13) % 1);
+              ctx.fillStyle = rgba(THEME.teal, 0.9);
+              ctx.beginPath();
+              ctx.arc(p.x, py, 2, 0, Math.PI * 2);
+              ctx.fill();
+            });
+          }
+
+          // Particles: lit when connected, dim and stranded otherwise.
+          seeded.particles.forEach(function (p) {
+            var lit = state.withCNT || p.y + p.r > h * 0.74;
+            ctx.fillStyle = lit ? rgba(THEME.teal, 0.3) : rgba(THEME.muted, 0.14);
+            ctx.strokeStyle = lit ? rgba(THEME.teal, 0.8) : rgba(THEME.muted, 0.4);
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          });
+
+          ctx.fillStyle = rgba(THEME.ink, 0.9);
+          ctx.font = "600 11px 'Space Grotesk', sans-serif";
+          ctx.fillText(state.withCNT ? "EVERY PARTICLE WIRED IN" : "STRANDED CAPACITY", w * 0.05, h * 0.08);
+        }
+      },
+
+      concrete: {
+        title: "Concrete additive — crack bridging",
+        desc: "Concrete fails by microcracks growing into fractures. CNTs stitch across crack faces at the nanoscale and arrest them early.",
+        facts: [
+          "Nanoscale crack bridging improves flexural strength and durability.",
+          "The conductive network is piezoresistive — the structure can sense its own strain."
+        ],
+        link: "/shop.html#hexblend",
+        label: "HexBlend masterbatches",
+        draw: function () {
+          var w = surface.box.w;
+          var h = surface.box.h;
+          // Block under cyclic load.
+          var pulse = 0.5 + Math.sin(state.clock * 0.0025) * 0.5;
+          ctx.strokeStyle = rgba(THEME.muted, 0.7);
+          ctx.lineWidth = 2;
+          ctx.strokeRect(w * 0.16, h * 0.16, w * 0.68, h * 0.62);
+          ctx.fillStyle = rgba(THEME.muted, 0.07);
+          ctx.fillRect(w * 0.16, h * 0.16, w * 0.68, h * 0.62);
+          // Load arrows.
+          ctx.fillStyle = rgba(THEME.teal, 0.5 + pulse * 0.4);
+          [[w * 0.5, h * 0.07, 0], [w * 0.5, h * 0.9, 1]].forEach(function (a) {
+            ctx.beginPath();
+            if (a[2] === 0) {
+              ctx.moveTo(a[0] - 8, a[1]); ctx.lineTo(a[0] + 8, a[1]); ctx.lineTo(a[0], a[1] + 10);
+            } else {
+              ctx.moveTo(a[0] - 8, a[1]); ctx.lineTo(a[0] + 8, a[1]); ctx.lineTo(a[0], a[1] - 10);
+            }
+            ctx.closePath();
+            ctx.fill();
+          });
+
+          // Crack from the top edge; CNT caps its growth.
+          var maxLen = state.withCNT ? 0.24 : 0.55;
+          var crackLen = (0.12 + pulse * maxLen) * h;
+          ctx.strokeStyle = rgba(THEME.hot, 0.85);
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          var cx = w * 0.5;
+          var cy = h * 0.16;
+          ctx.moveTo(cx, cy);
+          var segments = 9;
+          for (var s = 1; s <= segments; s += 1) {
+            cx += Math.sin(s * 2.3) * 9;
+            cy += crackLen / segments;
+            ctx.lineTo(cx, cy);
+          }
+          ctx.stroke();
+
+          if (state.withCNT) {
+            // Fibers stitching across the crack near the tip.
+            ctx.strokeStyle = rgba(THEME.accent, 0.9);
+            ctx.lineWidth = 1.4;
+            for (var f = 0; f < 7; f += 1) {
+              var fy = h * 0.18 + (crackLen * (0.3 + f * 0.1));
+              var fx = w * 0.5 + Math.sin((f + 1) * 2.3) * 7;
+              ctx.beginPath();
+              ctx.moveTo(fx - 13, fy - 4);
+              ctx.lineTo(fx + 13, fy + 4);
+              ctx.stroke();
+            }
+            ctx.fillStyle = rgba(THEME.accent, 1);
+            ctx.font = "600 11px 'Space Grotesk', sans-serif";
+            ctx.fillText("CRACK ARRESTED", w * 0.56, h * 0.42);
+          } else {
+            ctx.fillStyle = rgba(THEME.hot, 0.95);
+            ctx.font = "600 11px 'Space Grotesk', sans-serif";
+            ctx.fillText("CRACK GROWING", w * 0.56, h * 0.5);
+          }
+        }
+      },
+
+      film: {
+        title: "Thin film — transparent conductor & EMI shield",
+        desc: "Scatter enough tubes on a film and the network suddenly connects — sheet resistance collapses while the film stays see-through.",
+        facts: [
+          "Percolation at very low loading keeps films transparent and flexible.",
+          "The same networks shield electromagnetic interference in lightweight housings."
+        ],
+        link: "/shop.html#hexink",
+        label: "HexInk printed systems",
+        slider: true,
+        draw: function () {
+          ensureSeeds();
+          var w = surface.box.w;
+          var h = surface.box.h;
+          var density = state.withCNT ? state.density : 0;
+          var connected = density >= 0.45;
+
+          // What's behind the film stays visible: a circuit hint.
+          ctx.fillStyle = rgba(THEME.muted, 0.25);
+          ctx.font = "600 " + Math.round(w / 14) + "px 'Space Grotesk', sans-serif";
+          ctx.fillText("DISPLAY", w * 0.3, h * 0.5);
+
+          // Film.
+          ctx.fillStyle = connected ? "rgba(180,140,60,0.06)" : "rgba(128,148,168,0.05)";
+          ctx.fillRect(w * 0.05, h * 0.08, w * 0.9, h * 0.7);
+          ctx.strokeStyle = rgba(THEME.muted, 0.5);
+          ctx.lineWidth = 1;
+          ctx.strokeRect(w * 0.05, h * 0.08, w * 0.9, h * 0.7);
+
+          // Rod network: draw the first density-fraction of rods.
+          var visible = Math.round(seeded.rods.length * density);
+          seeded.rods.forEach(function (rod, idx) {
+            if (idx >= visible) return;
+            ctx.strokeStyle = rgba(THEME.accent, connected ? 0.55 : 0.4);
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(rod.x1, rod.y1);
+            ctx.lineTo(rod.x2, rod.y2);
+            ctx.stroke();
+          });
+
+          // Readout: LED + sheet resistance.
+          ctx.fillStyle = connected ? rgba(THEME.teal, 0.95) : rgba(THEME.muted, 0.3);
+          ctx.beginPath();
+          ctx.arc(w * 0.09, h * 0.9, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = rgba(THEME.ink, 0.9);
+          ctx.font = "600 12px 'Space Grotesk', sans-serif";
+          var ohms = connected
+            ? Math.round(400 - (density - 0.45) * 550) + " Ω/sq"
+            : "insulating";
+          ctx.fillText("sheet resistance: " + ohms, w * 0.13, h * 0.9 + 4);
+          ctx.fillStyle = rgba(THEME.muted, 0.85);
+          ctx.font = "10px Inter, sans-serif";
+          ctx.fillText(connected ? "network percolated — film conducts" : "below percolation — add density", w * 0.13, h * 0.9 + 18);
+        }
+      },
+
+      textile: {
+        title: "E-textile fiber — fabric that senses",
+        desc: "Conductive CNT yarns woven into cloth change resistance as they stretch. Flex the fabric and read the signal — a wearable strain sensor.",
+        facts: [
+          "Conductive, washable yarns survive textile processing.",
+          "Resistance tracks strain — motion, breathing, and pressure sensing."
+        ],
+        link: "/shop.html#hexweave",
+        label: "HexWeave fibers",
+        draw: function () {
+          var w = surface.box.w;
+          var h = surface.box.h;
+          var flex = state.pointer.on ? (state.pointer.y - 0.45) * 60 : Math.sin(state.clock * 0.0012) * 8;
+          var cnt = state.withCNT;
+
+          function warpY(x, row) {
+            var fall = Math.exp(-Math.pow((x - state.pointer.x * w) / (w * 0.22), 2));
+            return h * (0.16 + row * 0.085) + flex * fall;
+          }
+
+          // Weave: horizontal yarns (every third is a CNT yarn when enabled).
+          for (var row = 0; row < 7; row += 1) {
+            var isCnt = cnt && row % 3 === 1;
+            ctx.strokeStyle = isCnt ? rgba(THEME.accent, 0.95) : rgba(THEME.muted, 0.55);
+            ctx.lineWidth = isCnt ? 3 : 2.2;
+            ctx.beginPath();
+            for (var x = w * 0.06; x <= w * 0.94; x += 7) {
+              var y = warpY(x, row) + Math.sin(x / 16 + row) * 1.6;
+              if (x === w * 0.06) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+          }
+          // Vertical yarns.
+          ctx.strokeStyle = rgba(THEME.muted, 0.35);
+          ctx.lineWidth = 2;
+          for (var col = 0; col < 14; col += 1) {
+            var vx = w * (0.08 + col * 0.062);
+            ctx.beginPath();
+            ctx.moveTo(vx, warpY(vx, 0) - 6);
+            ctx.lineTo(vx, warpY(vx, 6) + 6);
+            ctx.stroke();
+          }
+
+          // Live resistance trace.
+          var baseY = h * 0.88;
+          ctx.strokeStyle = rgba(THEME.muted, 0.4);
+          ctx.beginPath();
+          ctx.moveTo(w * 0.06, baseY);
+          ctx.lineTo(w * 0.94, baseY);
+          ctx.stroke();
+          if (cnt) {
+            state.trace = state.trace || [];
+            state.trace.push(Math.abs(flex));
+            if (state.trace.length > 90) state.trace.shift();
+            ctx.strokeStyle = rgba(THEME.teal, 0.95);
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            state.trace.forEach(function (v, idx) {
+              var tx = w * 0.06 + (idx / 89) * w * 0.88;
+              var ty = baseY - Math.min(28, v * 0.9);
+              if (idx === 0) ctx.moveTo(tx, ty); else ctx.lineTo(tx, ty);
+            });
+            ctx.stroke();
+            ctx.fillStyle = rgba(THEME.muted, 0.85);
+            ctx.font = "10px Inter, sans-serif";
+            ctx.fillText("ΔR — strain signal", w * 0.06, baseY + 14);
+          } else {
+            ctx.fillStyle = rgba(THEME.muted, 0.6);
+            ctx.font = "10px Inter, sans-serif";
+            ctx.fillText("plain fabric — no signal", w * 0.06, baseY + 14);
+          }
+        }
+      },
+
+      polymer: {
+        title: "Polymer composite — reinforcement at 1–3 wt%",
+        desc: "Under shear, neat polymer chains slide and stay deformed. A CNT network pins the chains, so the part stays stiff and sheds static.",
+        facts: [
+          "Stiffness, creep, and wear improve at just 1–3 wt% loading.",
+          "The percolated network adds static dissipation for ESD-safe parts."
+        ],
+        link: "/shop.html#hexrubber",
+        label: "HexRubber & HexBlend",
+        draw: function () {
+          var w = surface.box.w;
+          var h = surface.box.h;
+          var cnt = state.withCNT;
+          var shear = Math.sin(state.clock * 0.0018) * (cnt ? 8 : 26);
+
+          ctx.font = "600 11px 'Space Grotesk', sans-serif";
+          ctx.fillStyle = rgba(THEME.ink, 0.9);
+          ctx.fillText(cnt ? "NETWORK PINNED — LOW CREEP" : "CHAINS SLIDING — PERMANENT SET", w * 0.06, h * 0.1);
+
+          // Polymer chains shearing.
+          for (var c = 0; c < 8; c += 1) {
+            var cy = h * (0.2 + c * 0.085);
+            var offset = shear * (c / 8);
+            ctx.strokeStyle = rgba(THEME.muted, 0.6);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (var x = w * 0.06; x <= w * 0.94; x += 6) {
+              var y = cy + Math.sin(x / 18 + c * 2 + state.clock * 0.001) * 4;
+              var sx = x + offset;
+              if (x === w * 0.06) ctx.moveTo(sx, y); else ctx.lineTo(sx, y);
+            }
+            ctx.stroke();
+          }
+
+          if (cnt) {
+            // Pinning rods across chains.
+            ctx.strokeStyle = rgba(THEME.accent, 0.9);
+            ctx.lineWidth = 2.4;
+            for (var r = 0; r < 6; r += 1) {
+              var rx = w * (0.14 + r * 0.14);
+              ctx.beginPath();
+              ctx.moveTo(rx, h * 0.18);
+              ctx.lineTo(rx + 14, h * 0.84);
+              ctx.stroke();
+            }
+          }
+
+          // Shear arrows.
+          ctx.fillStyle = rgba(THEME.teal, 0.8);
+          ctx.font = "12px Inter, sans-serif";
+          ctx.fillText("⟵ shear ⟶", w * 0.42, h * 0.95);
+        }
+      }
+    };
+
+    function applyMeta() {
+      var p = PERSPECTIVES[state.key];
+      if (titleNode) titleNode.textContent = p.title;
+      if (descNode) descNode.textContent = p.desc;
+      if (factsNode) {
+        factsNode.innerHTML = "";
+        p.facts.forEach(function (fact) {
+          var li = document.createElement("li");
+          li.textContent = fact;
+          factsNode.appendChild(li);
+        });
+      }
+      if (linkNode) {
+        linkNode.href = p.link;
+        linkNode.textContent = "Open " + p.label + " →";
+      }
+      if (sliderWrap) sliderWrap.hidden = !p.slider;
+    }
+
+    function draw() {
+      var w = surface.box.w;
+      var h = surface.box.h;
+      if (!w) return;
+      ctx.clearRect(0, 0, w, h);
+      PERSPECTIVES[state.key].draw();
+      if (state.fade > 0.01) {
+        ctx.fillStyle = THEME.dark ? "rgba(12,21,32," + state.fade + ")" : "rgba(255,255,255," + state.fade + ")";
+        ctx.fillRect(0, 0, w, h);
+      }
+    }
+
+    makeLoop(mount, function (ts) {
+      state.clock = ts;
+      if (state.fade > 0) state.fade = Math.max(0, state.fade - 0.07);
+      draw();
+    });
+
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var key = chip.getAttribute("data-persp");
+        if (!PERSPECTIVES[key] || key === state.key) return;
+        state.key = key;
+        state.fade = 1;
+        state.trace = [];
+        chips.forEach(function (other) {
+          other.classList.toggle("is-active", other === chip);
+          other.setAttribute("aria-pressed", other === chip ? "true" : "false");
+        });
+        applyMeta();
+        markInteract("perspectives", key);
+        if (typeof window.hexTrack === "function") {
+          window.hexTrack("hc_property_perspective_view", { perspective: key });
+        }
+      });
+    });
+
+    toggles.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.withCNT = btn.getAttribute("data-cnt-toggle") === "with";
+        toggles.forEach(function (other) {
+          var on = other === btn;
+          other.classList.toggle("is-active", on);
+          other.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        markInteract("perspectives", "toggle");
+      });
+    });
+
+    if (slider) {
+      slider.addEventListener("input", function () {
+        state.density = Number(slider.value) / 100;
+        markInteract("perspectives", "density");
+      });
+    }
+
+    mount.addEventListener("pointermove", function (event) {
+      var rect = mount.getBoundingClientRect();
+      state.pointer.x = (event.clientX - rect.left) / rect.width;
+      state.pointer.y = (event.clientY - rect.top) / rect.height;
+      state.pointer.on = true;
+    }, { passive: true });
+    mount.addEventListener("pointerleave", function () {
+      state.pointer.on = false;
+    }, { passive: true });
+
+    themeListeners.push(draw);
+    applyMeta();
+  }
+
   function init() {
     readTheme();
     new MutationObserver(function () {
@@ -947,6 +1659,7 @@
     initThermalDemo();
     initBendDemo();
     initLightnessDemo();
+    initPerspectivesDemo();
   }
 
   if (document.readyState === "loading") {

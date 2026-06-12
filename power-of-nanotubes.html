@@ -23,9 +23,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260613b" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20260613b" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20260613b" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260613c" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20260613c" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20260613c" />
 
   <script type="application/ld+json">
   {
@@ -82,6 +82,7 @@
         <span class="hc-kicker">Why Nanotubes</span>
         <h1>Feel what carbon can do.</h1>
         <p>Don't read about it — try it. Stretch it, heat it, bend it, run current through it. Every demo below is live.</p>
+        <p class="hc-subtle-note">Figures are single-tube laboratory values; composite performance depends on dispersion quality, loading, and interface — exactly what HexCarb engineers.</p>
         <p class="hc-subtle-note">Prefer the full story? <a class="hc-inline-link" href="/history-of-advanced-nanomaterials.html">Read the history of advanced nanomaterials →</a></p>
       </div>
     </section>
@@ -106,8 +107,8 @@
           <h2>Load both beams until one gives up</h2>
           <p>The hexagonal carbon bond is the strongest link chemistry offers. Pull the handle down: the steel truss deforms, then fails. The honeycomb flexes — and comes back.</p>
           <div class="hc-metric">
-            <strong><span data-count-to="100">100</span>&times;</strong>
-            <span>tensile strength of steel</span>
+            <strong><span data-count-to="100">100</span>&nbsp;GPa</strong>
+            <span>tensile strength — ~50–100&times; structural steel</span>
           </div>
         </div>
         <div class="hc-reveal">
@@ -132,10 +133,10 @@
         <div class="hc-reveal">
           <span class="hc-kicker">Electrical</span>
           <h2>Race electrons down both wires</h2>
-          <p>In copper, electrons scatter off the metal lattice at every step. In a nanotube they travel ballistically — straight through. Hold the panel and watch the difference.</p>
+          <p>In copper, electrons scatter off lattice defects every ~40 nanometers. In a nanotube they travel ballistically — no scattering for microns at a time. Hold the panel and watch the difference.</p>
           <div class="hc-metric">
             <strong><span data-count-to="1000">1000</span>&times;</strong>
-            <span>current capacity of copper</span>
+            <span>maximum current density of copper (~10&#8313; A/cm&sup2;)</span>
           </div>
         </div>
       </div>
@@ -147,10 +148,10 @@
         <div class="hc-reveal">
           <span class="hc-kicker">Thermal</span>
           <h2>Touch it and watch heat travel</h2>
-          <p>Move your pointer across the network. Heat blooms through the carbon lattice almost instantly — the polymer strip below barely notices the same touch.</p>
+          <p>Move your pointer across the network. Heat travels as lattice vibrations — phonons — and the stiff carbon lattice carries them almost without loss. The polymer strip below barely notices the same touch.</p>
           <div class="hc-metric">
-            <strong><span data-count-to="10">10</span>&times;</strong>
-            <span>thermal conductivity of copper</span>
+            <strong><span data-count-to="3500">3500</span>&nbsp;W/m&middot;K</strong>
+            <span>thermal conductivity — about 9&times; copper</span>
           </div>
         </div>
         <div class="hc-reveal">
@@ -197,6 +198,47 @@
             <span class="hc-subtle-note">Strength your part needs</span>
             <input type="range" id="hc-lightness-slider" min="1" max="10" value="3" />
           </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-world perspectives -->
+    <section class="hc-section hc-soft-bg" id="real-world" data-hc-hexdecor="bl">
+      <div class="container">
+        <div class="hc-reveal">
+          <span class="hc-kicker">In the Real World</span>
+          <h2>The same tube, five different superpowers</h2>
+          <p>Pick a use case and toggle the nanotubes on and off — watch what changes.</p>
+        </div>
+
+        <div class="hc-persp-chips hc-reveal" role="group" aria-label="Choose a use case">
+          <button type="button" class="hc-filter-chip is-active" data-persp="battery" aria-pressed="true">Battery electrode</button>
+          <button type="button" class="hc-filter-chip" data-persp="concrete" aria-pressed="false">Concrete additive</button>
+          <button type="button" class="hc-filter-chip" data-persp="film" aria-pressed="false">Thin film / EMI</button>
+          <button type="button" class="hc-filter-chip" data-persp="textile" aria-pressed="false">E-textile</button>
+          <button type="button" class="hc-filter-chip" data-persp="polymer" aria-pressed="false">Polymer composite</button>
+        </div>
+
+        <div class="hc-grid hc-grid-2 hc-demo-row" style="margin-top:1rem;">
+          <div class="hc-reveal">
+            <div class="hc-demo-card" data-demo="perspectives"></div>
+            <div class="hc-persp-controls">
+              <button type="button" class="hc-filter-chip is-active" data-cnt-toggle="with" aria-pressed="true">With CNT</button>
+              <button type="button" class="hc-filter-chip" data-cnt-toggle="without" aria-pressed="false">Without</button>
+              <label class="hc-demo-slider hc-persp-slider" id="hc-persp-slider-wrap" hidden>
+                <span class="hc-subtle-note">Network density</span>
+                <input type="range" id="hc-persp-slider" min="0" max="100" value="55" />
+              </label>
+            </div>
+          </div>
+          <div class="hc-reveal">
+            <h3 id="hc-persp-title"></h3>
+            <p id="hc-persp-desc"></p>
+            <ul class="hc-selector-why" id="hc-persp-facts"></ul>
+            <div class="hc-btn-row">
+              <a class="hc-btn hc-btn-ghost" id="hc-persp-link" href="/shop.html" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"why_nanotubes","cta_type":"perspective_product_link"}'>Open in Products</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -253,8 +295,8 @@
   </footer>
 
   <script src="/assets/js/hexcarb-config.js"></script>
-  <script src="/assets/js/hexcarb-ui.js?v=20260613b"></script>
-  <script src="/assets/js/hexcarb-signature.js?v=20260613b"></script>
-  <script src="/assets/js/hexcarb-properties.js?v=20260613b"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20260613c"></script>
+  <script src="/assets/js/hexcarb-signature.js?v=20260613c"></script>
+  <script src="/assets/js/hexcarb-properties.js?v=20260613c"></script>
 </body>
 </html>

@@ -2067,6 +2067,35 @@ section.is-section-empty {
   }
 }
 
+/* Perspectives switcher */
+.hc-persp-chips {
+  margin-top: 1.1rem;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.hc-persp-controls {
+  margin-top: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.hc-persp-slider {
+  flex: 1 1 180px;
+  margin-top: 0 !important;
+}
+
+#hc-persp-title {
+  font-size: 1.3rem;
+}
+
+#hc-persp-desc {
+  margin-top: 0.6rem;
+}
+
 /* Hexagon section-dot rail (body[data-hc-rail], desktop only) */
 .hc-section-rail {
   position: fixed;
