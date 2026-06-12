@@ -807,6 +807,48 @@
     });
   }
 
+  function initSectionRail() {
+    if (!document.body.hasAttribute("data-hc-rail")) return;
+    if (!("IntersectionObserver" in window)) return;
+
+    var sections = Array.prototype.slice.call(
+      document.querySelectorAll("main > section")
+    ).filter(function (section) {
+      return section.querySelector("h1, h2");
+    });
+    if (sections.length < 4) return;
+
+    var rail = document.createElement("nav");
+    rail.className = "hc-section-rail";
+    rail.setAttribute("aria-hidden", "true");
+
+    var dots = sections.map(function (section, index) {
+      if (!section.id) section.id = "hc-rail-section-" + index;
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.tabIndex = -1;
+      dot.addEventListener("click", function () {
+        section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+      });
+      rail.appendChild(dot);
+      return dot;
+    });
+
+    // A section is "active" when it crosses the vertical center of the viewport.
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var index = sections.indexOf(entry.target);
+        dots.forEach(function (dot, dotIndex) {
+          dot.classList.toggle("is-active", dotIndex === index);
+        });
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+    sections.forEach(function (section) { observer.observe(section); });
+    document.body.appendChild(rail);
+  }
+
   function initMagneticButtons() {
     if (prefersReducedMotion() || !hasFineHoverPointer()) return;
     if (!document.querySelector("[data-hc-magnetic]")) return;
@@ -1011,6 +1053,7 @@
     initHexDecor();
     initHeroTilt();
     initHeroHeadline();
+    initSectionRail();
     setYearTokens();
     initTrademark();
     initCounters();

@@ -1917,6 +1917,195 @@ section.is-section-empty {
   height: auto;
 }
 
+/* ─── Property demos (/power-of-nanotubes.html) ─── */
+.hc-demo-card {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  border: 1px solid var(--hc-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  touch-action: none;
+}
+
+:root[data-theme="dark"] .hc-demo-card {
+  background: rgba(12, 21, 32, 0.72);
+}
+
+.hc-demo-card--wide {
+  aspect-ratio: 21 / 9;
+  margin-top: 1.2rem;
+  cursor: default;
+  touch-action: auto;
+}
+
+.hc-demo-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hc-demo-row {
+  align-items: center;
+}
+
+.hc-demo-hint {
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--hc-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: opacity var(--dur-slow) var(--ease);
+}
+
+.hc-demo-hint::before {
+  content: "";
+  width: 8px;
+  height: 9px;
+  flex-shrink: 0;
+  clip-path: polygon(50% 0, 100% 27%, 100% 73%, 50% 100%, 0 73%, 0 27%);
+  background: var(--hc-accent-bright);
+  animation: hcHintPulse 1.6s ease-in-out infinite;
+}
+
+.hc-demo-hint.is-done {
+  opacity: 0.35;
+}
+
+.hc-demo-hint.is-done::before {
+  animation: none;
+}
+
+@keyframes hcHintPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-demo-hint::before {
+    animation: none;
+  }
+}
+
+.hc-demo-caption {
+  margin-top: 0.9rem;
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+  color: var(--hc-heading);
+  min-height: 1.6em;
+}
+
+.hc-demo-counters {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 1.4rem;
+  font-size: 0.85rem;
+  color: var(--hc-text-muted);
+}
+
+.hc-demo-counters strong {
+  font-family: var(--font-heading);
+  color: var(--hc-heading);
+}
+
+.hc-demo-reset {
+  margin-top: 0.7rem;
+}
+
+.hc-demo-row .hc-metric {
+  margin-top: 1.3rem;
+  max-width: 280px;
+}
+
+/* Scale-zoom section: tall scroll range with a sticky stage. */
+.hc-scale-section {
+  height: 320vh;
+}
+
+.hc-scale-sticky {
+  position: sticky;
+  top: var(--nav-height);
+  padding-block: clamp(1.6rem, 4vh, 3rem);
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+}
+
+.hc-scale-sticky > .container {
+  width: min(var(--container-max), calc(100% - (var(--container-pad) * 2)));
+  margin-inline: auto;
+}
+
+.hc-demo-slider {
+  display: block;
+  margin-top: 0.8rem;
+}
+
+.hc-demo-slider input[type="range"] {
+  width: 100%;
+  margin-top: 0.4rem;
+  accent-color: var(--hc-accent);
+}
+
+.hc-inline-link {
+  color: var(--hc-accent-ink, var(--hc-accent));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .hc-demo-row--flip > :first-child {
+    order: 2;
+  }
+
+  .hc-scale-section {
+    height: 260vh;
+  }
+}
+
+/* Hexagon section-dot rail (body[data-hc-rail], desktop only) */
+.hc-section-rail {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 1100px) {
+  body[data-hc-rail] .hc-section-rail {
+    display: flex;
+  }
+}
+
+.hc-section-rail button {
+  width: 12px;
+  height: 13px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(50% 0, 100% 27%, 100% 73%, 50% 100%, 0 73%, 0 27%);
+  background: rgba(164, 122, 59, 0.28);
+  transition: background var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
+}
+
+.hc-section-rail button:hover {
+  transform: scale(1.25);
+  background: rgba(164, 122, 59, 0.55);
+}
+
+.hc-section-rail button.is-active {
+  background: var(--hc-accent-bright);
+  transform: scale(1.2);
+}
+
 /* ===== Hexagonal shape language =====
    corner-shape: bevel turns radii into straight cuts, so pills become
    elongated hexagons and cards get hex-cut corners - while borders,
