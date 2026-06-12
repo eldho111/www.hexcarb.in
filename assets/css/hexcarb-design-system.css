@@ -119,19 +119,25 @@ body.hc-premium {
   background: transparent;
 }
 
-/* Hex-grid page surface: fine honeycomb lines, dense top-right and
-   dissolving toward bottom-left — deliberately asymmetric. */
+/* Original nanotube macro photo as the ambient surface — crisp, low
+   opacity, fading toward the lower-left so content stays calm. */
 body.hc-premium::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: var(--hc-hexgrid);
-  background-size: 72px auto;
-  /* Whisper of texture in the top-right corner only. */
-  -webkit-mask-image: radial-gradient(60% 48% at 92% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
-  mask-image: radial-gradient(60% 48% at 92% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
+  background-image: url("/assets/media/ambient/background-1.webp");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+  -webkit-mask-image: radial-gradient(120% 110% at 86% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.45) 52%, transparent 92%);
+  mask-image: radial-gradient(120% 110% at 86% 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.45) 52%, transparent 92%);
+}
+
+:root[data-theme="dark"] body.hc-premium::before {
+  opacity: 0.16;
+  filter: brightness(0.5) contrast(115%);
 }
 
 /* Flat asymmetric color washes — minimal geometric, no glow. */
