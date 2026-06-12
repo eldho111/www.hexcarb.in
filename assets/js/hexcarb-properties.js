@@ -1399,17 +1399,40 @@
           ctx.lineWidth = 1;
           ctx.strokeRect(w * 0.05, h * 0.08, w * 0.9, h * 0.7);
 
-          // Rod network: draw the first density-fraction of rods.
+          // Rod network: draw the first density-fraction of rods. Sparse
+          // networks read grey and broken; past percolation they turn gold.
           var visible = Math.round(seeded.rods.length * density);
           seeded.rods.forEach(function (rod, idx) {
             if (idx >= visible) return;
-            ctx.strokeStyle = rgba(THEME.accent, connected ? 0.55 : 0.4);
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = connected
+              ? rgba(THEME.accent, 0.7)
+              : rgba(THEME.muted, 0.45);
+            ctx.lineWidth = connected ? 1.3 : 1;
             ctx.beginPath();
             ctx.moveTo(rod.x1, rod.y1);
             ctx.lineTo(rod.x2, rod.y2);
             ctx.stroke();
           });
+
+          // Once percolated, a current path lights up across the film.
+          if (connected) {
+            var path = seeded.rods.slice(0, visible)
+              .map(function (rod) { return { x: (rod.x1 + rod.x2) / 2, y: (rod.y1 + rod.y2) / 2, o: rod.order }; })
+              .filter(function (p) { return p.o < 0.3; })
+              .sort(function (a, b) { return a.x - b.x; });
+            if (path.length > 2) {
+              ctx.strokeStyle = rgba(THEME.teal, 0.9);
+              ctx.lineWidth = 1.8;
+              ctx.setLineDash([7, 9]);
+              ctx.lineDashOffset = -state.clock * 0.04;
+              ctx.beginPath();
+              ctx.moveTo(w * 0.05, path[0].y);
+              path.forEach(function (p) { ctx.lineTo(p.x, p.y); });
+              ctx.lineTo(w * 0.95, path[path.length - 1].y);
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+          }
 
           // Readout: LED + sheet resistance.
           ctx.fillStyle = connected ? rgba(THEME.teal, 0.95) : rgba(THEME.muted, 0.3);
@@ -1498,6 +1521,196 @@
             ctx.fillStyle = rgba(THEME.muted, 0.6);
             ctx.font = "10px Inter, sans-serif";
             ctx.fillText("plain fabric — no signal", w * 0.06, baseY + 14);
+          }
+        }
+      },
+
+      sports: {
+        title: "Sports gear — stiffness you can feel",
+        desc: "A bike frame or racket flexes under every stroke, wasting your effort. CNT-reinforced layups stay stiff at the same weight — and damp the sting.",
+        facts: [
+          "Already used in bike frames, rackets, hockey sticks, and skis.",
+          "Higher stiffness-to-weight plus vibration damping for better feel."
+        ],
+        link: "/shop.html#hexblend",
+        label: "HexBlend masterbatches",
+        draw: function () {
+          var w = surface.box.w;
+          var h = surface.box.h;
+          var cnt = state.withCNT;
+          var pedal = Math.sin(state.clock * 0.004);
+          var flex = pedal * (cnt ? 3 : 14);
+
+          ctx.font = "600 11px 'Space Grotesk', sans-serif";
+          ctx.fillStyle = rgba(THEME.ink, 0.9);
+          ctx.fillText(cnt ? "STIFF FRAME — POWER TO THE ROAD" : "FLEXING FRAME — WASTED WATTS", w * 0.06, h * 0.1);
+
+          // Simplified bike frame (two triangles) that flexes at the bottom bracket.
+          var bbx = w * 0.5 + flex;
+          var bby = h * 0.66;
+          var rearX = w * 0.24;
+          var frontX = w * 0.74 + flex * 0.4;
+          var seatX = w * 0.42 + flex * 0.7;
+          var headX = w * 0.66 + flex * 0.5;
+
+          ctx.strokeStyle = cnt ? rgba(THEME.accent, 0.95) : rgba(THEME.muted, 0.8);
+          ctx.lineWidth = 5;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(rearX, bby); ctx.lineTo(bbx, bby);
+          ctx.lineTo(seatX, h * 0.3); ctx.lineTo(rearX, bby);
+          ctx.moveTo(seatX, h * 0.3); ctx.lineTo(headX, h * 0.32);
+          ctx.lineTo(frontX, bby); ctx.lineTo(bbx, bby);
+          ctx.stroke();
+          // Wheels.
+          ctx.lineWidth = 2.4;
+          ctx.strokeStyle = rgba(THEME.muted, 0.6);
+          [rearX, frontX].forEach(function (wx) {
+            ctx.beginPath();
+            ctx.arc(wx, bby, h * 0.16, 0, Math.PI * 2);
+            ctx.stroke();
+          });
+          // Pedal force arrow.
+          ctx.fillStyle = rgba(THEME.teal, 0.6 + Math.abs(pedal) * 0.4);
+          ctx.beginPath();
+          ctx.moveTo(bbx - 7, bby + 14);
+          ctx.lineTo(bbx + 7, bby + 14);
+          ctx.lineTo(bbx, bby + 26);
+          ctx.closePath();
+          ctx.fill();
+        }
+      },
+
+      water: {
+        title: "Water filtration — fast, selective membranes",
+        desc: "Water slips through the smooth bore of a nanotube almost without friction, while larger contaminants and ions are turned away at the entrance.",
+        facts: [
+          "Frictionless flow: orders of magnitude faster than predicted for pores this small.",
+          "A route to low-pressure desalination and precision filtration."
+        ],
+        link: "/shop.html#hextubes-s",
+        label: "HexTubes SW",
+        draw: function () {
+          ensureSeeds();
+          var w = surface.box.w;
+          var h = surface.box.h;
+          var cnt = state.withCNT;
+          var mx = w * 0.5;
+
+          ctx.font = "600 11px 'Space Grotesk', sans-serif";
+          ctx.fillStyle = rgba(THEME.ink, 0.9);
+          ctx.fillText(cnt ? "CNT MEMBRANE — CLEAN WATER THROUGH" : "NO MEMBRANE — EVERYTHING PASSES", w * 0.06, h * 0.1);
+
+          // Membrane wall with aligned tube channels.
+          if (cnt) {
+            ctx.fillStyle = rgba(THEME.muted, 0.3);
+            ctx.fillRect(mx - 12, h * 0.16, 24, h * 0.66);
+            ctx.strokeStyle = rgba(THEME.accent, 0.9);
+            ctx.lineWidth = 2;
+            for (var c = 0; c < 6; c += 1) {
+              var cy = h * (0.22 + c * 0.11);
+              ctx.beginPath();
+              ctx.moveTo(mx - 12, cy); ctx.lineTo(mx + 12, cy);
+              ctx.stroke();
+            }
+          }
+
+          // Particles: small water dots pass; big contaminants bounce (with CNT).
+          var t = state.clock * 0.001;
+          for (var i = 0; i < 26; i += 1) {
+            var lane = h * (0.2 + (i % 6) * 0.105);
+            var speed = 0.08 + (i % 5) * 0.012;
+            var phase = ((t * speed * 60 + i * 0.17) % 1.2);
+            var px = w * 0.07 + phase * w * 0.86;
+            var big = i % 4 === 0;
+            if (cnt && big && px > mx - 22) px = mx - 22 + Math.sin(t * 4 + i) * 3;
+            if (!cnt || !big || px <= mx - 18) {
+              ctx.fillStyle = big ? rgba(THEME.hot, 0.75) : rgba(THEME.teal, 0.85);
+              ctx.beginPath();
+              ctx.arc(px, lane + Math.sin(t * 3 + i) * 2.5, big ? 5 : 2.4, 0, Math.PI * 2);
+              ctx.fill();
+            } else if (big) {
+              ctx.fillStyle = rgba(THEME.hot, 0.75);
+              ctx.beginPath();
+              ctx.arc(px, lane, 5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          ctx.fillStyle = rgba(THEME.muted, 0.85);
+          ctx.font = "10px Inter, sans-serif";
+          ctx.fillText("feed →", w * 0.07, h * 0.92);
+          if (cnt) ctx.fillText("permeate (clean) →", mx + 24, h * 0.92);
+        }
+      },
+
+      lightning: {
+        title: "Aerospace — lightning-strike protection",
+        desc: "Composite aircraft skins are insulating, so a strike burns a hole. A featherweight CNT veil spreads the current across the whole surface.",
+        facts: [
+          "Replaces heavy copper mesh in composite skins at a fraction of the weight.",
+          "The conductive veil spreads strike current before it can concentrate."
+        ],
+        link: "/shop.html#hexweave",
+        label: "HexWeave & HexLayers",
+        draw: function () {
+          var w = surface.box.w;
+          var h = surface.box.h;
+          var cnt = state.withCNT;
+          var cycle = (state.clock % 2200) / 2200;
+          var strike = cycle < 0.18;
+
+          ctx.font = "600 11px 'Space Grotesk', sans-serif";
+          ctx.fillStyle = rgba(THEME.ink, 0.9);
+          ctx.fillText(cnt ? "CNT VEIL — CURRENT SPREADS, SKIN SURVIVES" : "BARE COMPOSITE — STRIKE BURNS IN", w * 0.06, h * 0.1);
+
+          // Wing cross-section.
+          ctx.strokeStyle = rgba(THEME.muted, 0.75);
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(w * 0.08, h * 0.62);
+          ctx.quadraticCurveTo(w * 0.34, h * 0.34, w * 0.92, h * 0.56);
+          ctx.quadraticCurveTo(w * 0.5, h * 0.7, w * 0.08, h * 0.62);
+          ctx.stroke();
+
+          var hitX = w * 0.42;
+          var hitY = h * 0.43;
+
+          // Lightning bolt.
+          if (strike) {
+            ctx.strokeStyle = rgba(THEME.teal, 0.95);
+            ctx.lineWidth = 2.4;
+            ctx.beginPath();
+            ctx.moveTo(hitX + 26, h * 0.06);
+            ctx.lineTo(hitX + 8, h * 0.2);
+            ctx.lineTo(hitX + 18, h * 0.24);
+            ctx.lineTo(hitX, hitY);
+            ctx.stroke();
+          }
+
+          if (cnt) {
+            // Veil: current spreads outward along the skin after each strike.
+            var spread = Math.min(1, cycle * 2.2);
+            ctx.strokeStyle = rgba(THEME.accent, 0.85 * (1 - spread * 0.6));
+            ctx.lineWidth = 2;
+            for (var s = 1; s <= 4; s += 1) {
+              var reach = spread * w * 0.11 * s;
+              ctx.beginPath();
+              ctx.moveTo(hitX - reach, hitY + reach * 0.32);
+              ctx.quadraticCurveTo(hitX, hitY - 6 + s * 2, hitX + reach, hitY + reach * 0.2);
+              ctx.stroke();
+            }
+          } else {
+            // Concentrated damage flash + char mark.
+            if (strike) {
+              ctx.fillStyle = rgba(THEME.hot, 0.85);
+              ctx.beginPath();
+              ctx.arc(hitX, hitY, 9 + Math.random() * 4, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.fillStyle = rgba(THEME.hot, 0.5);
+            ctx.beginPath();
+            ctx.arc(hitX, hitY, 6, 0, Math.PI * 2);
+            ctx.fill();
           }
         }
       },
@@ -1628,6 +1841,16 @@
     if (slider) {
       slider.addEventListener("input", function () {
         state.density = Number(slider.value) / 100;
+        // Moving the density slider implies CNTs are in — switch the toggle
+        // so the slider always has a visible effect.
+        if (!state.withCNT) {
+          state.withCNT = true;
+          toggles.forEach(function (other) {
+            var on = other.getAttribute("data-cnt-toggle") === "with";
+            other.classList.toggle("is-active", on);
+            other.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+        }
         markInteract("perspectives", "density");
       });
     }
