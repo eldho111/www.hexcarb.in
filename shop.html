@@ -25,9 +25,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260613d" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20260613d" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20260613d" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260613e" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20260613e" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20260613e" />
 
   <script type="application/ld+json">
   {
@@ -155,6 +155,7 @@
     <template id="hc-product-template">
       <article class="hc-card hc-product-card">
         <span class="hc-product-badge"></span>
+        <div class="hc-product-figure" aria-hidden="true"></div>
         <div class="hc-product-price"></div>
         <h3></h3>
         <p class="hc-unit"></p>
@@ -460,13 +461,104 @@
   </footer>
 
   <script src="/assets/js/hexcarb-config.js"></script>
-  <script src="/assets/js/hexcarb-ui.js?v=20260613d"></script>
-  <script src="/assets/js/hexcarb-signature.js?v=20260613d"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20260613e"></script>
+  <script src="/assets/js/hexcarb-signature.js?v=20260613e"></script>
   <script>
     (function () {
       var template = document.getElementById("hc-product-template");
       if (!template) return;
       var globalZohoPayUrl = typeof window.HEXCARB_ZOHO_PAY_URL === "string" ? window.HEXCARB_ZOHO_PAY_URL.trim() : "";
+
+      // Product pictograms: brand line-work, keyed by family/format.
+      // Shared bits: G = gold accent stroke, T = teal accent, M = muted ink.
+      var ART_OPEN = '<svg viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+      var HEX_MOTIF = '<polygon points="50,8 56,11.5 56,18.5 50,22 44,18.5 44,11.5" stroke="var(--hc-accent)" stroke-width="1.4"/>';
+      var HC_PRODUCT_ART = {
+        vial: ART_OPEN + HEX_MOTIF +
+          '<rect x="26" y="10" width="12" height="6" rx="1.5" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M28 16v26a4 4 0 0 0 8 0V16" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M28 34h8v8a4 4 0 0 1-8 0z" fill="var(--hc-accent)" stroke="none" opacity="0.55"/>' +
+          '<path d="M22 52h20" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '</svg>',
+        pack: ART_OPEN + HEX_MOTIF +
+          '<path d="M20 18h24l-2 32a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4z" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M20 18l3-6h18l3 6" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M26 40c2-2 4 2 6 0s4 2 6 0" stroke="var(--hc-accent)" stroke-width="2"/>' +
+          '</svg>',
+        pouch: ART_OPEN + HEX_MOTIF +
+          '<path d="M18 22c0-4 4-8 14-8s14 4 14 8l-3 28a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4z" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M18 24h28" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<polygon points="32,34 37,37 37,43 32,46 27,43 27,37" stroke="var(--hc-accent)" stroke-width="1.6"/>' +
+          '</svg>',
+        bag: ART_OPEN + HEX_MOTIF +
+          '<path d="M16 26h32v22a6 6 0 0 1-6 6H22a6 6 0 0 1-6-6z" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M16 26l4-10h24l4 10" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M24 16v-4h16v4" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<polygon points="32,36 38,39.5 38,46.5 32,50 26,46.5 26,39.5" stroke="var(--hc-accent)" stroke-width="1.8"/>' +
+          '</svg>',
+        bottle: ART_OPEN + HEX_MOTIF +
+          '<rect x="27" y="8" width="10" height="7" rx="1.5" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M27 15c0 5-7 7-7 13v22a4 4 0 0 0 4 4h16a4 4 0 0 0 4-4V28c0-6-7-8-7-13" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M21 36h22v14a3 3 0 0 1-3 3H24a3 3 0 0 1-3-3z" fill="var(--hc-green)" stroke="none" opacity="0.4"/>' +
+          '<circle cx="32" cy="43" r="2.2" fill="var(--hc-accent)" stroke="none"/>' +
+          '</svg>',
+        spool: ART_OPEN + HEX_MOTIF +
+          '<path d="M20 14h24M20 50h24" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M24 14v36M40 14v36" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M24 20h16M24 26h16M24 32h16M24 38h16M24 44h16" stroke="var(--hc-accent)" stroke-width="1.6"/>' +
+          '<path d="M40 32c8 0 10 8 16 8" stroke="var(--hc-green)" stroke-width="2"/>' +
+          '</svg>',
+        pad: ART_OPEN + HEX_MOTIF +
+          '<rect x="14" y="34" width="36" height="10" rx="2" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<rect x="18" y="44" width="28" height="6" rx="1" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M24 28c0-4 3-4 3-8M32 28c0-4 3-4 3-8M40 28c0-4 3-4 3-8" stroke="var(--hc-accent)" stroke-width="2"/>' +
+          '</svg>',
+        film: ART_OPEN + HEX_MOTIF +
+          '<path d="M14 40l18-8 18 8-18 8z" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M14 33l18-8 18 8" stroke="var(--hc-text-muted)" stroke-width="2" opacity="0.65"/>' +
+          '<path d="M14 26l18-8 18 8" stroke="var(--hc-accent)" stroke-width="2" opacity="0.8"/>' +
+          '</svg>',
+        ink: ART_OPEN + HEX_MOTIF +
+          '<path d="M24 26h16v20a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6z" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M26 26l2-8h8l2 8" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M24 38h16v8a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6z" fill="var(--hc-accent)" stroke="none" opacity="0.5"/>' +
+          '<path d="M14 22c0 3 4 3 4 0 0-2-2-4-2-4s-2 2-2 4z" fill="var(--hc-green)" stroke="none"/>' +
+          '</svg>',
+        pellets: ART_OPEN + HEX_MOTIF +
+          '<polygon points="24,26 29,29 29,35 24,38 19,35 19,29" stroke="var(--hc-accent)" stroke-width="1.8"/>' +
+          '<polygon points="40,26 45,29 45,35 40,38 35,35 35,29" stroke="var(--hc-text-muted)" stroke-width="1.8"/>' +
+          '<polygon points="32,38 37,41 37,47 32,50 27,47 27,41" stroke="var(--hc-text-muted)" stroke-width="1.8"/>' +
+          '<polygon points="32,14 37,17 37,23 32,26 27,23 27,17" stroke="var(--hc-green)" stroke-width="1.8"/>' +
+          '</svg>',
+        flask: ART_OPEN + HEX_MOTIF +
+          '<path d="M27 10h10M29 10v12L18 46a4 4 0 0 0 4 6h20a4 4 0 0 0 4-6L35 22V10" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M23 38h18l5 8a4 4 0 0 1-4 6H22a4 4 0 0 1-4-6z" fill="var(--hc-green)" stroke="none" opacity="0.35"/>' +
+          '<polygon points="32,40 36,42.5 36,47 32,49.5 28,47 28,42.5" stroke="var(--hc-accent)" stroke-width="1.5"/>' +
+          '</svg>',
+        sheet: ART_OPEN + HEX_MOTIF +
+          '<path d="M14 44c0-5 4-9 9-9h27" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<path d="M14 44c0 5 4 9 9 9h27v-9" stroke="var(--hc-text-muted)" stroke-width="2"/>' +
+          '<circle cx="23" cy="44" r="4" stroke="var(--hc-accent)" stroke-width="1.8"/>' +
+          '<path d="M30 35c3-3 6 3 9 0s6 3 9 0" stroke="var(--hc-green)" stroke-width="1.6"/>' +
+          '</svg>'
+      };
+
+      function artFor(section, unit) {
+        var u = String(unit).toLowerCase();
+        if (section.indexOf("hexlab") === 0) return "flask";
+        if (section.indexOf("hexflow") === 0 || section === "hexsheets-disp") return "bottle";
+        if (section.indexOf("hexink") === 0) return "ink";
+        if (section.indexOf("hexweave") === 0) return "spool";
+        if (section.indexOf("hextim") === 0) return "pad";
+        if (section.indexOf("hexlayers") === 0) return "film";
+        if (section.indexOf("hexblend") === 0) return "pellets";
+        if (section.indexOf("hexrubber") === 0) return "sheet";
+        // Powders scale with the pack size.
+        if (u.indexOf("vial") >= 0) return "vial";
+        if (u.indexOf("bag") >= 0 || u.indexOf("kg") >= 0) return "bag";
+        if (u.indexOf("pouch") >= 0) return "pouch";
+        return "pack";
+      }
 
       document.querySelectorAll(".hc-shop-item").forEach(function (item) {
         var section = item.parentElement && item.parentElement.getAttribute("data-section") ? item.parentElement.getAttribute("data-section") : "unknown";
@@ -490,6 +582,21 @@
         clone.querySelector("h3").textContent = name;
         clone.querySelector(".hc-unit").textContent = unit;
         clone.querySelector(".hc-product-price").textContent = price;
+
+        var figure = clone.querySelector(".hc-product-figure");
+        if (figure) {
+          if (item.dataset.img) {
+            // Real product photography wins when provided via data-img.
+            var artImg = document.createElement("img");
+            artImg.src = item.dataset.img;
+            artImg.alt = "";
+            artImg.loading = "lazy";
+            artImg.decoding = "async";
+            figure.appendChild(artImg);
+          } else {
+            figure.innerHTML = HC_PRODUCT_ART[artFor(section, unit)] || HC_PRODUCT_ART.pack;
+          }
+        }
 
         // Tier badge
         var badge = clone.querySelector(".hc-product-badge");
