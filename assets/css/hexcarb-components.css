@@ -42,7 +42,9 @@
 
 /* Full-bleed surface: photo fades in from the right; the lattice canvas
    (injected by hexcarb-hex-lattice.js) animates across the whole band. */
-.hc-hero-band-surface {
+/* Specificity raised to beat the [data-hc-hexdecor] child rule that would
+   otherwise force this surface to position:relative and collapse it. */
+.hc-hero-band .hc-hero-band-surface {
   position: absolute;
   inset: 0;
   z-index: 0;
