@@ -2106,6 +2106,191 @@ section.is-section-empty {
   }
 }
 
+/* ─── AI Engine page ─── */
+.hc-ai-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hero network sits on the calm panel, not the nanotube photo. */
+.hc-hero-visual[data-ai="network"] {
+  background-image:
+    radial-gradient(420px circle at 80% 16%, rgba(183, 152, 91, 0.12), transparent 52%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(237, 242, 247, 0.7) 100%);
+}
+
+:root[data-theme="dark"] .hc-hero-visual[data-ai="network"] {
+  background-image:
+    radial-gradient(420px circle at 80% 16%, rgba(183, 152, 91, 0.14), transparent 52%),
+    linear-gradient(160deg, rgba(13, 23, 34, 0.9) 0%, rgba(8, 14, 22, 0.9) 100%);
+}
+
+.hc-ai-targets {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.hc-ai-targets--compact {
+  margin-top: 0.85rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem 1.1rem;
+}
+
+.hc-ai-range {
+  display: block;
+  font-size: 0.86rem;
+}
+
+.hc-ai-range span {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--hc-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.hc-ai-range strong {
+  font-family: var(--font-heading);
+  color: var(--hc-accent-ink, var(--hc-accent));
+}
+
+.hc-ai-range input[type="range"] {
+  width: 100%;
+  margin-top: 0.35rem;
+  accent-color: var(--hc-accent);
+}
+
+.hc-ai-recipe {
+  margin-top: 0.8rem;
+  border: 1px solid var(--hc-border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+:root[data-theme="dark"] .hc-ai-recipe {
+  background: rgba(12, 21, 32, 0.6);
+}
+
+.hc-ai-recipe-tag {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hc-accent-ink, var(--hc-accent));
+  margin-bottom: 0.55rem;
+}
+
+.hc-ai-recipe dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 1rem;
+}
+
+.hc-ai-recipe dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hc-text-muted);
+}
+
+.hc-ai-recipe dd {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  color: var(--hc-heading);
+}
+
+.hc-ai-controls {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.hc-ai-controls .hc-btn {
+  padding-block: 0.6rem;
+}
+
+.hc-ai-loop {
+  margin-top: 1.4rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.hc-ai-loop-step {
+  position: relative;
+  border: 1px solid var(--hc-border);
+  border-radius: 16px 6px 16px 6px;
+  padding: 1.1rem 1rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+:root[data-theme="dark"] .hc-ai-loop-step {
+  background: rgba(12, 21, 32, 0.55);
+}
+
+.hc-ai-loop-step span {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--hc-accent-ink, var(--hc-accent));
+}
+
+.hc-ai-loop-step h3 {
+  margin-top: 0.3rem;
+  font-size: 1.05rem;
+}
+
+.hc-ai-loop-step p {
+  margin-top: 0.4rem;
+  font-size: 0.88rem;
+}
+
+/* Each loop step points to the next; the last wraps back (the loop). */
+.hc-ai-loop-step:not(:last-child)::after {
+  content: "\2192";
+  position: absolute;
+  right: -0.72rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--hc-accent);
+  font-size: 1rem;
+  z-index: 1;
+}
+
+@supports (corner-shape: bevel) {
+  .hc-ai-loop-step,
+  .hc-ai-recipe {
+    corner-shape: bevel;
+  }
+}
+
+@media (max-width: 900px) {
+  .hc-ai-loop {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hc-ai-loop-step:nth-child(2)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .hc-ai-targets--compact,
+  .hc-ai-loop {
+    grid-template-columns: 1fr;
+  }
+  .hc-ai-loop-step::after {
+    display: none !important;
+  }
+}
+
 /* Ghost section numerals (editorial counterpoint to the demos) */
 [data-demo-num] {
   position: relative;
