@@ -541,148 +541,437 @@
     makeLoop(mount, function () { draw(); });
   }
 
-  /* ── Demo 3: Active-learning loop — suggest, run, watch uncertainty fall ── */
+  /* ── Demo 3: Active learning — hunt for the best recipe in fewest runs ──
+     Framed concretely: two real knobs, a hidden performance landscape with
+     one best recipe, fog that lifts where you test, and a "best so far"
+     meter. The engine proposes the most useful next test; you watch it home
+     in far faster than random testing would. */
   function initActive() {
     var mount = document.querySelector('[data-ai="active"]');
     if (!mount) return;
     var btnSuggest = document.getElementById("ai-suggest");
     var btnRun = document.getElementById("ai-run");
+    var btnAuto = document.getElementById("ai-auto");
     var btnReset = document.getElementById("ai-reset");
     var outCount = document.getElementById("ai-exp-count");
-    var outUnc = document.getElementById("ai-uncertainty");
+    var outBest = document.getElementById("ai-best");
+    var outStatus = document.getElementById("ai-active-status");
+    var outCompare = document.getElementById("ai-compare");
 
-    var surface = setupCanvas(mount, function () { draw(); });
+    var surface = setupCanvas(mount, function () { /* redraw via loop */ });
     var ctx = surface.ctx;
 
-    // Hidden "true" response surface (a couple of gaussian bumps).
+    // Hidden performance landscape: one clear best recipe + a minor ridge.
     function truth(x, y) {
       function bump(cx, cy, s, a) {
         var dx = x - cx, dy = y - cy;
         return a * Math.exp(-(dx * dx + dy * dy) / (2 * s * s));
       }
-      return clamp(bump(0.7, 0.65, 0.18, 1) + bump(0.3, 0.3, 0.22, 0.6), 0, 1);
+      return clamp(bump(0.68, 0.62, 0.2, 1) + bump(0.28, 0.32, 0.24, 0.5), 0, 1);
+    }
+    // Precompute the true optimum value for the "best so far" meter.
+    var trueMax = 0;
+    for (var sx = 0; sx <= 1; sx += 0.04) {
+      for (var sy = 0; sy <= 1; sy += 0.04) { trueMax = Math.max(trueMax, truth(sx, sy)); }
     }
 
     var samples = [];
     var candidate = null;
     var count = 0;
+    var auto = false;
+    var autoIv = null;
+
+    function bestValue() {
+      var b = 0;
+      samples.forEach(function (s) { if (s.v > b) b = s.v; });
+      return b;
+    }
 
     function seed() {
       samples = [];
       count = 0;
-      [[0.2, 0.8], [0.85, 0.25], [0.5, 0.5]].forEach(function (s) {
-        samples.push({ x: s[0], y: s[1], v: truth(s[0], s[1]) });
+      auto = false;
+      // Seed away from the hidden peak so the hunt is real and visible.
+      [[0.14, 0.2], [0.88, 0.86], [0.2, 0.86]].forEach(function (s) {
+        samples.push({ x: s[0], y: s[1], v: truth(s[0], s[1]), age: 1 });
       });
       candidate = null;
+      status("3 starting experiments on the board. Now hunt for the best recipe.");
+      if (outCompare) outCompare.hidden = true;
       sync();
     }
 
+    function status(msg) { if (outStatus) outStatus.textContent = msg; }
+
     function uncertaintyAt(x, y) {
-      // Distance to nearest sample → proxy for model uncertainty.
       var min = 1e9;
       samples.forEach(function (s) {
         var dx = x - s.x, dy = y - s.y;
         min = Math.min(min, dx * dx + dy * dy);
       });
-      return clamp(Math.sqrt(min) * 1.6, 0, 1);
+      return clamp(Math.sqrt(min) * 1.7, 0, 1);
     }
-
-    function meanUncertainty() {
-      var sum = 0, n = 0;
-      for (var gx = 0.05; gx < 1; gx += 0.1) {
-        for (var gy = 0.05; gy < 1; gy += 0.1) {
-          sum += uncertaintyAt(gx, gy); n += 1;
-        }
-      }
-      return sum / n;
+    function predictAt(x, y) {
+      // Inverse-distance-weighted estimate from measured points.
+      var num = 0, den = 0;
+      samples.forEach(function (s) {
+        var dx = x - s.x, dy = y - s.y;
+        var w = 1 / (dx * dx + dy * dy + 0.004);
+        num += w * s.v; den += w;
+      });
+      return den ? num / den : 0;
+    }
+    // Acquisition: balance "looks promising" with "still unsure" (UCB-style).
+    // Exploration weight eases off as evidence accumulates, so the search
+    // explores first, then climbs to exploit the best region.
+    function acquisition(x, y) {
+      var explore = clamp(0.85 - count * 0.06, 0.28, 0.85);
+      return predictAt(x, y) + explore * uncertaintyAt(x, y);
     }
 
     function sync() {
       if (outCount) outCount.textContent = String(count);
-      if (outUnc) outUnc.textContent = Math.round(meanUncertainty() * 100) + "%";
+      if (outBest) outBest.textContent = Math.round((bestValue() / trueMax) * 100) + "%";
     }
 
     function draw() {
       var w = surface.box.w, h = surface.box.h;
       if (!w) return;
-      var pad = 26;
+      var pad = 30;
       function px(x) { return pad + x * (w - pad * 2); }
       function py(y) { return h - pad - y * (h - pad * 2); }
       ctx.clearRect(0, 0, w, h);
 
-      // Uncertainty field as a coarse heat grid.
-      var cells = 16;
+      // Faint ghost of the true landscape — a subtle hint of where the peak is.
+      var cells = 18;
+      var cw = (w - pad * 2) / cells, ch = (h - pad * 2) / cells;
       for (var i = 0; i < cells; i += 1) {
         for (var j = 0; j < cells; j += 1) {
           var x = (i + 0.5) / cells, y = (j + 0.5) / cells;
-          var u = uncertaintyAt(x, y);
-          ctx.fillStyle = rgba(THEME.accent, u * 0.16);
-          ctx.fillRect(px(x) - (w - pad * 2) / cells / 2, py(y) - (h - pad * 2) / cells / 2,
-            (w - pad * 2) / cells + 1, (h - pad * 2) / cells + 1);
+          var v = truth(x, y);
+          ctx.fillStyle = rgba(lerpColor(THEME.muted, THEME.accent, v), 0.06 + v * 0.06);
+          ctx.fillRect(pad + i * cw, py(y) - ch / 2, cw + 1, ch + 1);
         }
       }
 
-      ctx.fillStyle = rgba(THEME.muted, 0.85);
-      ctx.font = "10px Inter, sans-serif";
-      ctx.fillText("gold = where the model is still unsure", pad, h - 8);
-
-      // Measured samples sized by value.
+      // Fog of the unknown, punched open where we've measured.
+      ctx.save();
+      ctx.fillStyle = THEME.dark ? "rgba(8,14,22,0.74)" : "rgba(244,247,251,0.82)";
+      ctx.fillRect(pad, pad, w - pad * 2, h - pad * 2);
+      ctx.globalCompositeOperation = "destination-out";
       samples.forEach(function (s) {
-        ctx.fillStyle = rgba(THEME.teal, 0.85);
+        var r = (0.13 + s.v * 0.06) * (w - pad * 2) * s.age;
+        var g = ctx.createRadialGradient(px(s.x), py(s.y), 0, px(s.x), py(s.y), Math.max(1, r));
+        g.addColorStop(0, "rgba(0,0,0,1)");
+        g.addColorStop(0.7, "rgba(0,0,0,0.9)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(px(s.x), py(s.y), 3 + s.v * 7, 0, Math.PI * 2);
+        ctx.arc(px(s.x), py(s.y), Math.max(1, r), 0, Math.PI * 2);
         ctx.fill();
       });
+      ctx.restore();
 
-      // Candidate crosshair.
-      if (candidate) {
-        ctx.strokeStyle = rgba(THEME.hot, 0.9);
-        ctx.lineWidth = 1.4;
-        var cx = px(candidate.x), cy = py(candidate.y);
+      // Plot frame + axis labels (concrete knobs).
+      ctx.strokeStyle = rgba(THEME.muted, 0.45);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(pad, pad, w - pad * 2, h - pad * 2);
+      ctx.fillStyle = rgba(THEME.muted, 0.9);
+      ctx.font = "10px Inter, sans-serif";
+      ctx.fillText("CNT loading →", pad + 2, h - pad + 16);
+      ctx.save();
+      ctx.translate(pad - 14, h - pad);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("dispersion energy →", 0, 0);
+      ctx.restore();
+
+      var best = bestValue();
+      // Measured points, coloured by performance; the leader gets a ring.
+      samples.forEach(function (s) {
+        if (s.age < 0.05) return;
+        var col = lerpColor(THEME.muted, THEME.teal, s.v);
+        ctx.fillStyle = rgba(col, 0.9);
         ctx.beginPath();
-        ctx.arc(cx, cy, 9, 0, Math.PI * 2);
-        ctx.moveTo(cx - 14, cy); ctx.lineTo(cx + 14, cy);
-        ctx.moveTo(cx, cy - 14); ctx.lineTo(cx, cy + 14);
+        ctx.arc(px(s.x), py(s.y), (3 + s.v * 7) * s.age, 0, Math.PI * 2);
+        ctx.fill();
+        if (s.v === best && best > 0) {
+          ctx.strokeStyle = rgba(THEME.bright, 0.95);
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(px(s.x), py(s.y), 12 + Math.sin(performance.now() * 0.005) * 1.5, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      });
+
+      // Candidate crosshair with a plain-language tag.
+      if (candidate) {
+        var cx = px(candidate.x), cy = py(candidate.y);
+        ctx.strokeStyle = rgba(THEME.hot, 0.9);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+        ctx.moveTo(cx - 15, cy); ctx.lineTo(cx + 15, cy);
+        ctx.moveTo(cx, cy - 15); ctx.lineTo(cx, cy + 15);
         ctx.stroke();
         ctx.fillStyle = rgba(THEME.hot, 0.95);
         ctx.font = "600 10px 'Space Grotesk', sans-serif";
-        ctx.fillText("proposed next experiment", cx + 16, cy - 10);
+        ctx.fillText("test here next", cx + 16, cy - 12);
       }
+
+      // "Best recipe so far" meter, top-left.
+      ctx.fillStyle = rgba(THEME.ink, 0.9);
+      ctx.font = "600 10px 'Space Grotesk', sans-serif";
+      ctx.fillText("BEST RECIPE FOUND", pad, 18);
+      ctx.fillStyle = rgba(THEME.muted, 0.25);
+      ctx.fillRect(pad, 22, 120, 6);
+      ctx.fillStyle = rgba(THEME.teal, 0.95);
+      ctx.fillRect(pad, 22, 120 * (best / trueMax), 6);
     }
 
     function suggest() {
-      // Pick the grid point of maximum uncertainty.
-      var bestU = -1, bx = 0.5, by = 0.5;
-      for (var gx = 0.08; gx < 1; gx += 0.06) {
-        for (var gy = 0.08; gy < 1; gy += 0.06) {
-          var u = uncertaintyAt(gx, gy);
-          if (u > bestU) { bestU = u; bx = gx; by = gy; }
+      if (candidate) return;
+      var bestA = -1, bx = 0.5, by = 0.5;
+      for (var gx = 0.06; gx < 1; gx += 0.05) {
+        for (var gy = 0.06; gy < 1; gy += 0.05) {
+          var a = acquisition(gx, gy);
+          if (a > bestA) { bestA = a; bx = gx; by = gy; }
         }
       }
       candidate = { x: bx, y: by };
+      status("The engine proposes the most informative recipe to test next — where promise and uncertainty are both high.");
       markInteract("active", "suggest");
-      draw();
     }
 
     function run() {
       if (!candidate) { suggest(); return; }
-      samples.push({ x: candidate.x, y: candidate.y, v: truth(candidate.x, candidate.y) });
+      var prevBest = bestValue();
+      var v = truth(candidate.x, candidate.y);
+      samples.push({ x: candidate.x, y: candidate.y, v: v, age: 0 });
       candidate = null;
       count += 1;
+      var pct = Math.round((v / trueMax) * 100);
+      var newBest = bestValue();
+      if (newBest > prevBest + 0.001) {
+        status("Measured " + pct + "% of the best possible — a new leader. The map sharpens around it.");
+      } else {
+        status("Measured " + pct + "%. Not a winner, but it rules out a region — still progress.");
+      }
+      if (newBest / trueMax > 0.9) {
+        status("Best recipe pinned in just " + count + " guided experiments. That's the point.");
+        auto = false;
+        if (outCompare) {
+          outCompare.hidden = false;
+          outCompare.textContent = "Random trial-and-error typically needs 2–3× more runs to reach the same recipe.";
+        }
+      }
       markInteract("active", "run");
       sync();
-      draw();
     }
 
-    if (btnSuggest) btnSuggest.addEventListener("click", suggest);
-    if (btnRun) btnRun.addEventListener("click", run);
-    if (btnReset) btnReset.addEventListener("click", function () { seed(); draw(); });
+    function stopAuto() {
+      auto = false;
+      if (autoIv) { window.clearInterval(autoIv); autoIv = null; }
+      if (btnAuto) btnAuto.textContent = "Auto-run";
+    }
+
+    function autoStep() {
+      if (bestValue() / trueMax > 0.9) { stopAuto(); return; }
+      if (!candidate) suggest(); else run();
+    }
+
+    if (btnSuggest) btnSuggest.addEventListener("click", function () { stopAuto(); suggest(); });
+    if (btnRun) btnRun.addEventListener("click", function () { stopAuto(); run(); });
+    if (btnAuto) btnAuto.addEventListener("click", function () {
+      if (auto) { stopAuto(); return; }
+      auto = true;
+      btnAuto.textContent = "Pause";
+      markInteract("active", "auto");
+      autoStep();
+      autoIv = window.setInterval(autoStep, 620);
+    });
+    if (btnReset) btnReset.addEventListener("click", function () { stopAuto(); seed(); });
 
     themeListeners.push(draw);
-    // Light idle loop so theme + first paint settle; cheap (static between clicks).
-    makeLoop(mount, function () { /* no per-frame state; draw on demand */ });
+    makeLoop(mount, function () {
+      // Fog lifts smoothly as each measurement settles in.
+      samples.forEach(function (s) { if (s.age < 1) s.age = Math.min(1, s.age + 0.06); });
+      draw();
+    });
     seed();
-    draw();
+  }
+
+  /* ── Demo 4: Enterprise — one engine across every program ──
+     Toggle the shared engine off and programs crawl in silos; on, every
+     measurement compounds into shared knowledge that speeds them all. */
+  function initEnterprise() {
+    var mount = document.querySelector('[data-ai="enterprise"]');
+    if (!mount) return;
+    var toggles = Array.prototype.slice.call(document.querySelectorAll("[data-ent-toggle]"));
+    var outPrograms = document.getElementById("ai-ent-programs");
+    var outExp = document.getElementById("ai-ent-exp");
+    var outSpeed = document.getElementById("ai-ent-speed");
+
+    var surface = setupCanvas(mount, function () { layout(); });
+    var ctx = surface.ctx;
+    var STAGES = ["Design", "Make", "Measure", "Qualify", "Ship"];
+    var NAMES = ["EV battery cell", "Aerospace skin", "Thermal module", "Conductive ink"];
+    var programs = [];
+    var withEngine = true;
+    var knowledge = 0;      // grows as measurements compound
+    var experiments = 0;
+    var pulses = [];
+
+    function layout() {
+      programs = NAMES.map(function (name, i) {
+        return { name: name, pos: Math.random() * 0.4, row: i, done: 0 };
+      });
+    }
+
+    function knowledgeSpeed() {
+      // Shared engine: speed rises as knowledge compounds. Silos: flat + slow.
+      return withEngine ? 0.0016 + knowledge * 0.00045 : 0.0011;
+    }
+
+    function draw() {
+      var w = surface.box.w, h = surface.box.h;
+      if (!w || !programs.length) return;
+      ctx.clearRect(0, 0, w, h);
+
+      var leftPad = w * 0.27;
+      var trackW = w * 0.66;
+      var topPad = h * 0.16;
+      var rowH = (h * 0.74) / programs.length;
+
+      // Stage gridlines + labels.
+      ctx.font = "9px Inter, sans-serif";
+      for (var s = 0; s < STAGES.length; s += 1) {
+        var sx = leftPad + trackW * (s / (STAGES.length - 1));
+        ctx.strokeStyle = rgba(THEME.muted, 0.16);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(sx, topPad - 8);
+        ctx.lineTo(sx, topPad + rowH * programs.length - rowH * 0.4);
+        ctx.stroke();
+        ctx.fillStyle = rgba(THEME.muted, 0.85);
+        ctx.textAlign = "center";
+        ctx.fillText(STAGES[s], sx, topPad - 14);
+      }
+      ctx.textAlign = "left";
+
+      // Knowledge core (right side) — grows with shared learning.
+      var coreX = w * 0.93, coreY = topPad - 2;
+      if (withEngine) {
+        var kr = 6 + Math.min(22, knowledge * 0.6);
+        ctx.strokeStyle = rgba(THEME.accent, 0.5);
+        ctx.lineWidth = 1.4;
+        for (var ring = 0; ring < 6; ring += 1) {
+          var rr = 4 + ring * 4 + (knowledge * 0.3);
+          if (rr > kr + 14) break;
+          ctx.beginPath();
+          for (var k = 0; k < 6; k += 1) {
+            var a = Math.PI / 3 * k + Math.PI / 6;
+            var hx = coreX + rr * Math.cos(a), hy = coreY + rr * Math.sin(a);
+            if (k === 0) ctx.moveTo(hx, hy); else ctx.lineTo(hx, hy);
+          }
+          ctx.closePath();
+          ctx.stroke();
+        }
+      }
+
+      // Programs.
+      programs.forEach(function (p, i) {
+        var y = topPad + i * rowH + rowH * 0.2;
+        // Label.
+        ctx.fillStyle = rgba(THEME.ink, 0.9);
+        ctx.font = "600 11px 'Space Grotesk', sans-serif";
+        ctx.fillText(p.name, w * 0.04, y + 4);
+        // Track.
+        ctx.strokeStyle = rgba(THEME.muted, 0.22);
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(leftPad, y);
+        ctx.lineTo(leftPad + trackW, y);
+        ctx.stroke();
+        // Progress fill.
+        ctx.strokeStyle = rgba(withEngine ? THEME.teal : THEME.muted, withEngine ? 0.85 : 0.5);
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(leftPad, y);
+        ctx.lineTo(leftPad + trackW * clamp(p.pos, 0, 1), y);
+        ctx.stroke();
+        // Token.
+        ctx.fillStyle = rgba(withEngine ? THEME.teal : THEME.muted, 1);
+        ctx.beginPath();
+        ctx.arc(leftPad + trackW * clamp(p.pos, 0, 1), y, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Compounding-knowledge pulses flying to the core.
+      pulses.forEach(function (pu) {
+        ctx.fillStyle = rgba(THEME.accent, pu.life);
+        ctx.beginPath();
+        ctx.arc(pu.x, pu.y, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = rgba(THEME.muted, 0.85);
+      ctx.font = "10px Inter, sans-serif";
+      ctx.fillText(withEngine ? "shared engine — every result teaches every program"
+        : "siloed — each program learns alone", w * 0.04, h - 8);
+    }
+
+    function sync() {
+      if (outPrograms) outPrograms.textContent = String(programs.length);
+      if (outExp) outExp.textContent = String(experiments);
+      if (outSpeed) outSpeed.textContent = withEngine
+        ? (1 + knowledge * 0.04).toFixed(1) + "×"
+        : "1.0×";
+    }
+
+    makeLoop(mount, function () {
+      var w = surface.box.w, h = surface.box.h;
+      var leftPad = w * 0.27, trackW = w * 0.66, topPad = h * 0.16;
+      var rowH = (h * 0.74) / Math.max(1, programs.length);
+      programs.forEach(function (p, i) {
+        var prev = p.pos;
+        p.pos += knowledgeSpeed();
+        // Crossing the "Measure" stage emits a knowledge pulse (shared engine).
+        var measureAt = 2 / (STAGES.length - 1);
+        if (withEngine && prev < measureAt && p.pos >= measureAt) {
+          experiments += 1;
+          knowledge = Math.min(40, knowledge + 1);
+          var y = topPad + i * rowH + rowH * 0.2;
+          pulses.push({ x: leftPad + trackW * measureAt, y: y, tx: w * 0.93, ty: topPad - 2, life: 1 });
+          sync();
+        }
+        if (p.pos >= 1) { p.pos = 0; p.done += 1; } // next program in the queue
+      });
+      pulses.forEach(function (pu) {
+        pu.x += (pu.tx - pu.x) * 0.08;
+        pu.y += (pu.ty - pu.y) * 0.08;
+        pu.life -= 0.02;
+      });
+      pulses = pulses.filter(function (pu) { return pu.life > 0; });
+      draw();
+    });
+
+    toggles.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        withEngine = btn.getAttribute("data-ent-toggle") === "with";
+        if (!withEngine) knowledge = 0;
+        toggles.forEach(function (o) {
+          var on = o === btn;
+          o.classList.toggle("is-active", on);
+          o.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        markInteract("enterprise", withEngine ? "with" : "without");
+        sync();
+      });
+    });
+
+    themeListeners.push(draw);
+    layout();
+    sync();
   }
 
   function init() {
@@ -696,6 +985,7 @@
     initInverse();
     initPredict();
     initActive();
+    initEnterprise();
   }
 
   if (document.readyState === "loading") {

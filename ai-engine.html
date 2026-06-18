@@ -23,9 +23,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260613f" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20260613f" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20260613f" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20260613j" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20260613j" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20260613j" />
 
   <script type="application/ld+json">
   {
@@ -164,27 +164,59 @@
       <div class="container hc-grid hc-grid-2 hc-demo-row">
         <div class="hc-reveal">
           <span class="hc-kicker">Active Learning</span>
-          <h2>Run the experiment that teaches it the most</h2>
-          <p>Lab time is the scarce resource. Instead of testing at random, the engine proposes the experiment where it is most uncertain — so every run removes the most doubt. Suggest a point, run it, and watch the unknown shrink.</p>
+          <h2>Find the best recipe in the fewest experiments</h2>
+          <p>The panel is a map of two recipe knobs — CNT loading and dispersion energy. Somewhere on it sits the best recipe, hidden in fog. Each experiment you run lifts the fog a little. The engine always proposes the test most likely to find the winner, so you get there far faster than testing at random.</p>
           <div class="hc-ai-controls">
             <button class="hc-btn hc-btn-accent" type="button" id="ai-suggest">Suggest next experiment</button>
             <button class="hc-btn hc-btn-ghost" type="button" id="ai-run">Run it</button>
+            <button class="hc-btn hc-btn-ghost" type="button" id="ai-auto">Auto-run</button>
             <button class="hc-btn hc-btn-ghost" type="button" id="ai-reset">Reset</button>
           </div>
           <div class="hc-demo-counters">
             <span>Experiments run: <strong id="ai-exp-count">0</strong></span>
-            <span>Remaining uncertainty: <strong id="ai-uncertainty">—</strong></span>
+            <span>Best recipe found: <strong id="ai-best">—</strong></span>
           </div>
+          <p class="hc-ai-status" id="ai-active-status" aria-live="polite"></p>
+          <p class="hc-ai-compare" id="ai-compare" hidden></p>
         </div>
         <div class="hc-reveal">
           <div class="hc-demo-card" data-ai="active"></div>
-          <p class="hc-demo-hint">Click “Suggest”, then “Run it”, and repeat.</p>
+          <p class="hc-demo-hint">Try “Auto-run”, or step it yourself: Suggest → Run it.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo 4: Enterprise -->
+    <section class="hc-section hc-soft-bg" id="enterprise" data-demo-num="04">
+      <div class="container hc-grid hc-grid-2 hc-demo-row hc-demo-row--flip">
+        <div class="hc-reveal">
+          <div class="hc-demo-card" data-ai="enterprise"></div>
+          <div class="hc-ai-controls">
+            <button class="hc-filter-chip is-active" type="button" data-ent-toggle="with" aria-pressed="true">With shared engine</button>
+            <button class="hc-filter-chip" type="button" data-ent-toggle="without" aria-pressed="false">Siloed teams</button>
+          </div>
+          <div class="hc-demo-counters">
+            <span>Active programs: <strong id="ai-ent-programs">4</strong></span>
+            <span>Experiments logged: <strong id="ai-ent-exp">0</strong></span>
+            <span>Throughput: <strong id="ai-ent-speed">1.0×</strong></span>
+          </div>
+        </div>
+        <div class="hc-reveal">
+          <span class="hc-kicker">Enterprise</span>
+          <h2>One engine across every program</h2>
+          <p>Run it at company scale and the engine orchestrates many material programs at once. Each measurement — from any team — compounds into shared knowledge, so every other program starts smarter and moves faster. Toggle the shared engine off to watch siloed teams crawl.</p>
+          <ul class="hc-selector-why">
+            <li><strong>Orchestration:</strong> parallel programs from design through qualification, in one view.</li>
+            <li><strong>Compounding knowledge:</strong> every result improves the model for all teams.</li>
+            <li><strong>Governance &amp; traceability:</strong> predictions backed by validated, audited data.</li>
+            <li><strong>Deploy your way:</strong> cloud, on-prem, or API into your existing LIMS and ERP.</li>
+          </ul>
         </div>
       </div>
     </section>
 
     <!-- Closed loop -->
-    <section class="hc-section hc-soft-bg" id="loop" data-demo-num="04" data-hc-hexdecor="tr">
+    <section class="hc-section" id="loop" data-demo-num="05" data-hc-hexdecor="tr">
       <div class="container">
         <div class="hc-reveal" style="max-width:720px;">
           <span class="hc-kicker">The Loop</span>
@@ -252,10 +284,10 @@
   </footer>
 
   <script src="/assets/js/hexcarb-config.js"></script>
-  <script src="/assets/js/hexcarb-ui.js?v=20260613f"></script>
-  <script src="/assets/js/hexcarb-signature.js?v=20260613f"></script>
-  <script src="/assets/js/hexcarb-hex-lattice.js?v=20260613f"></script>
-  <script src="/assets/js/hexcarb-ai-engine.js?v=20260613f"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20260613j"></script>
+  <script src="/assets/js/hexcarb-signature.js?v=20260613j"></script>
+  <script src="/assets/js/hexcarb-hex-lattice.js?v=20260613j"></script>
+  <script src="/assets/js/hexcarb-ai-engine.js?v=20260613j"></script>
   <script>
     // Mirror target-slider values into their inline readouts.
     (function () {

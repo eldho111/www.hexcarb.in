@@ -2213,6 +2213,20 @@ section.is-section-empty {
   gap: 0.6rem;
 }
 
+.hc-ai-status {
+  margin-top: 0.7rem;
+  min-height: 2.4em;
+  font-size: 0.9rem;
+  color: var(--hc-heading);
+}
+
+.hc-ai-compare {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--hc-accent-ink, var(--hc-accent));
+  font-family: var(--font-heading);
+}
+
 .hc-ai-controls .hc-btn {
   padding-block: 0.6rem;
 }
