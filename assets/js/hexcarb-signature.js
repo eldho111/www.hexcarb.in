@@ -85,7 +85,7 @@
           var dist = Math.sqrt(dx * dx + dy * dy);
           if (dist > maxDist) continue;
           var strength = 1 - dist / maxDist;
-          ctx.strokeStyle = "rgba(78,124,116," + (lineAlpha * strength).toFixed(3) + ")";
+          ctx.strokeStyle = "rgba(115,115,115," + (lineAlpha * strength).toFixed(3) + ")";
           ctx.lineWidth = 0.8;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -96,7 +96,7 @@
 
       for (var k = 0; k < nodes.length; k += 1) {
         var n = nodes[k];
-        ctx.fillStyle = "rgba(142,106,53,0.24)";
+        ctx.fillStyle = "rgba(112,112,112,0.24)";
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();

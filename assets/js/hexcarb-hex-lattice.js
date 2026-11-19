@@ -56,9 +56,9 @@
     var pulseTimer = null;
     var ripples = [];
     var colors = {
-      bond: { r: 164, g: 122, b: 59 },
-      node: { r: 164, g: 122, b: 59 },
-      glow: { r: 61, g: 143, b: 130 },
+      bond: { r: 129, g: 129, b: 129 },
+      node: { r: 129, g: 129, b: 129 },
+      glow: { r: 130, g: 130, b: 130 },
       bondAlpha: 0.32
     };
 

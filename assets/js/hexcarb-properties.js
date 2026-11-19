@@ -37,12 +37,12 @@
   }
 
   var THEME = {
-    ink: { r: 14, g: 24, b: 34 },
-    muted: { r: 63, g: 82, b: 104 },
-    accent: { r: 164, g: 122, b: 59 },
-    bright: { r: 184, g: 136, b: 46 },
-    teal: { r: 61, g: 143, b: 130 },
-    hot: { r: 196, g: 92, b: 48 },
+    ink: { r: 23, g: 23, b: 23 },
+    muted: { r: 80, g: 80, b: 80 },
+    accent: { r: 129, g: 129, b: 129 },
+    bright: { r: 144, g: 144, b: 144 },
+    teal: { r: 130, g: 130, b: 130 },
+    hot: { r: 122, g: 122, b: 122 },
     dark: false
   };
   var themeListeners = [];
@@ -427,7 +427,7 @@
       drawStage(i + 1, local, 0.7 + local * 0.3);
 
       // Depth cue: the deeper you zoom, the darker the field.
-      ctx.fillStyle = "rgba(8,14,22," + (progress * (THEME.dark ? 0.34 : 0.16)).toFixed(3) + ")";
+      ctx.fillStyle = "rgba(14,14,14," + (progress * (THEME.dark ? 0.34 : 0.16)).toFixed(3) + ")";
       ctx.fillRect(0, 0, w, h);
 
       drawChrome();
@@ -504,7 +504,7 @@
       var gw = w * 0.34;
       var gh = h * 0.3;
 
-      ctx.fillStyle = THEME.dark ? "rgba(8,14,22,0.55)" : "rgba(255,255,255,0.7)";
+      ctx.fillStyle = THEME.dark ? "rgba(14,14,14,0.55)" : "rgba(255,255,255,0.7)";
       ctx.fillRect(gx - 8, gy - 6, gw + 16, gh + 30);
       ctx.strokeStyle = rgba(THEME.muted, 0.5);
       ctx.lineWidth = 1;
@@ -776,7 +776,7 @@
       var h = surface.box.h;
       if (!w) return;
       // Translucent wipe instead of a clear: electrons leave fading streaks.
-      ctx.fillStyle = THEME.dark ? "rgba(12,21,32,0.26)" : "rgba(255,255,255,0.3)";
+      ctx.fillStyle = THEME.dark ? "rgba(20,20,20,0.26)" : "rgba(255,255,255,0.3)";
       ctx.fillRect(0, 0, w, h);
       drawLane("COPPER — electrons scatter every ~40 nm", laneY("copper"), THEME.muted);
       drawLane("CARBON NANOTUBE — ballistic transport", laneY("cnt"), THEME.accent);
@@ -1393,7 +1393,7 @@
           ctx.fillText("DISPLAY", w * 0.3, h * 0.5);
 
           // Film.
-          ctx.fillStyle = connected ? "rgba(180,140,60,0.06)" : "rgba(128,148,168,0.05)";
+          ctx.fillStyle = connected ? "rgba(146,146,146,0.06)" : "rgba(146,146,146,0.05)";
           ctx.fillRect(w * 0.05, h * 0.08, w * 0.9, h * 0.7);
           ctx.strokeStyle = rgba(THEME.muted, 0.5);
           ctx.lineWidth = 1;
@@ -1796,7 +1796,7 @@
       ctx.clearRect(0, 0, w, h);
       PERSPECTIVES[state.key].draw();
       if (state.fade > 0.01) {
-        ctx.fillStyle = THEME.dark ? "rgba(12,21,32," + state.fade + ")" : "rgba(255,255,255," + state.fade + ")";
+        ctx.fillStyle = THEME.dark ? "rgba(20,20,20," + state.fade + ")" : "rgba(255,255,255," + state.fade + ")";
         ctx.fillRect(0, 0, w, h);
       }
     }

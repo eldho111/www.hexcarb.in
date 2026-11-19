@@ -40,12 +40,12 @@
   }
 
   var THEME = {
-    ink: { r: 14, g: 24, b: 34 },
-    muted: { r: 63, g: 82, b: 104 },
-    accent: { r: 164, g: 122, b: 59 },
-    bright: { r: 184, g: 136, b: 46 },
-    teal: { r: 61, g: 143, b: 130 },
-    hot: { r: 196, g: 92, b: 48 },
+    ink: { r: 23, g: 23, b: 23 },
+    muted: { r: 80, g: 80, b: 80 },
+    accent: { r: 129, g: 129, b: 129 },
+    bright: { r: 144, g: 144, b: 144 },
+    teal: { r: 130, g: 130, b: 130 },
+    hot: { r: 122, g: 122, b: 122 },
     dark: false
   };
   var themeListeners = [];
@@ -656,7 +656,7 @@
 
       // Fog of the unknown, punched open where we've measured.
       ctx.save();
-      ctx.fillStyle = THEME.dark ? "rgba(8,14,22,0.74)" : "rgba(244,247,251,0.82)";
+      ctx.fillStyle = THEME.dark ? "rgba(14,14,14,0.74)" : "rgba(247,247,247,0.82)";
       ctx.fillRect(pad, pad, w - pad * 2, h - pad * 2);
       ctx.globalCompositeOperation = "destination-out";
       samples.forEach(function (s) {

@@ -1,6 +1,6 @@
 ﻿:root {
-  --hc-signature-line: rgba(78, 124, 116, 0.26);
-  --hc-signature-node: rgba(142, 106, 53, 0.36);
+  --hc-signature-line: rgba(115, 115, 115, 0.26);
+  --hc-signature-node: rgba(112, 112, 112, 0.36);
 }
 
 .hc-signature-canvas {
@@ -81,21 +81,21 @@ body.hc-signature-history .hc-signature-canvas {
   letter-spacing: 0.05em;
   font-size: 0.7rem;
   padding: 0.28rem 0.58rem;
-  border: 1px solid rgba(78, 124, 116, 0.4);
-  color: #2f5a53;
-  background: rgba(78, 124, 116, 0.1);
+  border: 1px solid rgba(115, 115, 115, 0.4);
+  color: #525252;
+  background: rgba(115, 115, 115, 0.1);
 }
 
 [data-hc-proof-state="partial"] .hc-proof-meta {
-  border-color: rgba(142, 106, 53, 0.45);
-  color: #74521f;
-  background: rgba(142, 106, 53, 0.12);
+  border-color: rgba(112, 112, 112, 0.45);
+  color: #585858;
+  background: rgba(112, 112, 112, 0.12);
 }
 
 [data-hc-proof-state="verified"] .hc-proof-meta {
-  border-color: rgba(38, 132, 82, 0.45);
-  color: #1f6e48;
-  background: rgba(45, 169, 105, 0.12);
+  border-color: rgba(116, 116, 116, 0.45);
+  color: #616161;
+  background: rgba(149, 149, 149, 0.12);
 }
 
 .hc-proof-link {

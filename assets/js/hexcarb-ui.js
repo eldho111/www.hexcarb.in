@@ -597,6 +597,8 @@
     function clearCard(card) {
       card.style.removeProperty("--hc-mx");
       card.style.removeProperty("--hc-my");
+      card.style.removeProperty("--hc-rx");
+      card.style.removeProperty("--hc-ry");
     }
 
     function paintGlow() {
@@ -607,6 +609,10 @@
       var y = ((lastY - rect.top) / rect.height) * 100;
       activeCard.style.setProperty("--hc-mx", x.toFixed(2) + "%");
       activeCard.style.setProperty("--hc-my", y.toFixed(2) + "%");
+      // 3D tilt toward the pointer; small on wide cards so text stays readable.
+      var maxTilt = rect.width > 520 ? 1.6 : 4;
+      activeCard.style.setProperty("--hc-ry", (((x - 50) / 50) * maxTilt).toFixed(2) + "deg");
+      activeCard.style.setProperty("--hc-rx", (((50 - y) / 50) * maxTilt).toFixed(2) + "deg");
     }
 
     document.addEventListener("pointermove", function (event) {
@@ -712,8 +718,8 @@
     if (!hosts.length) return;
 
     var SVG_NS = "http://www.w3.org/2000/svg";
-    var GOLD = "164,122,59";
-    var TEAL = "61,143,130";
+    var GOLD = "129,129,129";
+    var TEAL = "130,130,130";
 
     hosts.forEach(function (host, hostIndex) {
       var spec = (host.getAttribute("data-hc-hexdecor") || "tr").split("-");

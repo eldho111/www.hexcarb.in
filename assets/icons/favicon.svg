@@ -1,15 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="52 0 378 360" role="img" aria-labelledby="title desc">
   <title id="title">HexCarb favicon</title>
-  <desc id="desc">HexCarb HEX mark from the primary logo with a black to gold gradient running from right to left.</desc>
-  <defs>
-    <linearGradient id="brand" x1="414" y1="180" x2="68" y2="180" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#000000" />
-      <stop offset="38%" stop-color="#3b2f1b" />
-      <stop offset="72%" stop-color="#8e6a35" />
-      <stop offset="100%" stop-color="#d9ad61" />
-    </linearGradient>
-  </defs>
-  <g transform="translate(0,359) scale(0.1,-0.1)" fill="url(#brand)" stroke="none">
+  <desc id="desc">HexCarb HEX mark in solid black; white when the browser is in dark mode.</desc>
+  <style>@media (prefers-color-scheme: dark){g{fill:#ffffff}}</style>
+  <g transform="translate(0,359) scale(0.1,-0.1)" fill="#000000" stroke="none">
     <path d="M2326 3312 c-3 -6 0 -13 6 -16 7 -3 -8 -3 -34 0 -26 4 -60 3 -75 -1
 -27 -8 -26 -9 17 -16 49 -10 65 -25 82 -80 9 -32 8 -39 -11 -58 -39 -39 -104
 -25 -153 33 -22 25 -29 29 -40 18 -10 -10 -10 -17 0 -32 30 -49 -1 -93 -60
