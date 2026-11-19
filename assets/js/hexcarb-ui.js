@@ -560,6 +560,44 @@
           }
           return;
         }
+
+        // Simple forms opt in to an in-page submit so the visitor stays on
+        // our site (thank-you page) and gets a fallback if the post fails.
+        if (!form.hasAttribute("data-hc-async") || !window.fetch) return;
+        event.preventDefault();
+
+        var status = document.getElementById(form.getAttribute("data-hc-status-id") || "");
+        var button = form.querySelector('button[type="submit"]');
+        function fail() {
+          if (button) button.disabled = false;
+          if (status) {
+            status.textContent = "";
+            status.appendChild(document.createTextNode("That did not go through. Please email "));
+            var mail = document.createElement("a");
+            mail.href = "mailto:info@hexcarb.in";
+            mail.textContent = "info@hexcarb.in";
+            status.appendChild(mail);
+            status.appendChild(document.createTextNode("."));
+          }
+        }
+
+        if (button) button.disabled = true;
+        if (status) status.textContent = "Sending...";
+        var timer = window.setTimeout(fail, 30000);
+
+        fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
+          .then(function (response) {
+            window.clearTimeout(timer);
+            if (!response.ok) throw new Error("Submission failed");
+            if (typeof window.hexTrack === "function") {
+              window.hexTrack("hc_contact_submit_success", { form_id: form.getAttribute("data-track-form") || "contact" });
+            }
+            window.location.href = "/thank-you.html";
+          })
+          .catch(function () {
+            window.clearTimeout(timer);
+            fail();
+          });
       });
     });
   }

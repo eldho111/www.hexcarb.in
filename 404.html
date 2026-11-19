@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <script>try{var t=localStorage.getItem("hc-theme-mode");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <noscript><style>.hc-reveal,.hc-word{opacity:1!important;transform:none!important}</style></noscript>
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>Page Not Found | HexCarb™</title>
@@ -17,7 +20,7 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20261119a" />
   <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261119a" />
 </head>
-<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-video-disabled="true">
+<body class="hc-premium" data-hc-signature-bg="field">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
 
   <header class="hc-header">
@@ -29,10 +32,11 @@
 
       <nav class="hc-nav-links" aria-label="Primary">
         <a href="/index.html" data-nav-path="/">Home</a>
-        <a href="/power-of-nanotubes.html" data-nav-path="/power-of-nanotubes.html">Why Nanotubes</a>
+                <a href="/power-of-nanotubes.html" data-nav-path="/power-of-nanotubes.html">Why Nanotubes</a>
         <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
         <a href="/shop.html" data-nav-path="/shop.html">Products</a>
-        <a href="/quote.html" data-nav-path="/quote.html">Quote</a>
+        <a href="/index.html#about">About</a>
+        <a href="/index.html#contact">Contact</a>
       </nav>
 
       <div class="hc-nav-actions">
@@ -46,10 +50,13 @@
 
     <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
       <a href="/index.html">Home</a>
-      <a href="/power-of-nanotubes.html">Why Nanotubes</a>
+            <a href="/power-of-nanotubes.html">Why Nanotubes</a>
       <a href="/applications/index.html">Applications</a>
       <a href="/shop.html">Products</a>
-      <a href="/quote.html">Quote</a>
+      <a href="/index.html#about">About</a>
+      <a href="/index.html#contact">Contact</a>
+      <a href="/quote.html" data-source-page="mobile_nav" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
+      <a href="/ai-engine.html" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
@@ -58,7 +65,7 @@
       <div class="container hc-reveal" style="text-align: center; padding: 6rem 1rem;">
         <span class="hc-kicker">404</span>
         <h1>Page not found</h1>
-        <p style="max-width: 36rem; margin: 1.5rem auto; opacity: 0.8;">The page you are looking for does not exist or has been moved. Use the navigation above or return to the homepage.</p>
+        <p style="max-width: 36rem; margin: 1.5rem auto; opacity: 0.8;">This page does not exist or has moved.</p>
         <div class="hc-btn-row" style="justify-content: center; margin-top: 2rem;">
           <a class="hc-btn hc-btn-accent" href="/index.html">Back to Home</a>
           <a class="hc-btn hc-btn-ghost" href="/shop.html">View Products</a>
@@ -70,25 +77,31 @@
   <footer class="hc-footer">
     <div class="container hc-footer-grid">
       <div>
-        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
-          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" />
-          <span class="hc-visually-hidden">HexCarb™</span>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
+          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" width="695" height="359" />
         </a>
-        <p>Enterprise nanocarbon systems for thermal, electrical, and structural programs.</p>
+        <p>Carbon nanotube and graphene materials, from first sample to production.</p>
       </div>
+
       <div>
-        <h4>Links</h4>
+        <h3>Explore</h3>
         <ul class="hc-footer-list">
+          <li><a href="/power-of-nanotubes.html">Why Nanotubes</a></li>
           <li><a href="/applications/index.html">Applications</a></li>
           <li><a href="/shop.html">Products</a></li>
-          <li><a href="/quote.html">Quote</a></li>
+          <li><a href="/ai-engine.html" data-ai-link="footer">AI Engine</a></li>
+          <li><a href="/history-of-advanced-nanomaterials.html">History of Nanomaterials</a></li>
         </ul>
       </div>
+
       <div>
-        <h4>Contact</h4>
+        <h3>Company</h3>
         <ul class="hc-footer-list">
-          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+          <li><a href="/quote.html">Request a Quote</a></li>
           <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
         </ul>
       </div>
     </div>

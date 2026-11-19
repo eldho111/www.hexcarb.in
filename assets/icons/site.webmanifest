@@ -1,10 +1,10 @@
-﻿{
+{
   "name": "HexCarb",
   "short_name": "HexCarb",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f1924",
-  "theme_color": "#0f1924",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/assets/icons/favicon.svg",

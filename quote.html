@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <script>try{var t=localStorage.getItem("hc-theme-mode");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <noscript><style>.hc-reveal,.hc-word{opacity:1!important;transform:none!important}</style></noscript>
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb™ | Request a Quote</title>
@@ -37,7 +40,7 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-video-disabled="true">
+<body class="hc-premium" data-hc-signature-bg="field">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
@@ -52,7 +55,7 @@
         <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
         <a href="/shop.html" data-nav-path="/shop.html">Products</a>
         <a href="/index.html#about">About</a>
-        <a href="/quote.html" data-nav-path="/quote.html">Quote</a>
+        <a href="/index.html#contact">Contact</a>
       </nav>
 
       <div class="hc-nav-actions">
@@ -70,8 +73,9 @@
       <a href="/applications/index.html">Applications</a>
       <a href="/shop.html">Products</a>
       <a href="/index.html#about">About</a>
-      <a href="/quote.html">Quote</a>
-      <a href="/ai-engine.html" data-ai-link="quote_mobile">AI Engine</a>
+      <a href="/index.html#contact">Contact</a>
+      <a href="/quote.html" data-source-page="mobile_nav" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
+      <a href="/ai-engine.html" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
@@ -80,24 +84,10 @@
       <div class="container hc-reveal">
         <span class="hc-kicker">Get a Quote</span>
         <h1 style="margin-top:0.8rem;">Tell us what you need</h1>
-        <p>Three quick steps — your application, technical details, and contact info. We'll get back to you with a material recommendation and pricing.</p>
+        <p>Three short steps. We reply with a material recommendation and pricing.</p>
         <div class="hc-quote-context-chip" id="hc-quote-context" hidden>
           <span id="hc-quote-context-label"></span>
           <button type="button" id="hc-quote-context-clear" aria-label="Clear pre-filled selection">&times;</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="hc-command-strip-wrap">
-      <div class="container">
-        <div class="hc-command-strip hc-reveal" data-hc-proof-state="partial">
-          <span class="hc-kicker" style="color:rgba(255,255,255,0.9);">Not sure which material?</span>
-          <h2 style="margin-top:0.65rem;">These tools can help you decide before requesting a quote</h2>
-          <div class="hc-command-actions">
-            <a class="hc-btn hc-btn-accent" data-hc-magnetic href="/materials-selector.html">Materials Selector</a>
-            <a class="hc-btn hc-btn-ghost" href="/case-studies/index.html">Case Studies</a>
-            <a class="hc-btn hc-btn-ghost" href="/proof.html">Test Data &amp; Proof</a>
-          </div>
         </div>
       </div>
     </section>
@@ -114,7 +104,7 @@
               <div class="hc-step-dot" data-step-dot="2">2. Details</div>
               <div class="hc-step-dot" data-step-dot="3">3. Contact</div>
             </div>
-            <p class="hc-quote-prefill-note" id="hc-quote-prefill-note" hidden>Step 1 is pre-filled from your selection — review or continue.</p>
+            <p class="hc-quote-prefill-note" id="hc-quote-prefill-note" hidden>Step 1 is filled in from your selection. Review it or continue.</p>
 
             <form id="hc-quote-form" class="hc-form" action="https://formspree.io/f/xgvznzyr" method="POST" data-track-form="quote_funnel_form" data-hc-antispam="true" data-hc-min-submit-ms="4000" data-hc-status-id="quote-status-text">
               <input type="hidden" name="source_page" id="source_page" value="" />
@@ -199,22 +189,22 @@
                 <div class="hc-field-grid">
                   <label>
                     <span class="hc-subtle-note">Name</span>
-                    <input type="text" name="name" required />
+                    <input type="text" name="name" autocomplete="name" required />
                   </label>
 
                   <label>
                     <span class="hc-subtle-note">Company</span>
-                    <input type="text" name="company" required />
+                    <input type="text" name="company" autocomplete="organization" required />
                   </label>
 
                   <label>
                     <span class="hc-subtle-note">Work email</span>
-                    <input type="email" name="email" required />
+                    <input type="email" name="email" autocomplete="email" required />
                   </label>
 
                   <label>
                     <span class="hc-subtle-note">Phone (optional)</span>
-                    <input type="text" name="phone" />
+                    <input type="tel" name="phone" autocomplete="tel" />
                   </label>
 
                   <label class="hc-field-grid-full">
@@ -228,7 +218,7 @@
                   <button class="hc-btn hc-btn-accent" data-hc-magnetic type="submit" id="quote-submit-btn">Submit Quote Request</button>
                 </div>
                 <p class="hc-inline-fallback" id="quote-status-text">We'll review your request and get back to you within 1–2 business days.</p>
-                <p class="hc-inline-fallback" id="quote-fallback-mail" hidden>If submission fails, email <a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a> with your requirements.</p>
+                <p class="hc-inline-fallback" id="quote-fallback-mail" hidden>If submission fails, email <a href="mailto:info@hexcarb.in">info@hexcarb.in</a> with your requirements.</p>
               </section>
             </form>
           </div>
@@ -252,28 +242,35 @@
   <footer class="hc-footer">
     <div class="container hc-footer-grid">
       <div>
-        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
-          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" />
-          <span class="hc-visually-hidden">HexCarb™</span>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
+          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" width="695" height="359" />
         </a>
-        <p>Enterprise nanocarbon systems for thermal, electrical, and structural programs.</p>
+        <p>Carbon nanotube and graphene materials, from first sample to production.</p>
       </div>
+
       <div>
-        <h4>Links</h4>
+        <h3>Explore</h3>
         <ul class="hc-footer-list">
+          <li><a href="/power-of-nanotubes.html">Why Nanotubes</a></li>
           <li><a href="/applications/index.html">Applications</a></li>
           <li><a href="/shop.html">Products</a></li>
-          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/ai-engine.html" data-ai-link="footer">AI Engine</a></li>
+          <li><a href="/history-of-advanced-nanomaterials.html">History of Nanomaterials</a></li>
         </ul>
       </div>
+
       <div>
-        <h4>Contact</h4>
+        <h3>Company</h3>
         <ul class="hc-footer-list">
-          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
-          <li><a href="/index.html#contact">General Contact</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+          <li><a href="/quote.html">Request a Quote</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
         </ul>
       </div>
     </div>
+
     <div class="container hc-footer-bottom">
       <span>&copy; <span data-hc-year>2026</span> HexCarb™ Advanced Materials Private Limited. All rights reserved.</span>
     </div>
@@ -305,9 +302,9 @@
       var sourceSection = sanitizeParam(query.get("source_section"), null, "unknown");
       var appSlug = query.get("application_slug") || "general";
       var productFamily = query.get("product_family") || "general";
-      var intentStage = sanitizeParam(query.get("intent_stage"), ["evaluate", "specify", "purchase", "research"], "evaluate");
+      var intentStage = sanitizeParam(query.get("intent_stage"), ["evaluate", "specify", "purchase", "procure", "research"], "evaluate");
       var industry = sanitizeParam(query.get("industry"), ["aerospace", "automotive", "electronics", "energy", "infrastructure", "wearables", "other"], "other");
-      var priority = sanitizeParam(query.get("priority"), ["performance", "cost", "scalability", "timeline"], "performance");
+      var priority = sanitizeParam(query.get("priority"), ["performance", "thermal", "electrical", "mechanical", "compliance", "cost", "scalability", "timeline"], "performance");
 
       function normalizeApplication(value) {
         var normalized = String(value || "").toLowerCase();
@@ -519,8 +516,12 @@
         submitBtn.disabled = true;
 
         var formData = new FormData(form);
+        // The two dropdowns are broad; keep what the visitor actually clicked
+        // (exact product, or request type) alongside them so sales can see it.
         formData.set("application_slug", appSelect.value || appSlug);
         formData.set("product_family", familySelect.value || productFamily);
+        formData.set("requested_product", productFamily);
+        formData.set("requested_application", appSlug);
 
         var timeout = window.setTimeout(function () {
           submitBtn.disabled = false;
@@ -560,15 +561,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

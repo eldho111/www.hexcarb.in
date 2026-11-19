@@ -1693,13 +1693,13 @@
 }
 
 .hc-product-badge[data-tier="scale"] {
-  color: var(--hc-green);
+  color: var(--hc-text-muted);
   border: 1px solid rgba(130, 130, 130, 0.3);
   background: rgba(130, 130, 130, 0.07);
 }
 
 .hc-product-badge[data-tier="service"] {
-  color: #8a8a8a;
+  color: var(--hc-text-muted);
   border: 1px solid rgba(138, 138, 138, 0.3);
   background: rgba(138, 138, 138, 0.07);
 }
@@ -3016,3 +3016,116 @@ a.hc-filter-chip {
 .hc-form select:hover {
   border-color: var(--hc-text-muted);
 }
+
+/* ─── Inner-page hero with a live object on the right ─── */
+.hc-page-hero {
+  background: var(--hc-bg);
+  backdrop-filter: none;
+  padding-top: clamp(3rem, 7vw, 5.5rem);
+  padding-bottom: clamp(2.4rem, 5vw, 4rem);
+}
+
+.hc-page-hero h1 {
+  font-size: var(--fs-h1);
+}
+
+.hc-page-hero--scene {
+  position: relative;
+  overflow: hidden;
+}
+
+.hc-page-hero-scene {
+  position: absolute;
+  top: 50%;
+  right: max(2vw, calc((100vw - var(--container-max)) / 2 - 40px));
+  width: min(40vw, 500px);
+  aspect-ratio: 1 / 1;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.hc-page-hero--scene > .container {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 1001px) {
+  .hc-page-hero--scene > .container > * {
+    max-width: 58%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .hc-page-hero-scene {
+    display: none;
+  }
+}
+
+/* ─── Command strip: a graphite slab in both themes ─── */
+.hc-command-strip,
+:root[data-theme="dark"] .hc-command-strip {
+  background-color: var(--hc-graphite-2);
+  background-image: var(--hc-hexgrid-panel), var(--hc-graphite-surface);
+  background-size: 72px auto, auto;
+  border: 1px solid #000000;
+  box-shadow: var(--shadow-graphite), var(--hc-graphite-edge);
+  color: var(--hc-on-graphite);
+}
+
+:root[data-theme="dark"] .hc-command-strip {
+  border-color: #2c2c2c;
+}
+
+.hc-command-strip h2,
+.hc-command-strip h3 {
+  color: var(--hc-on-graphite);
+}
+
+.hc-command-strip p {
+  color: var(--hc-on-graphite-muted);
+}
+
+.hc-command-strip .hc-btn-accent,
+.hc-command-strip .hc-btn-primary,
+:root[data-theme="dark"] .hc-command-strip .hc-btn-accent {
+  background: linear-gradient(180deg, #ffffff 0%, #d2d2d2 100%);
+  color: #000000;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 2px 3px rgba(0, 0, 0, 0.5), 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hc-command-strip .hc-btn-ghost,
+:root[data-theme="dark"] .hc-command-strip .hc-btn-ghost {
+  color: var(--hc-on-graphite);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.hc-command-strip .hc-btn-ghost:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* ─── Accessibility ─── */
+/* Hidden sticky nav must leave the tab order, not just fade out. */
+.hc-family-nav {
+  visibility: hidden;
+  transition:
+    transform var(--dur-base) var(--ease),
+    opacity var(--dur-base) var(--ease),
+    visibility 0s linear var(--dur-base);
+}
+
+.hc-family-nav.is-visible {
+  visibility: visible;
+  transition:
+    transform var(--dur-base) var(--ease),
+    opacity var(--dur-base) var(--ease),
+    visibility 0s;
+}
+
+#hc-shop-search:focus-visible {
+  border-color: var(--hc-heading);
+  outline: 2px solid var(--hc-focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+

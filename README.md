@@ -1,6 +1,6 @@
 # HexCarb Website
 
-Static multi-page website for HexCarb with a Carbice-inspired UI direction adapted to HexCarb branding.
+Static multi-page website for HexCarb. Monochrome design (white, black, graphite) with real-time WebGL 3D material models.
 
 ## Current Structure
 
@@ -8,14 +8,10 @@ Static multi-page website for HexCarb with a Carbice-inspired UI direction adapt
 - `shop.html` - Quote-first product family catalog
 - `quote.html` - Structured quote funnel
 - `thank-you.html` - Quote confirmation page
-- `coming-soon.html` - AI Engine launch placeholder
-- `proof.html` - Trust/proof center (partial-assets mode)
-- `materials-selector.html` - Interactive pre-quote recommender
+- `ai-engine.html` - Interactive AI Engine explainer
+- `power-of-nanotubes.html` - Interactive material demos
 - `history-of-advanced-nanomaterials.html` - Evidence-first long-scroll timeline page
 - `privacy.html` - Privacy policy
-- `case-studies/` - Case index + seed case template
-  - `index.html`
-  - `thermal-electronics.html`
 - `applications/` - Applications hub and dedicated pathways
   - `index.html`
   - `dispersions.html`
@@ -151,22 +147,21 @@ Suggested QA for History page:
 rg -n "hc_history_growth_view|hc_history_fact_view|hc_history_gap_click" assets/js/history-page.js
 ```
 
-## Background Mapping
+## Design System
 
-Premium ambient backgrounds are image-first and controlled per page from the `<body>` tag:
+- Colour is monochrome by rule: white, black and neutral greys only. Tokens live at the top of `assets/css/hexcarb-design-system.css`; the accent tokens resolve to black (light theme) or white (dark theme).
+- Graphite surfaces (`.hc-graphite`, the metric band, application cards, command strip, footer) are fixed dark in both themes.
+- Depth comes from the elevation tokens (`--shadow-1`, `--shadow-soft`, `--shadow-lift`, `--shadow-graphite`) and a pointer-driven tilt on cards.
+
+## 3D Scenes
+
+`assets/js/hexcarb-3d.js` is a dependency-free WebGL2 renderer. Add a scene with:
 
 ```html
-<body class="hc-premium"
-      style="--hc-ambient-image: image-set(url('/assets/media/ambient/background-1.webp') type('image/webp'), url('/1.png') type('image/png'));"
-      data-hc-bg-image="/assets/media/ambient/background-1.webp"
-      data-hc-bg-video-disabled="true">
+<div class="hc-3d" data-hc-3d="nanotube"></div>
 ```
 
-Attributes:
-
-- `data-hc-bg-image`: primary optimized background image.
-- `data-hc-bg-video-disabled="true"`: force image-only background on that page.
-- `style="--hc-ambient-image: ..."`: hard fallback that renders even if JS is blocked.
+Models: `nanotube`, `mwcnt`, `graphene`, `layers`, `fibre`. Options: `data-hc-3d-view="hero"` (wide framing) and `data-hc-3d-surface="graphite"` (scene sits on a graphite panel). Scenes follow the theme, animate only while on screen, render a single still frame under reduced motion or data saver, and fall back to a honeycomb texture without WebGL2.
 
 ## Quote Flow Contract
 
@@ -174,19 +169,20 @@ Primary quote CTAs route to:
 
 `/quote.html?source_page=...&source_section=...&application_slug=...&product_family=...`
 
+The quote form also sends `requested_product` and `requested_application`: the exact product or request type the visitor clicked, which the two broad dropdowns would otherwise lose.
+
 Submission redirect target:
 
 - `/thank-you.html`
 
 ## AI Engine Link Contract
 
-All website AI Engine buttons currently route to:
-
-- `/coming-soon.html`
+Website AI Engine buttons route to `/ai-engine.html`, which links out to the live engine.
 
 ## Deployment Notes
 
 - `robots.txt` and `sitemap.xml` are included.
-- `sitemap.xml` includes Home, Shop, Quote, Thank You, Privacy, Applications routes, Proof Center, Materials Selector, and Case Studies routes.
+- `sitemap.xml` lists every public page. Thank You and 404 are left out on purpose.
+- Proof, Case Studies and Materials Selector are offline until there is real content; they remain in git history.
 - Ensure DNS/custom domain config remains aligned with `CNAME`.
 - GitHub Action `.github/workflows/site-validate.yml` runs validation on push/PR to `main`.
