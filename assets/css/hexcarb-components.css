@@ -4135,3 +4135,63 @@ a.hc-filter-chip {
   }
 }
 
+/* ─── Hero film: live scale bar ─── */
+.hc-film-scale {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+  min-height: 1.4rem;
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--hc-heading);
+}
+
+.hc-film-scalebar {
+  display: block;
+  height: 7px;
+  width: 80px;
+  border: 1px solid var(--hc-heading);
+  border-top: 0;
+}
+
+.hc-film-scalelabel {
+  min-width: 3.6rem;
+  font-weight: 600;
+}
+
+.hc-film-note {
+  color: var(--hc-text-muted);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 560px) {
+  .hc-film-note {
+    display: none;
+  }
+}
+
+/* Phones: the film plays in its own window above the headline, never behind it. */
+@media (max-width: 900px) {
+  .hc-stage {
+    display: block;
+    min-height: 0;
+  }
+
+  .hc-stage-scene {
+    position: relative;
+    inset: auto;
+    height: 46vh;
+    min-height: 260px;
+  }
+
+  .hc-stage::after {
+    content: none;
+  }
+
+  .hc-stage-inner {
+    padding-block: 1.2rem 2.6rem;
+  }
+}
+

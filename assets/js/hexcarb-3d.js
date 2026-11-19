@@ -512,119 +512,140 @@
       return b.done({ radius: 5.5, orient: rotX(0.42), offsetY: -0.12, spin: "sway" });
     },
 
-    /* Hero film. One world, one camera, eight forms of the same material:
-         one tube (atoms) -> dispersed -> yarn -> dense film -> standing
-         forest (thermal) -> composite -> battery electrode -> one tube as a
-         transistor -> back to one tube.
-       The long strands share the atom tube's radius, so the tube simply turns
-       out to be one of them as the camera retreats. Every strand carries six
-       positions and glides from one form to the next.
+    /* Hero film. One world, one camera, the same material in every form:
+         one tube -> a rope of seven -> ropes dispersed -> fibre -> film ->
+         thermal forest (close, then the whole pad) -> composite panel
+         (absorbing a signal, then holding a crack) -> battery electrode ->
+         one tube as a transistor -> back to one tube.
 
-       Each form follows how the material is really built:
-         yarn      hundreds of tubes aligned with the axis, twisted ~20-25 deg
-         film      a flat random network of long curved tubes that touch and cross
-         forest    tubes grown upright, slightly wavy, joining chip to heat sink
-         composite tubes at every angle through a panel, a connected network
-         electrode tubes threading between storage particles on a metal foil
-       A second set of finer tubes joins for the yarn, film and forest, where
-       real material is far denser than a few hundred strands. */
+       Real sizes this follows (far stages use 1 unit = 0.2 micrometre):
+         tube      1.5 nm across, about 100 micrometres long
+         fibre     about 25-30 micrometres across: a rope of ropes
+         film      5-30 micrometres thick, so tubes lie flat in it
+         forest    100 micrometres tall, in a pad centimetres wide
+         electrode particles about 10 micrometres; one tube spans about ten
+
+       Tubes never travel alone: every line belongs to a rope of 3-7 that run
+       together with a slow twist. Each strand carries six positions and
+       glides between them. Line thickness is exaggerated; counts stand in
+       for far larger real numbers. */
     journey: function () {
       var small = window.innerWidth < 760;
-      var N = small ? 70 : 200, S = small ? 18 : 24, R = 3.9;
-      var N2 = small ? 110 : 440, R2 = 2.3;
+      var TARGET = small ? 190 : 640, S = small ? 14 : 20, R = 2.6;
       var rand = rng(2026), tubeModel = MODELS.nanotube({ hero: true });
-      var atoms = [], bonds = [], bonds2 = [], k, i, j;
-      var BUNDLE = 80, FW = 1000, FH = 760;
+      var bonds = [], i, j, n;
+      var BUNDLE = 70, FW = 1000, FH = 760, TUBE = 500;
 
       function unit() {
         var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
         return [q * Math.cos(th), z, q * Math.sin(th)];
       }
-      /* yarn: a place in the round bundle, twisted along the axis */
-      function yarnAt(rr, ph, u) {
-        var y = (u - 0.5) * 1900, tw = ph + y * 0.0055;
-        return [rr * Math.cos(tw), y, rr * Math.sin(tw)];
-      }
-      /* film: one long curved tube lying in the sheet */
-      function filmTube(level) {
-        var a = rand() * 3.1416, cx = (rand() - 0.5) * FW, cy = (rand() - 0.5) * FH, len = 420 + rand() * 320;
-        var b1 = (rand() - 0.5) * 150, b2 = (rand() - 0.5) * 70, p2 = rand() * 6.28, z = level;
-        return function (u) {
-          var sl = (u - 0.5) * len, bow = b1 * Math.sin(u * 3.1416) + b2 * Math.sin(u * 9.42 + p2);
-          var x = cx + Math.cos(a) * sl - Math.sin(a) * bow, y = cy + Math.sin(a) * sl + Math.cos(a) * bow;
-          return [Math.max(-FW / 2, Math.min(FW / 2, x)), Math.max(-FH / 2, Math.min(FH / 2, y)), z];
-        };
-      }
-      /* forest: upright, slightly wavy, rooted on the lower plate */
-      function forestTube() {
-        var gx = (rand() - 0.5) * (FW - 30), gy = (rand() - 0.5) * (FH - 30), gp = rand() * 6.28, wob = 4 + rand() * 7;
-        return function (u) { return [gx + wob * Math.sin(u * 5 + gp), gy + wob * Math.cos(u * 4 + gp), u * 500]; };
-      }
+      function clampTo(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-      for (k = 0; k < N; k++) {
-        /* 0 dispersed: long, wavy, every direction. Strand 0 runs straight
-           through the atom tube so the two coincide. */
-        var p0 = k === 0
+      /* one rope's centre line in each of the six forms, as S+1 points */
+      function paths(first) {
+        var out = [], k, u;
+        /* 0 dispersed */
+        out.push(first
           ? wavy(rand, [0, 0, 0], [0, 1, 0], 1900, S, 0)
-          : wavy(rand, [(rand() - 0.5) * 1300, (rand() - 0.5) * 1300, (rand() - 0.5) * 900], unit(), 1300 + rand() * 600, S, 130);
-        var rr = BUNDLE * Math.sqrt(k / N), ph = k * 2.39996;
-        var film = filmTube((k % 8) * 3), forest = forestTube();
-        /* 4 composite: every direction through a panel 150 thick */
-        var cd = unit(), cc = [(rand() - 0.5) * 800, (rand() - 0.5) * 580, 20 + rand() * 110], cl = 300 + rand() * 260;
-        /* 5 electrode: winding between the particles, within the coated layer */
-        var ed = unit(); ed[2] *= 0.35;
-        var p5 = wavy(rand, [(rand() - 0.5) * 880, (rand() - 0.5) * 660, 130], ed, 520 + rand() * 380, S, 70);
-
-        var pts = [];
-        for (i = 0; i <= S; i++) {
-          var u = i / S, cs = (u - 0.5) * cl, ya = yarnAt(rr, ph, u), fa = film(u), fo = forest(u);
-          pts.push([
-            p0[i][0], p0[i][1], p0[i][2],
-            ya[0], ya[1], ya[2],
-            fa[0], fa[1], fa[2],
-            fo[0], fo[1], fo[2],
-            Math.max(-445, Math.min(445, cc[0] + cd[0] * cs)), Math.max(-320, Math.min(320, cc[1] + cd[1] * cs)), Math.max(10, Math.min(140, cc[2] + cd[2] * cs * 0.4)),
-            Math.max(-490, Math.min(490, p5[i][0])), Math.max(-370, Math.min(370, p5[i][1])), Math.max(14, Math.min(250, p5[i][2]))
-          ]);
+          : wavy(rand, [(rand() - 0.5) * 1300, (rand() - 0.5) * 1300, (rand() - 0.5) * 900], unit(), 1300 + rand() * 600, S, 130));
+        /* 1 fibre: a place in the round bundle, twisted along the axis */
+        var rr = first ? 0 : BUNDLE * Math.sqrt(rand()), ph = rand() * 6.28, a1 = [];
+        for (k = 0; k <= S; k++) {
+          u = k / S;
+          var y = (u - 0.5) * 1900, tw = ph + y * 0.0055;
+          a1.push([rr * Math.cos(tw), y, rr * Math.sin(tw)]);
         }
-        for (i = 0; i <= S; i++) {
-          Array.prototype.push.apply(atoms, pts[i]);
-          atoms.push(R);
-          if (i) {
-            Array.prototype.push.apply(bonds, pts[i - 1]);
-            Array.prototype.push.apply(bonds, pts[i]);
+        out.push(a1);
+        /* 2 film: long, curved, lying flat */
+        var fa = rand() * 3.1416, cx = (rand() - 0.5) * FW, cy = (rand() - 0.5) * FH, len = TUBE * (0.8 + rand() * 0.5);
+        var b1 = (rand() - 0.5) * 150, b2 = (rand() - 0.5) * 70, p2 = rand() * 6.28, lz = 6 + rand() * 60, a2 = [];
+        for (k = 0; k <= S; k++) {
+          u = k / S;
+          var sl = (u - 0.5) * len, bow = b1 * Math.sin(u * 3.1416) + b2 * Math.sin(u * 9.42 + p2);
+          a2.push([clampTo(cx + Math.cos(fa) * sl - Math.sin(fa) * bow, -FW / 2, FW / 2),
+                   clampTo(cy + Math.sin(fa) * sl + Math.cos(fa) * bow, -FH / 2, FH / 2), lz]);
+        }
+        out.push(a2);
+        /* 3 forest: upright, slightly wavy, as tall as a tube is long */
+        var gx = (rand() - 0.5) * (FW - 40), gy = (rand() - 0.5) * (FH - 40), gp = rand() * 6.28, wob = 4 + rand() * 7, a3 = [];
+        for (k = 0; k <= S; k++) {
+          u = k / S;
+          a3.push([gx + wob * Math.sin(u * 5 + gp), gy + wob * Math.cos(u * 4 + gp), u * TUBE]);
+        }
+        out.push(a3);
+        /* 4 composite: every direction through a panel */
+        var cd = unit(), cc = [(rand() - 0.5) * 800, (rand() - 0.5) * 580, 20 + rand() * 110], cl = TUBE * (0.7 + rand() * 0.5), a4 = [];
+        for (k = 0; k <= S; k++) {
+          var cs = (k / S - 0.5) * cl;
+          a4.push([clampTo(cc[0] + cd[0] * cs, -445, 445), clampTo(cc[1] + cd[1] * cs, -320, 320), clampTo(cc[2] + cd[2] * cs * 0.4, 10, 140)]);
+        }
+        out.push(a4);
+        /* 5 electrode: one tube length winding through the coated layer */
+        var ed = unit();
+        ed[2] *= 0.5;
+        out.push(wavy(rand, [(rand() - 0.5) * 860, (rand() - 0.5) * 640, 60 + rand() * 250], ed, TUBE * (0.9 + rand() * 0.3), S, 45).map(function (q) {
+          return [clampTo(q[0], -490, 490), clampTo(q[1], -370, 370), clampTo(q[2], 10, 360)];
+        }));
+        return out;
+      }
+
+      /* offset a centre line sideways: member m of a rope, twisting slowly */
+      function member(line, rho, phase) {
+        var out = [], k;
+        for (k = 0; k <= S; k++) {
+          var a = line[Math.max(0, k - 1)], b = line[Math.min(S, k + 1)];
+          var t = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], tl = Math.hypot(t[0], t[1], t[2]) || 1;
+          t = [t[0] / tl, t[1] / tl, t[2] / tl];
+          var up = Math.abs(t[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+          var e1 = [t[1] * up[2] - t[2] * up[1], t[2] * up[0] - t[0] * up[2], t[0] * up[1] - t[1] * up[0]];
+          var l1 = Math.hypot(e1[0], e1[1], e1[2]) || 1;
+          e1 = [e1[0] / l1, e1[1] / l1, e1[2] / l1];
+          var e2 = [t[1] * e1[2] - t[2] * e1[1], t[2] * e1[0] - t[0] * e1[2], t[0] * e1[1] - t[1] * e1[0]];
+          var ang = phase + k * 0.42, c = Math.cos(ang) * rho, d = Math.sin(ang) * rho;
+          out.push([line[k][0] + e1[0] * c + e2[0] * d, line[k][1] + e1[1] * c + e2[1] * d, line[k][2] + e1[2] * c + e2[2] * d]);
+        }
+        return out;
+      }
+
+      var strands = 0, rope = 0;
+      while (strands < TARGET) {
+        var first = rope === 0, lines = paths(first);
+        /* rope 0 is the seven-tube rope the film opens on */
+        var size = first ? 7 : [3, 4, 5, 7][Math.floor(rand() * 4)];
+        for (j = 0; j < size; j++) {
+          var centre = size === 7 && j === 0;
+          var rho = centre ? 0 : size === 7 ? R * 2.1 : R / Math.sin(Math.PI / size) * 1.05;
+          var phase = (size === 7 ? (j - 1) / 6 : j / size) * 6.2832;
+          var form = lines.map(function (line) { return centre ? line : member(line, rho, phase); });
+          for (i = 1; i <= S; i++) {
+            for (n = 0; n < 6; n++) bonds.push(form[n][i - 1][0], form[n][i - 1][1], form[n][i - 1][2]);
+            for (n = 0; n < 6; n++) bonds.push(form[n][i][0], form[n][i][1], form[n][i][2]);
             bonds.push(R);
           }
+          strands++;
         }
-      }
-
-      /* finer tubes that exist only in the yarn, film and forest */
-      for (k = 0; k < N2; k++) {
-        var rr2 = BUNDLE * Math.sqrt(rand()), ph2 = rand() * 6.28, film2 = filmTube(26 + (k % 10) * 2.4), forest2 = forestTube(), prev = null;
-        for (i = 0; i <= S; i++) {
-          var u2 = i / S, y2 = yarnAt(rr2, ph2, u2), f2 = film2(u2), o2 = forest2(u2);
-          var cur = [y2[0], y2[1], y2[2], y2[0], y2[1], y2[2], f2[0], f2[1], f2[2], o2[0], o2[1], o2[2], o2[0], o2[1], o2[2], o2[0], o2[1], o2[2]];
-          if (prev) {
-            Array.prototype.push.apply(bonds2, prev);
-            Array.prototype.push.apply(bonds2, cur);
-            bonds2.push(R2);
-          }
-          prev = cur;
-        }
+        rope++;
       }
 
       /* fixed things use the same six-slot layout with one position repeated */
       function fixed(list, x, y, z, r) {
-        for (var n = 0; n < 6; n++) list.push(x, y, z);
+        for (var q = 0; q < 6; q++) list.push(x, y, z);
         list.push(r);
       }
-      /* storage particles: two packed layers sitting on the foil */
-      var grains = [], gx2, gy2;
-      for (j = 0; j < 2; j++) {
-        for (gx2 = -4; gx2 <= 4; gx2++) {
-          for (gy2 = -3; gy2 <= 3; gy2++) {
+      /* storage particles about 10 micrometres across, packed on the foil,
+         with one corner cut away in steps so the tube network shows */
+      var grains = [], PIT = 54, gx2, gy2, gz2;
+      for (gz2 = 0; gz2 < (small ? 4 : 6); gz2++) {
+        for (gx2 = -9; gx2 <= 9; gx2++) {
+          for (gy2 = -7; gy2 <= 7; gy2++) {
+            var px = gx2 * PIT + (gz2 % 2 ? PIT / 2 : 0), py = gy2 * PIT + (gz2 % 2 ? PIT / 2 : 0);
+            if (Math.abs(px) > 500 || Math.abs(py) > 380) continue;
             if (small && (gx2 + gy2) % 2) continue;
-            fixed(grains, gx2 * 112 + (j ? 56 : 0) + (rand() - 0.5) * 22, gy2 * 108 + (j ? 54 : 0) + (rand() - 0.5) * 22, 62 + j * 104, 48 + rand() * 9);
+            /* the cut: nearer the viewing corner, fewer layers remain */
+            var cut = (px + 500) / 1000 * 0.6 + (py + 380) / 760 * 0.4;
+            if (gz2 > 5.6 * cut - 0.6) continue;
+            fixed(grains, px + (rand() - 0.5) * 9, py + (rand() - 0.5) * 9, 30 + gz2 * 47, 24 + rand() * 3);
           }
         }
       }
@@ -633,16 +654,16 @@
       [[-250, -120], [0, 90], [260, -40]].forEach(function (wv) {
         for (i = 0; i < 80; i++) fixed(waves, wv[0], wv[1], 6 + i * 11, 8);
       });
+      /* charge carriers for the transistor: beads inside the tube's bore */
+      var carriers = new Builder();
+      for (i = 0; i < 9; i++) carriers.a.push((rand() - 0.5) * 2.4, (rand() - 0.5) * 58, (rand() - 0.5) * 2.4, -1.5);
 
       return {
         journey: true,
         tube: tubeModel,
-        mAtoms: new Float32Array(atoms),
+        carriers: carriers.done({}),
         mBonds: new Float32Array(bonds),
-        mBonds2: new Float32Array(bonds2),
-        mAtomCount: atoms.length / 19,
         mBondCount: bonds.length / 37,
-        mBond2Count: bonds2.length / 37,
         mGrains: new Float32Array(grains),
         mGrainCount: grains.length / 19,
         mWaves: new Float32Array(waves),
@@ -964,7 +985,9 @@
      uStrand scales the radius in; uHeat sends bright points up the forest. */
   var MORPH_COMMON = [
     "uniform mat4 uProj; uniform mat4 uMV; uniform float uW[6]; uniform float uStrand;",
-    "uniform float uHeat; uniform float uTime; uniform float uWave;",
+    "uniform float uHeat; uniform float uTime; uniform float uWave; uniform float uCrack;",
+    /* the panel parts along x=0, widest at its lower face; tubes that cross stretch over the gap */
+    "vec3 crack(vec3 p){ p.x += sign(p.x)*0.5*uCrack*clamp(1.0-p.z/118.0,0.0,1.0); return p; }",
     "float heat(vec3 c, vec3 seed){",
     "  return uHeat*pow(max(0.0, sin(c.z*0.022 - uTime*3.0 + seed.x*0.31 + seed.y*0.17)), 40.0);",
     "}"
@@ -984,7 +1007,7 @@
     MORPH_COMMON,
     "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
-    "  vec3 c = iP0*uW[0] + iP1*uW[1] + iP2*uW[2] + iP3*uW[3] + iP4*uW[4] + iP5*uW[5];",
+    "  vec3 c = crack(iP0*uW[0] + iP1*uW[1] + iP2*uW[2] + iP3*uW[3] + iP4*uW[4] + iP5*uW[5]);",
     "  float g = heat(c, iP3);",
     "  float rad = iR*uStrand*(1.0+0.9*g);",
     "  if(uWave>0.5){",                         // travelling wave: full above the panel, fading inside it
@@ -1018,8 +1041,8 @@
     MORPH_COMMON,
     "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
-    "  vec3 a = iA0*uW[0] + iA1*uW[1] + iA2*uW[2] + iA3*uW[3] + iA4*uW[4] + iA5*uW[5];",
-    "  vec3 b = iB0*uW[0] + iB1*uW[1] + iB2*uW[2] + iB3*uW[3] + iB4*uW[4] + iB5*uW[5];",
+    "  vec3 a = crack(iA0*uW[0] + iA1*uW[1] + iA2*uW[2] + iA3*uW[3] + iA4*uW[4] + iA5*uW[5]);",
+    "  vec3 b = crack(iB0*uW[0] + iB1*uW[1] + iB2*uW[2] + iB3*uW[3] + iB4*uW[4] + iB5*uW[5]);",
     "  vec3 ax = b-a; float len = length(ax); ax /= max(len,1e-5);",
     "  vec3 up = abs(ax.y)<0.95 ? vec3(0.,1.,0.) : vec3(1.,0.,0.);",
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
@@ -1240,14 +1263,16 @@
 
   /* ---------- hero film: timeline, camera, stages ---------- */
 
-  var FILM_LENGTH = 46;   // seconds per loop
+  var FILM_LENGTH = 45;   // seconds per loop
   /* camera distance over time: [second, distance]; eased in log space */
-  var FILM_CAMERA = [[0, 46], [4, 62], [8, 2300], [10.4, 1150], [13, 1150], [15.6, 2500], [18, 2500],
-                     [20.6, 2750], [23.5, 2750], [26, 2650], [29.5, 2650], [32, 2900], [35.5, 2900],
-                     [38.5, 170], [43, 170], [46, 46]];
+  var FILM_CAMERA = [[0, 46], [3, 46], [5.2, 100], [6, 100], [9.5, 2300], [11.5, 1150], [14, 1150],
+                     [16, 2500], [18.5, 2500], [20.5, 2750], [22.3, 2750], [23.5, 250000], [24.6, 250000],
+                     [26.4, 2650], [32, 2650], [34, 2700], [36.5, 2700], [39, 170], [43, 170], [45, 46]];
   /* when each form takes over from the one before: [start, end] */
-  var FILM_MORPH = [[8, 10.4], [13, 15.6], [18, 20.6], [23.5, 26], [29.5, 32]];
-  var FILM_RETURN = [35.5, 37.5];
+  var FILM_MORPH = [[9.5, 11.5], [14, 16], [18.5, 20.5], [24.8, 26.6], [32, 34]];
+  var FILM_RETURN = [36.5, 38];
+  /* far stages are drawn at 0.2 micrometre per unit; the atom tube at 0.194 nm per unit */
+  var NM_FAR = 200, NM_NEAR = 0.194;
 
   function ease(a, b, x) {
     x = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -1263,34 +1288,49 @@
         break;
       }
     }
-    var w = [1, 0, 0, 0, 0, 0], stage = c < 4 ? 0 : 1;
+    var w = [1, 0, 0, 0, 0, 0];
     for (k = 0; k < FILM_MORPH.length; k++) {
       var m = ease(FILM_MORPH[k][0], FILM_MORPH[k][1], c);
       for (i = 0; i < 6; i++) w[i] *= 1 - m;
       w[k + 1] += m;
-      if (c >= FILM_MORPH[k][0]) stage = k + 2;
     }
     var back = ease(FILM_RETURN[0], FILM_RETURN[1], c);
     for (i = 0; i < 6; i++) w[i] *= 1 - back;
     w[0] += back;
-    if (c >= FILM_RETURN[0] + 1.2) stage = 7;
-    if (c >= 44.5) stage = 0;
-    /* turn freely while it is a tube and a yarn; face the viewer from the film on */
-    var turn = c < 4 ? c * 0.15 : c < 13 ? 0.6 + (c - 4) * 0.045 : 1.005;
-    turn *= 1 - ease(13, 15.6, c);
-    turn += 0.1 * Math.sin(c * 0.45) * ease(15.6, 18, c) * (1 - ease(35.5, 37, c));
-    /* swing round to look between the two plates of the thermal stage */
-    turn -= 1.0 * ease(18, 20.6, c) * (1 - ease(23.5, 26, c));
-    /* a lower three-quarter view for the panel and the electrode */
-    turn -= 0.62 * ease(23.5, 26, c) * (1 - ease(35.5, 37, c));
+
+    var on = (c > 39.3 && c < 40.6) || (c > 41.4 && c < 42.6);
+    var stage = c < 3 ? 0 : c < 6 ? 1 : c < 9.5 ? 2 : c < 14 ? 3 : c < 18.5 ? 4 : c < 22.6 ? 5 : c < 24.9 ? 6 :
+                c < 29.3 ? 7 : c < 32 ? 8 : c < 37.2 ? 9 : c < 44 ? (on ? 10 : 11) : 0;
+
+    /* turn freely while it is a tube and a fibre; face the viewer from the film on */
+    var turn = c < 3 ? c * 0.15 : 0.45 + (c - 3) * 0.05;
+    turn *= 1 - ease(14, 16, c);
+    turn += 0.1 * Math.sin(c * 0.45) * ease(16, 18, c) * (1 - ease(36.5, 38, c));
+    turn -= 1.0 * ease(18.5, 20.5, c) * (1 - ease(24.8, 26.6, c));     // look in between the plates
+    turn -= 0.62 * ease(24.8, 26.6, c) * (1 - ease(36.5, 38, c));      // three-quarter view of panel and electrode
     return {
       dist: d,
       w: w,
       turn: turn,
       stage: stage,
-      gate: ease(37.2, 39, c) * (1 - ease(43, 45, c)),
+      neighbours: c > 3 && c < 12 ? 8.3 + 70 * (1 - ease(3, 5, c)) : 0,   // six tubes close in to form a rope
+      heat: w[3] * ease(20.3, 21.2, c),
+      crack: w[4] * 64 * ease(29.3, 30.6, c) * (1 - ease(31.6, 32.2, c)),
+      gate: ease(38.2, 39.2, c) * (1 - ease(43, 44.4, c)),
+      on: on,
       progress: c / FILM_LENGTH
     };
+  }
+
+  /* a true scale bar: pick a round length that is 60-130 px wide right now */
+  function filmScale(scene, st) {
+    var pxPerUnit = (scene.h / scene.dpr) / (2 * st.dist * Math.tan(0.25));
+    var nmPerUnit = st.dist < 520 ? NM_NEAR : NM_FAR;
+    var want = (110 / pxPerUnit) * nmPerUnit, pow = Math.pow(10, Math.floor(Math.log(want) / Math.LN10));
+    var nice = want / pow >= 5 ? 5 * pow : want / pow >= 2 ? 2 * pow : pow;
+    var label = nice < 1 ? nice.toFixed(1) + " nm" : nice < 1000 ? nice + " nm" :
+                nice < 1e6 ? nice / 1000 + " µm" : nice < 1e7 ? nice / 1e6 + " mm" : nice / 1e7 + " cm";
+    return { px: (nice / nmPerUnit) * pxPerUnit, label: label };
   }
 
   Engine.prototype.filmBuffers = function (d) {
@@ -1320,9 +1360,7 @@
     for (i = 0; i < 12; i++) bondLayout.push([i + 1, 3, i * 12]);
     bondLayout.push([13, 1, 144]);
     this.film = {
-      atoms: build(self.sphereLo, d.mAtoms, 76, atomLayout),
       bonds: build(self.cyl, d.mBonds, 148, bondLayout),
-      bonds2: build(self.cyl, d.mBonds2, 148, bondLayout),
       grains: build(self.sphere, d.mGrains, 76, atomLayout),
       waves: build(self.sphereLo, d.mWaves, 76, atomLayout)
     };
@@ -1331,8 +1369,10 @@
 
   Engine.prototype.journey = function (scene, w, h, clock) {
     var gl = this.gl, d = scene.data, look = scene.look, self = this;
-    var st = filmState(((clock % FILM_LENGTH) + FILM_LENGTH) % FILM_LENGTH);
+    var c = ((clock % FILM_LENGTH) + FILM_LENGTH) % FILM_LENGTH;
+    var st = filmState(c);
     scene.film = st;
+    scene.filmScale = filmScale(scene, st);
 
     gl.viewport(0, 0, w, h);
     var fov = 0.5, dist = st.dist;
@@ -1340,7 +1380,11 @@
     var halfH = dist * Math.tan(fov / 2);
     var view = mul(translation(scene.offX * halfH * (w / h), scene.offY * halfH, -dist),
                    mul(rotX(scene.tiltX), rotY(scene.tiltY)));
-    var mv = mul(view, mul(d.orient, rotY(st.turn + (scene.scrollTurn || 0))));
+    var world = mul(d.orient, rotY(st.turn + (scene.scrollTurn || 0)));
+    /* on the widest shot, aim at the middle of the pad rather than its corner */
+    var wide = ease(9000, 120000, dist);
+    if (wide > 0) world = mul(world, translation(-49440 * wide, -37560 * wide, 0));
+    var mv = mul(view, world);
 
     /* close up the tube dissolves with depth, as before; further out the
        whole form keeps its tone. */
@@ -1349,12 +1393,12 @@
     var fogFar = (dist + d.radius * 5.5) * (1 - far) + dist * 2.6 * far;
     var fogMax = 1 - 0.78 * far;
     var sheet = look.sheet || [0.82, 0.82, 0.82];
-    var metalPart = look.part || [0.42, 0.42, 0.42];
+    var part = look.part || [0.42, 0.42, 0.42];
 
-    function use(prog) {
+    function use(prog, matrix) {
       gl.useProgram(prog.p);
       gl.uniformMatrix4fv(prog.u.uProj, false, proj);
-      gl.uniformMatrix4fv(prog.u.uMV, false, mv);
+      gl.uniformMatrix4fv(prog.u.uMV, false, matrix || mv);
       gl.uniform1f(prog.u.uTime, clock);
       gl.uniform1f(prog.u.uMode, 0);
       gl.uniform1f(prog.u.uAmp, 0);
@@ -1403,91 +1447,113 @@
       gl.uniform1f(this.atomProg.u.uLen, 1);
       gl.bindVertexArray(gpu.atomVao);
       gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+
+      /* six neighbours slide in beside it and lock into a rope (bonds only) */
+      if (st.neighbours > 0) {
+        gl.bindVertexArray(gpu.bondVao);
+        for (var nb = 0; nb < 6; nb++) {
+          var ang = nb * 1.0472 + 0.5;
+          use(this.bondProg, mul(mv, translation(Math.cos(ang) * st.neighbours, 0, Math.sin(ang) * st.neighbours)));
+          gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.tube.bondCount);
+        }
+      }
+
+      /* transistor: the tube lies on a gate insulator between two contacts.
+         Gate on: it lights and carriers stream through. Gate off: they stop. */
+      if (st.gate > 0.01) {
+        var g = st.gate;
+        slab(0, 0, -9.5, 26 * g, 78 * g, 2.2, sheet);
+        slab(0, 0, -15, 30 * g, 86 * g, 8, st.on ? sheet : part);
+        slab(0, -29, -1, 22 * g, 15 * g, 15 * g, part);
+        slab(0, 29, -1, 22 * g, 15 * g, 15 * g, part);
+        if (st.on) {
+          var cg = this.model("journey:carriers", d.carriers);
+          use(this.atomProg);
+          gl.uniform1f(this.atomProg.u.uMode, 7);
+          gl.uniform1f(this.atomProg.u.uLen, 58);
+          gl.uniform1f(this.atomProg.u.uCoat, 0);
+          gl.uniform1f(this.atomProg.u.uGlow, 1.4);
+          gl.bindVertexArray(cg.atomVao);
+          gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.carriers.atomCount);
+        }
+      }
     }
 
-    /* 2. transistor: the one tube bridging two contacts over a gate */
-    if (st.gate > 0.01) {
-      var g = st.gate;
-      slab(0, 0, -9.5, 26 * g, 78 * g, 2.2, sheet);          // gate insulator
-      slab(0, 0, -15, 30 * g, 86 * g, 8, metalPart);          // gate
-      slab(0, -29, -1, 22 * g, 15 * g, 15 * g, metalPart);    // source
-      slab(0, 29, -1, 22 * g, 15 * g, 15 * g, metalPart);     // drain
-    }
-
-    /* 3. the strands, once the camera is far enough for them to read */
+    /* 2. the ropes, once the camera is far enough for them to read */
     var strand = ease(260, 900, dist);
     if (strand > 0.001) {
       var buf = this.filmBuffers(d), wv = new Float32Array(st.w);
-      var heat = st.w[3] * ease(20.4, 21.4, clock % FILM_LENGTH);
-
-      /* sheet under the film and the forest; a second plate closes the forest */
-      var base = Math.min(1, st.w[2] + st.w[3]);
       var f2 = st.w[2], f3 = st.w[3], f4 = st.w[4], f5 = st.w[5];
-      function tone(a, b, k) { return [0, 1, 2].map(function (n) { return a[n] + (b[n] - a[n]) * k; }); }
 
-      /* film: a pale sheet. thermal: the same footprint becomes the chip,
-         and a finned heat sink closes the top. */
-      var base = Math.min(1, f2 + f3);
-      slab(0, 0, -16, 1120 * base, 880 * base, 18, tone(sheet, metalPart, f3));
+      /* film: a pale sheet under the mat */
+      slab(0, 0, -12, 1120 * f2, 880 * f2, 10, sheet);
+
+      /* thermal: the section sits at one corner of a pad centimetres wide.
+         Chip below, finned heat sink above, and the rest of the 100
+         micrometre layer shown solid where it is not cut open. */
       if (f3 > 0.01) {
-        slab(0, 0, 520, 1120 * f3, 880 * f3, 26, metalPart);
-        for (var fin = -4; fin <= 4; fin++) slab(fin * 130 * f3, 0, 533 + 95 * f3, 34 * f3, 880 * f3, 190 * f3, metalPart);
+        var PX = 100000, PY = 76000, ox = PX / 2 - 560, oy = PY / 2 - 440, k3 = f3 * f3 * f3;
+        var sxp = 1120 + (PX - 1120) * k3, syp = 880 + (PY - 880) * k3, cxp = ox * k3, cyp = oy * k3;
+        slab(cxp, cyp, -7 - 1500 * f3, sxp, syp, 3000 * f3, part);                 // chip
+        slab(cxp, cyp, 507 + 1750 * f3, sxp, syp, 3500 * f3, part);                // heat sink base
+        for (var fin = 0; fin < 12; fin++) {
+          slab(cxp, cyp + (fin / 11 - 0.5) * (syp - 2600 * k3), 507 + 3500 * f3 + 6500 * k3, sxp, 2600 * k3 + 30 * f3, 13000 * k3 + 150 * f3, part);
+        }
+        if (k3 > 0.02) {                                                          // the layer beyond the cut
+          slab(560 + (PX - 1120) / 2 * k3, cyp, 250, (PX - 1120) * k3, syp, 500, look.base);
+          slab(0, 440 + (PY - 880) / 2 * k3, 250, 1120, (PY - 880) * k3, 500, look.base);
+        }
       }
 
-      /* composite: a panel 150 thick, drawn by its edges so the network shows */
+      /* composite: a panel 150 thick, drawn by its edges so the network
+         shows. When it cracks, the two halves part along x=0. */
       if (f4 > 0.01) {
-        var X = 460 * f4, Y = 335 * f4, T = 7, ex, ey;
+        var X = 460 * f4, Y = 335 * f4, T = 7, gap = st.crack, ex, ey;
         for (ex = -1; ex <= 1; ex += 2) {
           for (ey = -1; ey <= 1; ey += 2) {
-            slab(ex * X, ey * Y, 75, T, T, 150 * f4, metalPart);
-            slab(0, ey * Y, ex < 0 ? 0 : 150, 2 * X, T, T, metalPart);
-            slab(ex * X, 0, ey < 0 ? 0 : 150, T, 2 * Y, T, metalPart);
+            slab(ex * (X + gap * 0.5), ey * Y, 75, T, T, 150 * f4, part);
+            slab(ex * (X / 2 + (ey < 0 ? gap * 0.5 : 0) + 2), ey * Y, 0, X - 4, T, T, part);        // lower edges, parted
+            slab(ex * X / 2, ey * Y, 150, X, T, T, part);                                           // upper edges, whole
+            slab(ex * (X + (ey < 0 ? gap * 0.5 : 0)), 0, ey < 0 ? 0 : 150, T, 2 * Y, T, part);
           }
+        }
+        if (gap > 0.5) {                                                           // the crack faces
+          slab(-gap * 0.25, 0, 52, gap * 0.02 + 2, 2 * Y, 104, sheet);
+          slab(gap * 0.25, 0, 52, gap * 0.02 + 2, 2 * Y, 104, sheet);
         }
       }
 
       /* electrode: metal foil (the current collector) under the coated layer */
       if (f5 > 0.01) slab(0, 0, -10, 1060 * f5, 820 * f5, 14, sheet);
 
-      [this.mBondProg, this.mAtomProg].forEach(function (prog) {
-        use(prog);
-        gl.uniform1fv(prog.u["uW[0]"], wv);
-        gl.uniform1f(prog.u.uStrand, strand);
-        gl.uniform1f(prog.u.uHeat, heat);
-      });
-      [this.mBondProg, this.mAtomProg].forEach(function (prog) {
-        gl.useProgram(prog.p);
-        gl.uniform1f(prog.u.uWave, 0);
-      });
-      gl.useProgram(this.mBondProg.p);
+      use(this.mBondProg);
+      gl.uniform1fv(this.mBondProg.u["uW[0]"], wv);
+      gl.uniform1f(this.mBondProg.u.uStrand, strand);
+      gl.uniform1f(this.mBondProg.u.uHeat, st.heat);
+      gl.uniform1f(this.mBondProg.u.uWave, 0);
+      gl.uniform1f(this.mBondProg.u.uCrack, st.crack);
       gl.bindVertexArray(buf.bonds);
       gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.mBondCount);
-      /* the finer tubes swell in for the yarn, film and forest only */
-      var fine = Math.min(1, st.w[1] + st.w[2] + st.w[3]);
-      if (fine > 0.01) {
-        gl.uniform1f(this.mBondProg.u.uStrand, strand * fine);
-        gl.bindVertexArray(buf.bonds2);
-        gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.mBond2Count);
-      }
-      gl.useProgram(this.mAtomProg.p);
-      gl.bindVertexArray(buf.atoms);
-      gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.mAtomCount);
+
+      use(this.mAtomProg);
+      gl.uniform1fv(this.mAtomProg.u["uW[0]"], wv);
+      gl.uniform1f(this.mAtomProg.u.uHeat, 0);
+      gl.uniform1f(this.mAtomProg.u.uCrack, 0);
 
       /* shielding: waves arrive at the panel and die out inside it */
-      if (st.w[4] > 0.01) {
-        gl.uniform1f(this.mAtomProg.u.uStrand, st.w[4] * strand);
-        gl.uniform1f(this.mAtomProg.u.uHeat, 0);
+      var signal = f4 * (1 - ease(29.0, 29.6, c));
+      if (signal > 0.01) {
+        gl.uniform1f(this.mAtomProg.u.uStrand, signal * strand);
         gl.uniform1f(this.mAtomProg.u.uWave, 1);
         gl.bindVertexArray(buf.waves);
         gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.mWaveCount);
-        gl.uniform1f(this.mAtomProg.u.uWave, 0);
       }
 
-      /* electrode: storage particles packed on the foil, tubes between them */
-      if (st.w[5] > 0.01) {
-        gl.uniform1f(this.mAtomProg.u.uStrand, st.w[5] * strand);
-        gl.uniform1f(this.mAtomProg.u.uHeat, 0);
-        gl.uniform3fv(this.mAtomProg.u.uBase, metalPart);
+      /* electrode: storage particles packed on the foil, ropes between them */
+      if (f5 > 0.01) {
+        gl.uniform1f(this.mAtomProg.u.uStrand, f5 * strand);
+        gl.uniform1f(this.mAtomProg.u.uWave, 0);
+        gl.uniform3fv(this.mAtomProg.u.uBase, part);
         gl.uniform1f(this.mAtomProg.u.uMetal, 0.25);
         gl.bindVertexArray(buf.grains);
         gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.mGrainCount);
@@ -1591,7 +1657,8 @@
   function measure(scene) {
     var r = scene.el.getBoundingClientRect();
     var px = window.devicePixelRatio || 1;
-    var dpr = scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
+    /* the film fills the screen with dense geometry: draw it at screen density, no more */
+    var dpr = scene.data.journey ? Math.min(px, mobile() ? 1.5 : 1.75) : scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
     var w = Math.max(1, Math.round(r.width * dpr));
     var h = Math.max(1, Math.round(r.height * dpr));
     if (w !== scene.w || h !== scene.h) {
@@ -1603,8 +1670,8 @@
     if (scene.hero) {
       /* Wide screens: the tube sits right of the copy. Narrow: behind it, higher. */
       var wide = r.width > 900;
-      scene.offX = wide ? 0.46 : 0.3;
-      scene.offY = wide ? 0.02 : 0.42;
+      scene.offX = wide ? 0.46 : scene.data.journey ? 0 : 0.3;
+      scene.offY = wide ? 0.02 : scene.data.journey ? 0 : 0.42;
       scene.heroDist = wide ? 12 : 15;
     }
   }
@@ -1619,7 +1686,7 @@
       if (scene.data.journey) {
         /* data-hc-film-at="seconds" freezes the film at one moment (stills, checks). */
         var hold = scene.el.getAttribute("data-hc-film-at");
-        scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 11.5 : (performance.now() - (scene.born || performance.now())) / 1000);
+        scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 12.5 : (performance.now() - (scene.born || performance.now())) / 1000);
         caption(scene);
       } else {
         scene.engine.draw(scene, 0, 0, scene.w, scene.h, time);
@@ -1657,6 +1724,17 @@
       }
     }
     if (scene.barEl) scene.barEl.style.transform = "scaleX(" + st.progress.toFixed(4) + ")";
+    if (scene.scaleEl === undefined) {
+      scene.scaleEl = document.querySelector("[data-hc-film-scale]") || null;
+      scene.scaleBarEl = document.querySelector("[data-hc-film-scalebar]") || null;
+    }
+    if (scene.scaleEl && scene.filmScale) {
+      if (scene.scaleLabel !== scene.filmScale.label) {
+        scene.scaleLabel = scene.filmScale.label;
+        scene.scaleEl.textContent = scene.filmScale.label;
+      }
+      if (scene.scaleBarEl) scene.scaleBarEl.style.width = scene.filmScale.px.toFixed(1) + "px";
+    }
     if (scene.captionEl && scene.captionStage !== st.stage) {
       scene.captionStage = st.stage;
       var el = scene.captionEl, text = scene.captions[st.stage] || "";
