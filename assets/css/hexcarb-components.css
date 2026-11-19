@@ -4011,3 +4011,32 @@ a.hc-filter-chip {
   margin-bottom: 0.7rem;
 }
 
+/* ─── Logo: larger, heavier, with room around it ─── */
+:root {
+  --nav-height: 96px;
+  --nav-height-expanded: 104px;
+}
+
+.hc-brand-logo {
+  width: auto;
+  height: clamp(58px, 6.4vw, 78px);
+}
+
+.hc-footer .hc-brand-logo {
+  height: clamp(72px, 8vw, 104px);
+}
+
+@media (max-width: 900px) {
+  .hc-brand-logo {
+    height: 54px;
+  }
+}
+
+.hc-nav-links a {
+  white-space: nowrap;
+}
+
+.hc-nav-links {
+  gap: clamp(0.7rem, 1.5vw, 1.4rem);
+}
+
