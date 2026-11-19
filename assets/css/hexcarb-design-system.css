@@ -8,28 +8,34 @@
   --hc-green: #8c8c8c; /* secondary data tone for canvas demos (neutral) */
   --hc-active: #000000;
   --hc-bg: #ffffff;
-  --hc-bg-soft: #f4f4f4;
-  --hc-border: #e0e0e0;
+  --hc-bg-soft: #ececec;
+  --hc-border: #cfcfcf;
   --hc-heading: #000000;
-  --hc-text: #111111;
-  --hc-text-muted: #5a5a5a;
+  --hc-text: #000000;
+  --hc-text-muted: #474747;
   --hc-page-bg: #ffffff;
 
   /* Graphite: fixed in both themes. Used for selected regions only. */
   --hc-graphite-1: #303030;
   --hc-graphite-2: #1c1c1c;
   --hc-graphite-3: #0d0d0d;
-  --hc-graphite-surface: linear-gradient(158deg, #343434 0%, #1e1e1e 46%, #0e0e0e 100%);
+  --hc-graphite-surface: linear-gradient(128deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 22%, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, 0.07) 100%), linear-gradient(180deg, #0c0c0c 0%, #000000 100%);
+  /* Texture: film grain (dark and light), a brushed-metal line, a silver sweep. */
+  --hc-grain: url("/assets/media/texture/grain-dark.png");
+  --hc-grain-light: url("/assets/media/texture/grain-light.png");
+  --hc-brushed: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.028) 0 1px, transparent 1px 3px);
+  --hc-brushed-dark: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
+  --hc-metal-surface: linear-gradient(180deg, #f7f7f7 0%, #e3e3e3 100%);
   --hc-graphite-line: rgba(255, 255, 255, 0.1);
-  --hc-on-graphite: #f6f6f6;
-  --hc-on-graphite-muted: #a8a8a8;
+  --hc-on-graphite: #ffffff;
+  --hc-on-graphite-muted: #b8b8b8;
   --hc-graphite-edge: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -1px 0 rgba(0, 0, 0, 0.7), inset 1px 0 0 rgba(255, 255, 255, 0.04);
 
   --font-heading: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
   --font-body: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
-  --fs-hero: clamp(2.6rem, 6.2vw, 4.6rem);
-  --lh-hero: 1.04;
+  --fs-hero: clamp(3rem, 8.2vw, 6.8rem);
+  --lh-hero: 0.98;
   --fs-h1: clamp(2.1rem, 4.4vw, 3.2rem);
   --lh-h1: 1.1;
   --fs-h2: clamp(1.8rem, 3.4vw, 2.5rem);
@@ -88,11 +94,14 @@
   --hc-green: #8a8a8a;
   --hc-active: #ffffff;
   --hc-bg: #000000;
-  --hc-bg-soft: #0a0a0a;
-  --hc-border: #262626;
+  --hc-bg-soft: #080808;
+  --hc-border: #333333;
   --hc-heading: #ffffff;
-  --hc-text: #ededed;
-  --hc-text-muted: #a0a0a0;
+  --hc-text: #ffffff;
+  --hc-text-muted: #b4b4b4;
+  --hc-grain: url("/assets/media/texture/grain-light.png");
+  --hc-brushed: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 3px);
+  --hc-metal-surface: linear-gradient(180deg, #0e0e0e 0%, #030303 100%);
   --hc-page-bg: #000000;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.5);
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.7), 0 12px 26px rgba(0, 0, 0, 0.6);

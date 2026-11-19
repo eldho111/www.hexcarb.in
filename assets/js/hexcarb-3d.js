@@ -17,6 +17,15 @@
                  out inside the coating
      hybrid      nanotubes bridging across a graphene sheet
 
+   Property models (one behaviour of a single tube each):
+     stretch     pulled along its axis and released
+     current     charge carriers streaming down the bore
+     heat        a heat front running along the wall
+     bend        flexed hard and springing back
+
+   Backdrop:
+     dunes       a drifting field of particles (drawn as points)
+
    Options (data attributes):
      data-hc-3d-view="hero"         wide cinematic framing, tube runs off-frame
      data-hc-3d-surface="graphite"  scene sits on a graphite panel (fixed dark)
@@ -323,6 +332,48 @@
       return b.done({ radius: 6.6, orient: rotX(0.62) });
     },
 
+    stretch: function () {
+      var t = tube(10, 7), b = new Builder();
+      b.lattice(t.atoms, t.bonds);
+      return b.done({ radius: 9.6, mode: 5, amp: 0.13, orient: mul(rotZ(-1.0), rotX(0.35)), speed: 0.5 });
+    },
+
+    current: function () {
+      var t = tube(10, 8), b = new Builder(), rand = rng(3);
+      b.lattice(t.atoms, t.bonds);
+      for (var i = 0; i < 16; i++) {
+        var a = rand() * 6.28, r = rand() * t.radius * 0.55;
+        b.a.push(r * Math.cos(a), (rand() - 0.5) * t.length, r * Math.sin(a), -0.3);
+      }
+      return b.done({ radius: 10.4, mode: 7, amp: 0, len: t.length, orient: mul(rotZ(-1.0), rotX(0.35)), speed: 0.5 });
+    },
+
+    heat: function () {
+      var t = tube(10, 8), b = new Builder();
+      b.lattice(t.atoms, t.bonds);
+      return b.done({ radius: 10.4, pulse: 2, orient: mul(rotZ(-1.0), rotX(0.35)), speed: 0.5 });
+    },
+
+    bend: function () {
+      var t = tube(8, 9), b = new Builder();
+      b.lattice(t.atoms, t.bonds);
+      return b.done({ radius: 11.2, mode: 6, amp: 0.02, orient: mul(rotZ(-1.2), rotX(0.3)), spin: "sway" });
+    },
+
+    /* Backdrop: a jittered grid of points; the shader lifts it into dunes. */
+    dunes: function () {
+      var rand = rng(77), pts = [], nx = 230, nz = 120;
+      for (var i = 0; i < nx; i++) {
+        for (var j = 0; j < nz; j++) {
+          pts.push((i / (nx - 1) - 0.5) * 34 + (rand() - 0.5) * 0.3, (j / (nz - 1) - 0.5) * 22 + (rand() - 0.5) * 0.3, rand());
+        }
+      }
+      var m = new Builder().done({ radius: 5.2, orient: rotX(0.3), spin: "none", offsetY: -0.1 });
+      m.points = new Float32Array(pts);
+      m.pointCount = pts.length / 3;
+      return m;
+    },
+
     /* Dispersion: long tubes at every angle, suspended and slowly drifting. */
     dispersion: function () {
       var rand = rng(11), b = new Builder();
@@ -431,12 +482,19 @@
     "    p.z += uAmp*0.6*cos(p.y*0.07+uTime*0.37);",
     "  } else if(uMode>2.5 && uMode<3.5){",   // drifting in a liquid
     "    p += uAmp*vec3(sin(p.y*0.5+uTime*0.6), sin(p.z*0.45+uTime*0.5+1.7), sin(p.x*0.55+uTime*0.55+3.1));",
+    "  } else if(uMode>4.5 && uMode<5.5){",   // pulled along the axis, necking slightly
+    "    float k = uAmp*(0.5-0.5*cos(uTime*1.3));",
+    "    p.y *= 1.0+k; p.xz *= 1.0-0.45*k;",
+    "  } else if(uMode>5.5 && uMode<6.5){",   // flexed into an arc and back
+    "    float b = uAmp*sin(uTime*1.1);",
+    "    p.x += b*p.y*p.y - b*60.0;",
     "  }",
     "  return p;",
     "}",
     /* A heat pulse climbing each tube: 0 between pulses, 1 at the crest. */
     "float pulse(vec3 p){",
     "  if(uPulse<0.5) return 0.0;",
+    "  if(uPulse>1.5) return pow(max(0.0, sin(p.y*0.3 - uTime*2.6)), 5.0);",   // one front along a single tube
     "  float ph = floor(p.x*1.09+0.5)*2.3 + floor(p.z*1.09+0.5)*4.1;",
     "  return pow(max(0.0, sin(p.y*0.8 - uTime*2.4 + ph)), 10.0);",
     "}"
@@ -448,19 +506,23 @@
     "layout(location=0) in vec3 aPos;",
     "layout(location=1) in vec4 iAtom;",
     "uniform float uCoat;",
+    "uniform float uLen;",
     COMMON,
     "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
     "  vec3 c = deform(iAtom.xyz);",
     "  float r = abs(iAtom.w);",
     "  float g = pulse(iAtom.xyz);",
-    "  if(iAtom.w<0.0){",                      // wave bead: swings, then dies in the coating
+    "  if(iAtom.w<0.0 && uMode>6.5){",         // charge carrier: streams along the bore
+    "    c.y = mod(c.y + uTime*(7.0+3.0*fract(c.x*7.3)) + uLen*0.5, uLen) - uLen*0.5;",
+    "    g = 1.0;",
+    "  } else if(iAtom.w<0.0){",               // wave bead: swings, then dies in the coating
     "    float env = c.y>uCoat ? 1.0 : exp((c.y-uCoat)*2.6);",
     "    c.x += uAmp*env*sin(c.y*1.9 + uTime*3.4 + c.z);",
     "    r *= 0.45 + 0.55*env;",
     "    g = 0.6*env;",
     "  }",
-    "  r *= 1.0 + 0.55*g*uPulse;",
+    "  r *= 1.0 + 0.55*g*min(uPulse,1.0);",
     "  vec4 mv = uMV*vec4(c + aPos*r, 1.0);",
     "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
@@ -483,7 +545,7 @@
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
     "  vec3 n = u*aPos.x + w*aPos.z;",
     "  float g = pulse(mix(iA,iB,aPos.y));",
-    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*(1.0+0.55*g*uPulse), 1.0);",
+    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*(1.0+0.55*g*min(uPulse,1.0)), 1.0);",
     "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
@@ -504,39 +566,76 @@
     "}"
   ].join("\n");
 
-  /* Studio lighting in linear light: a soft key, a fill, and two softbox
-     reflections picked up through a Fresnel term, so surfaces read as polished
-     graphite or ceramic. Depth fades into the page colour. */
+  /* Polished metal in a photo studio. The surface mostly mirrors a simple
+     environment: a dark floor, a bright ceiling and three softboxes. That is
+     what gives chrome its hard black-to-white bands. Depth fades into the
+     page colour. Everything is computed in linear light. */
   var FS = [
     "#version 300 es",
     "precision highp float;",
     "in vec3 vN; in vec3 vP; in float vGlow;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
-    "uniform float uSpec; uniform float uF0; uniform float uAmb; uniform float uGlow;",
+    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow;",
     "out vec4 o;",
+    "float env(vec3 r){",
+    "  float v = mix(uEnvLo, uEnvHi, smoothstep(-0.35,0.75,r.y));",
+    "  v += 2.2*smoothstep(0.5,0.86,r.y)*smoothstep(-0.8,-0.2,r.x)*(1.0-smoothstep(0.3,0.8,r.x));",
+    "  v += 1.2*smoothstep(0.62,0.93,r.x)*smoothstep(-0.4,0.15,r.y)*(1.0-smoothstep(0.5,0.85,r.y));",
+    "  v += 0.7*smoothstep(0.72,0.97,-r.x)*smoothstep(-0.25,0.4,r.y)*(1.0-smoothstep(0.6,0.9,r.y));",
+    "  v *= 1.0 - 0.8*smoothstep(-0.02,-0.5,r.y)*(1.0-smoothstep(-0.75,-1.0,r.y)*0.6);",
+    "  return v;",
+    "}",
     "void main(){",
     "  vec3 n = normalize(vN); vec3 v = normalize(-vP);",
     "  if(dot(n,v)<0.0) n = -n;",
     "  float ndv = max(dot(n,v),0.0);",
     "  vec3 l1 = normalize(vec3(-0.55,0.78,0.55));",
-    "  vec3 l2 = normalize(vec3(0.8,0.05,0.5));",
     "  float d1 = max(dot(n,l1),0.0);",
-    "  float d2 = max(dot(n,l2),0.0);",
     "  float hemi = 0.5+0.5*n.y;",
     "  vec3 base = pow(uBase, vec3(2.2));",
-    "  vec3 c = base*(uAmb*(0.4+0.6*hemi) + 0.95*d1 + 0.2*d2);",
-    "  vec3 r = reflect(-v,n);",
-    "  float boxTop = smoothstep(0.52,0.9,r.y)*smoothstep(-0.75,-0.15,r.x)*(1.0-smoothstep(0.35,0.8,r.x));",
-    "  float boxSide = smoothstep(0.55,0.92,r.x)*smoothstep(-0.35,0.25,r.y)*(1.0-smoothstep(0.55,0.85,r.y));",
-    "  float sharp = pow(max(dot(n,normalize(l1+v)),0.0),90.0);",
-    "  float fres = uF0 + (1.0-uF0)*pow(1.0-ndv,5.0);",
-    "  c += uSpec*(fres*(1.1*boxTop + 0.45*boxSide) + 0.5*sharp);",
-    "  c *= 0.62 + 0.38*ndv;",                 // edges fall off: rounder forms
+    "  vec3 diffuse = base*(uAmb*(0.4+0.6*hemi) + 0.9*d1);",
+    "  float fres = pow(1.0-ndv,5.0);",
+    "  float mirror = env(reflect(-v,n));",
+    "  float sharp = pow(max(dot(n,normalize(l1+v)),0.0),120.0);",
+    "  vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(0.9*sharp + 0.25*fres);",
+    "  vec3 c = mix(diffuse + vec3(0.08*mirror*fres), metal, uMetal);",
     "  c += uGlow*vGlow;",
     "  float f = smoothstep(uNear,uFar,-vP.z);",
     "  c = mix(c, pow(uFog, vec3(2.2)), f);",
     "  o = vec4(pow(c, vec3(1.0/2.2)), 1.0);",
+    "}"
+  ].join("\n");
+
+  /* Particle field: each point rides a slow travelling surface. */
+  var VS_POINT = [
+    "#version 300 es",
+    "precision highp float;",
+    "layout(location=0) in vec3 aPt;",
+    "uniform mat4 uProj; uniform mat4 uMV; uniform float uTime; uniform float uPx;",
+    "out float vA;",
+    "void main(){",
+    "  float x = aPt.x, z = aPt.y;",
+    "  float h = 1.5*sin(x*0.24 + uTime*0.16)*cos(z*0.3 - uTime*0.11)",
+    "          + 0.9*sin(x*0.52 - z*0.38 + uTime*0.22)",
+    "          + 0.35*sin(x*1.3 + z*0.9 + uTime*0.4);",
+    "  vec4 mv = uMV*vec4(x, h, z, 1.0);",
+    "  gl_Position = uProj*mv;",
+    "  float d = -mv.z;",
+    "  gl_PointSize = uPx*(0.5+1.3*aPt.z)*(26.0/d);",
+    "  float crest = smoothstep(-1.2, 2.2, h);",
+    "  vA = (0.1 + 0.9*crest*crest)*(0.35+0.65*aPt.z)*smoothstep(46.0, 16.0, d);",
+    "}"
+  ].join("\n");
+
+  var FS_POINT = [
+    "#version 300 es",
+    "precision highp float;",
+    "in float vA; out vec4 o;",
+    "void main(){",
+    "  vec2 q = gl_PointCoord*2.0-1.0;",
+    "  float a = vA*smoothstep(1.0, 0.2, dot(q,q));",
+    "  o = vec4(a, a, a, a);",
     "}"
   ].join("\n");
 
@@ -572,6 +671,7 @@
     this.atomProg = compile(gl, VS_ATOM, FS);
     this.bondProg = compile(gl, VS_BOND, FS);
     this.boxProg = compile(gl, VS_BOX, FS);
+    this.pointProg = compile(gl, VS_POINT, FS_POINT);
     this.sphere = this.mesh(icosphere(lowDetail ? 2 : 3));
     this.cyl = this.mesh(cylinder(lowDetail ? 12 : 20));
     this.box = this.boxMesh(cube());
@@ -630,8 +730,20 @@
       gl.bindVertexArray(null);
       return v;
     }
+    var pointVao = null;
+    if (data.points) {
+      pointVao = gl.createVertexArray();
+      gl.bindVertexArray(pointVao);
+      var pb = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, pb);
+      gl.bufferData(gl.ARRAY_BUFFER, data.points, gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+      gl.bindVertexArray(null);
+    }
     var out = {
-      atomVao: vao(this.sphere, data.atoms, [[1, 4, 0]], 16),
+      pointVao: pointVao,
+      atomVao: data.atomCount ? vao(this.sphere, data.atoms, [[1, 4, 0]], 16) : null,
       bondVao: data.bondCount ? vao(this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12], [3, 1, 24]], 28) : null
     };
     this.cache[key] = out;
@@ -651,7 +763,7 @@
     var dist = scene.hero ? d.radius * scene.heroDist : (d.radius / Math.sin(fov / 2)) * 1.04;
     var proj = perspective(fov, w / h, Math.max(0.1, dist - d.radius * 4), dist + d.radius * 12);
 
-    var turn = d.spin === "sway" ? Math.sin(scene.spin * 0.6) * 0.5 : scene.spin;
+    var turn = d.spin === "sway" ? Math.sin(scene.spin * 0.6) * 0.5 : d.spin === "none" ? 0 : scene.spin;
     var model = mul(d.orient, rotY(turn));
     /* offX / offY place the object as a fraction of the half-frame. */
     var halfH = dist * Math.tan(fov / 2);
@@ -674,15 +786,35 @@
       gl.uniform3fv(prog.u.uFog, look.fog);
       gl.uniform1f(prog.u.uNear, near);
       gl.uniform1f(prog.u.uFar, far);
-      gl.uniform1f(prog.u.uSpec, look.spec);
-      gl.uniform1f(prog.u.uF0, look.f0);
+      gl.uniform1f(prog.u.uMetal, look.metal);
+      gl.uniform1f(prog.u.uEnvLo, look.envLo);
+      gl.uniform1f(prog.u.uEnvHi, look.envHi);
       gl.uniform1f(prog.u.uAmb, look.amb);
       gl.uniform1f(prog.u.uGlow, look.glow);
+    }
+
+    if (gpu.pointVao) {
+      var pp = this.pointProg;
+      gl.useProgram(pp.p);
+      gl.uniformMatrix4fv(pp.u.uProj, false, proj);
+      gl.uniformMatrix4fv(pp.u.uMV, false, mv);
+      gl.uniform1f(pp.u.uTime, time);
+      gl.uniform1f(pp.u.uPx, h / 520);
+      gl.disable(gl.DEPTH_TEST);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.bindVertexArray(gpu.pointVao);
+      gl.drawArrays(gl.POINTS, 0, d.pointCount);
+      gl.bindVertexArray(null);
+      gl.disable(gl.BLEND);
+      gl.enable(gl.DEPTH_TEST);
+      return;
     }
 
     if (d.plates.length) {
       use(this.boxProg);
       gl.uniform3fv(this.boxProg.u.uBase, look.plate);
+      gl.uniform1f(this.boxProg.u.uMetal, look.metal * 0.45);
       gl.bindVertexArray(this.box.vao);
       for (var i = 0; i < d.plates.length; i++) {
         gl.uniform3fv(this.boxProg.u.uC, d.plates[i].c);
@@ -699,6 +831,7 @@
 
     use(this.atomProg);
     gl.uniform1f(this.atomProg.u.uCoat, d.coat || 0);
+    gl.uniform1f(this.atomProg.u.uLen, d.len || 1);
     gl.bindVertexArray(gpu.atomVao);
     gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.atomCount);
     gl.bindVertexArray(null);
@@ -718,16 +851,16 @@
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
     var surface = el.getAttribute("data-hc-3d-surface");
     if (surface === "graphite") {
-      /* Polished silver on a graphite panel, in both themes. */
-      return { base: [0.74, 0.74, 0.74], plate: [0.4, 0.4, 0.4], fog: [0.1, 0.1, 0.1], spec: 0.9, f0: 0.5, amb: 0.2, glow: 0.9 };
+      /* Bright chrome on a black panel, in both themes. */
+      return { base: [0.95, 0.95, 0.95], plate: [0.5, 0.5, 0.5], fog: [0.02, 0.02, 0.02], metal: 1, envLo: 0.04, envHi: 0.6, amb: 0.2, glow: 1.2 };
     }
     var bg = parse(getComputedStyle(document.documentElement).getPropertyValue("--hc-bg")) || (dark ? [0, 0, 0] : [1, 1, 1]);
     if (dark) {
-      /* White ceramic dissolving into black. */
-      return { base: [0.86, 0.86, 0.86], plate: [0.45, 0.45, 0.45], fog: bg, spec: 0.7, f0: 0.35, amb: 0.16, glow: 0.7 };
+      /* Chrome dissolving into black. */
+      return { base: [0.95, 0.95, 0.95], plate: [0.5, 0.5, 0.5], fog: bg, metal: 1, envLo: 0.03, envHi: 0.55, amb: 0.16, glow: 1.2 };
     }
-    /* Polished graphite dissolving into white. */
-    return { base: [0.2, 0.2, 0.2], plate: [0.42, 0.42, 0.42], fog: bg, spec: 0.85, f0: 0.16, amb: 0.5, glow: 0.5 };
+    /* Dark chrome dissolving into white: deep blacks, hard highlights. */
+    return { base: [0.62, 0.62, 0.62], plate: [0.55, 0.55, 0.55], fog: bg, metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.4, glow: 0.9 };
   }
 
   /* ---------- scenes ---------- */
