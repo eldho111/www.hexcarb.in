@@ -4074,3 +4074,64 @@ a.hc-filter-chip {
   }
 }
 
+/* ─── Hero film: caption line and progress ─── */
+.hc-film {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2.4rem;
+  max-width: 26rem;
+}
+
+.hc-film-caption {
+  min-width: 11.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--hc-heading);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 260ms var(--ease), transform 260ms var(--ease);
+}
+
+.hc-film-caption.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.hc-film-track {
+  flex: 1;
+  height: 1px;
+  background: var(--hc-border);
+  overflow: hidden;
+}
+
+.hc-film-bar {
+  display: block;
+  height: 100%;
+  background: var(--hc-heading);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* The film plays on the right; the headline side stays clear. */
+@media (min-width: 901px) {
+  .hc-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, var(--hc-bg) 0%, var(--hc-bg) 36%, transparent 60%);
+  }
+
+  .hc-stage-scene {
+    z-index: -1;
+  }
+
+  .hc-stage {
+    isolation: isolate;
+  }
+}
+
