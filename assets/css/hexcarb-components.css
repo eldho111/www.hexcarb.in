@@ -3941,3 +3941,38 @@ a.hc-filter-chip {
   background: #ffffff;
 }
 
+/* ─── Eight uses: a four-by-two grid of short cards ─── */
+.hc-use-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.hc-use .hc-index {
+  margin-bottom: 2.2rem;
+}
+
+.hc-use h3 {
+  font-size: 1.15rem;
+}
+
+.hc-use p {
+  font-size: 0.95rem;
+}
+
+.hc-use-grid > .hc-reveal:nth-child(4n + 2) { transition-delay: 80ms; }
+.hc-use-grid > .hc-reveal:nth-child(4n + 3) { transition-delay: 160ms; }
+.hc-use-grid > .hc-reveal:nth-child(4n + 4) { transition-delay: 240ms; }
+
+@media (max-width: 1100px) {
+  .hc-use-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .hc-use-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
