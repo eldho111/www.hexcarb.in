@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <script>try{var t=localStorage.getItem("hc-theme-mode");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <noscript><style>.hc-reveal,.hc-word{opacity:1!important;transform:none!important}</style></noscript>
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb™ Applications | Different Types of Dispersions</title>
@@ -29,7 +32,7 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261119a" />
 
 </head>
-<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-video-disabled="true">
+<body class="hc-premium" data-hc-signature-bg="field">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
@@ -64,18 +67,18 @@
       <a href="/index.html#about">About</a>
       <a href="/index.html#contact">Contact</a>
       <a href="/quote.html" data-source-page="mobile_nav" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
-      <a href="/ai-engine.html" data-ai-link="dispersions_mobile">AI Engine</a>
+      <a href="/ai-engine.html" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
   <main id="main-content">
-    <section class="hc-page-hero">
+    <section class="hc-page-hero hc-page-hero--scene">
+      <div class="hc-3d hc-page-hero-scene" data-hc-3d="nanotube"></div>
       <div class="container hc-reveal">
         <span class="hc-kicker">Application Pathway</span>
-        <h1 style="margin-top:0.8rem;">Different Types of Dispersions</h1>
+        <h1 style="margin-top:0.8rem;">Dispersions</h1>
         <p>
-          For programs where rheology, agglomeration control, and process compatibility determine coating quality and electrical consistency.
-          This pathway maps coating and slurry requirements to HexFlow and HexSheets dispersion families.
+          Maps coating and slurry requirements to HexFlow and HexSheets dispersion families.
         </p>
       </div>
     </section>
@@ -84,11 +87,11 @@
       <div class="container hc-grid hc-grid-2">
         <article class="hc-card hc-reveal">
           <h2>Why this pathway</h2>
-          <p style="margin-top:0.7rem;">Dispersion quality strongly influences conductivity repeatability, film uniformity, and manufacturability. Solvent/dispersant choice and shear history should be matched to CNT and graphene geometry to limit aggregation during scale-up.</p>
+          <p style="margin-top:0.7rem;">Dispersion quality strongly influences conductivity repeatability, film uniformity and manufacturability.</p>
           <ul style="margin-top:0.9rem;">
-            <li>Match solvent polarity and binder chemistry to your substrate and process window.</li>
-            <li>Balance conductivity target with viscosity and print/coating constraints.</li>
-            <li>Qualify storage and shear stability before pilot deployment.</li>
+            <li>Match solvent and binder to your substrate.</li>
+            <li>Balance conductivity against viscosity.</li>
+            <li>Qualify storage and shear stability before pilot.</li>
           </ul>
         </article>
 
@@ -97,15 +100,15 @@
           <ol class="hc-steps" style="margin-top:0.8rem;">
             <li>
               <strong>Aqueous route</strong>
-              <p>Use for water-compatible process lines and lower-VOC workflows. Start with HexFlow A-Series.</p>
+              <p>Water-compatible, lower-VOC lines. Start with HexFlow A-Series.</p>
             </li>
             <li>
               <strong>Solvent route</strong>
-              <p>Use when resin compatibility or drying profile requires solvent systems. Start with HexFlow S-Series.</p>
+              <p>Where resin or drying profile requires solvent. Start with HexFlow S-Series.</p>
             </li>
             <li>
               <strong>Graphene dispersion route</strong>
-              <p>Use for barrier and printable coating programs where platelet orientation and film continuity matter.</p>
+              <p>Barrier and printable coatings.</p>
             </li>
           </ol>
         </article>
@@ -115,14 +118,13 @@
     <section class="hc-section hc-soft-bg">
       <div class="container">
         <div class="hc-reveal" style="max-width:760px; margin-bottom:1rem;">
-          <span class="hc-kicker">Recommended Offerings</span>
-          <h2 style="margin-top:0.75rem;">Mapped product families in the shop</h2>
+          <h2 style="margin-top:0.75rem;">Recommended product families</h2>
         </div>
 
         <div class="hc-grid hc-grid-3">
           <article class="hc-card hc-reveal">
             <h3>HexFlow A-Series</h3>
-            <p>Aqueous dispersions for print and coating workflows.</p>
+            <p>Aqueous dispersions for printing and coating.</p>
             <div class="hc-btn-row" style="margin-top:1rem;">
               <a class="hc-btn hc-btn-ghost" href="/shop.html#hexflow-a" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"dispersions","cta_type":"open_shop_hexflow_a"}'>Open in Products</a>
             </div>
@@ -130,7 +132,7 @@
 
           <article class="hc-card hc-reveal">
             <h3>HexFlow S-Series</h3>
-            <p>Solvent-phase dispersions for demanding slurry and prepreg routes.</p>
+            <p>Solvent-phase dispersions for slurry and prepreg routes.</p>
             <div class="hc-btn-row" style="margin-top:1rem;">
               <a class="hc-btn hc-btn-ghost" href="/shop.html#hexflow-s" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"dispersions","cta_type":"open_shop_hexflow_s"}'>Open in Products</a>
             </div>
@@ -138,7 +140,7 @@
 
           <article class="hc-card hc-reveal">
             <h3>HexSheets Dispersions</h3>
-            <p>Graphene liquid systems for barrier and printable integration.</p>
+            <p>Graphene liquid systems for barrier and printable coatings.</p>
             <div class="hc-btn-row" style="margin-top:1rem;">
               <a class="hc-btn hc-btn-ghost" href="/shop.html#hexsheets-disp" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"dispersions","cta_type":"open_shop_hexsheets_disp"}'>Open in Products</a>
             </div>
@@ -150,18 +152,17 @@
     <section class="hc-section">
       <div class="container hc-grid hc-grid-2">
         <div class="hc-card hc-reveal">
-          <h3>What to include in your quote request</h3>
+          <h3>What to include</h3>
           <ul style="margin-top:0.8rem;">
-            <li>Target viscosity or solids-loading window and process method (spray, slot-die, screen, etc.).</li>
-            <li>Substrate details, cure/dry profile, and post-process temperatures.</li>
-            <li>Electrical target after processing (sheet resistance or conductivity range).</li>
-            <li>Expected volume, timeline, and current validation stage.</li>
+            <li>Viscosity or solids-loading window and process method.</li>
+            <li>Substrate and cure or dry profile.</li>
+            <li>Electrical target, volume and timeline.</li>
           </ul>
         </div>
 
         <aside class="hc-quote-panel hc-reveal">
           <h3>Request a dispersions quote</h3>
-          <p style="margin-top:0.6rem;">Send your process constraints and we will recommend the right dispersion family and grade.</p>
+          <p style="margin-top:0.6rem;">Send your process constraints for a family and grade recommendation.</p>
           <div class="hc-btn-row" style="margin-top:1rem;">
             <a class="hc-btn hc-btn-accent" href="/quote.html?source_page=applications_dispersions&source_section=request_quote&application_slug=dispersions&product_family=HexFlow" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"dispersions","cta_type":"request_quote"}'>Request Quote</a>
             <a class="hc-btn hc-btn-ghost" href="/applications/index.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"dispersions","target_page":"applications_hub"}'>Back to Hub</a>
@@ -174,27 +175,31 @@
   <footer class="hc-footer">
     <div class="container hc-footer-grid">
       <div>
-        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
-          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" />
-          <span class="hc-visually-hidden">HexCarb™</span>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
+          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" width="695" height="359" />
         </a>
-        <p>Application-focused material guidance for production and R&amp;D teams.</p>
+        <p>Carbon nanotube and graphene materials, from first sample to production.</p>
       </div>
 
       <div>
-        <h4>Pages</h4>
+        <h3>Explore</h3>
         <ul class="hc-footer-list">
-          <li><a href="/applications/index.html">Applications Hub</a></li>
+          <li><a href="/power-of-nanotubes.html">Why Nanotubes</a></li>
+          <li><a href="/applications/index.html">Applications</a></li>
           <li><a href="/shop.html">Products</a></li>
-          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/ai-engine.html" data-ai-link="footer">AI Engine</a></li>
+          <li><a href="/history-of-advanced-nanomaterials.html">History of Nanomaterials</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Contact</h4>
+        <h3>Company</h3>
         <ul class="hc-footer-list">
-          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
-          <li><a href="/index.html#contact">General Contact</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+          <li><a href="/quote.html">Request a Quote</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
         </ul>
       </div>
     </div>
@@ -207,18 +212,6 @@
   <script src="/assets/js/hexcarb-config.js?v=20261119a"></script>
   <script src="/assets/js/hexcarb-ui.js?v=20261119a"></script>
   <script src="/assets/js/hexcarb-signature.js?v=20261119a"></script>
+  <script src="/assets/js/hexcarb-3d.js?v=20261119a"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-

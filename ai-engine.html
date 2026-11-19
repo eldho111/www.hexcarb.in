@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <script>try{var t=localStorage.getItem("hc-theme-mode");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <noscript><style>.hc-reveal,.hc-word{opacity:1!important;transform:none!important}</style></noscript>
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb™ AI Engine | See How It Works</title>
@@ -37,7 +40,7 @@
   }
   </script>
 </head>
-<body class="hc-premium" data-hc-rail data-hc-bg-video-disabled="true">
+<body class="hc-premium" data-hc-rail>
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
@@ -48,16 +51,16 @@
 
       <nav class="hc-nav-links" aria-label="Primary">
         <a href="/index.html" data-nav-path="/">Home</a>
-        <a href="/power-of-nanotubes.html" data-nav-path="/power-of-nanotubes.html">Why Nanotubes</a>
+                <a href="/power-of-nanotubes.html" data-nav-path="/power-of-nanotubes.html">Why Nanotubes</a>
         <a href="/applications/index.html" data-nav-path="/applications">Applications</a>
         <a href="/shop.html" data-nav-path="/shop.html">Products</a>
-        <a href="/ai-engine.html" data-nav-path="/ai-engine.html">AI Engine</a>
+        <a href="/index.html#about">About</a>
         <a href="/index.html#contact">Contact</a>
       </nav>
 
       <div class="hc-nav-actions">
-        <a class="hc-btn hc-btn-primary" data-hc-cta-tier="primary" href="/quote.html" data-source-page="ai_engine" data-source-section="header_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance" data-track-event="hc_quote_click" data-track-params='{"page":"ai_engine","section":"header","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
-        <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="header_secondary" data-track-event="hc_ai_engine_click" data-track-params='{"page":"ai_engine","location":"header_secondary"}'>Open Engine</a>
+        <a class="hc-btn hc-btn-primary" data-hc-cta-tier="primary" href="/quote.html" data-source-page="global_header" data-source-section="header_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance" data-track-event="hc_quote_click" data-track-params='{"page":"global","section":"header","product_name":"general","cta_label":"request_quote"}'>Request Quote</a>
+        <a class="hc-btn hc-btn-secondary" data-hc-cta-tier="secondary" href="/ai-engine.html" data-ai-link="header_secondary" data-track-event="hc_ai_engine_click" data-track-params='{"page":"global","location":"header_secondary"}'>AI Engine</a>
         <button class="hc-menu-btn" type="button" aria-expanded="false" aria-label="Open menu" data-hc-menu-btn>
           <span class="hc-menu-lines" aria-hidden="true"></span>
         </button>
@@ -66,12 +69,13 @@
 
     <nav class="container hc-mobile-nav" aria-label="Mobile" data-hc-mobile-nav>
       <a href="/index.html">Home</a>
-      <a href="/power-of-nanotubes.html">Why Nanotubes</a>
+            <a href="/power-of-nanotubes.html">Why Nanotubes</a>
       <a href="/applications/index.html">Applications</a>
       <a href="/shop.html">Products</a>
-      <a href="/ai-engine.html">AI Engine</a>
+      <a href="/index.html#about">About</a>
+      <a href="/index.html#contact">Contact</a>
       <a href="/quote.html" data-source-page="mobile_nav" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
-      <a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="ai_engine_mobile">Open Engine</a>
+      <a href="/ai-engine.html" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
@@ -82,11 +86,9 @@
           <span class="hc-kicker">HexCarb™ AI Engine</span>
           <h1 class="hc-heading-hero">Material intelligence, from target to recipe.</h1>
           <p>
-            The engine carries what HexCarb learns across every experiment — so it can design a formulation
-            to hit your target, predict how it will behave before anyone touches a beaker, and pick the next
-            experiment that teaches it the most. Try the core ideas below.
+            The engine designs a formulation for your target, predicts how it will behave, and picks the next experiment.
           </p>
-          <p class="hc-subtle-note">The demos on this page are illustrative models of the engine's behaviour, not the production system.</p>
+          <p class="hc-subtle-note">These demos are illustrative models, not the production system.</p>
           <div class="hc-btn-row">
             <a class="hc-btn hc-btn-accent" data-hc-magnetic href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="hero_primary" data-track-event="hc_ai_engine_click" data-track-params='{"page":"ai_engine","location":"hero_primary"}'>Open the Engine</a>
             <a class="hc-btn hc-btn-ghost" data-hc-magnetic href="#inverse">See it work</a>
@@ -103,7 +105,7 @@
         <div class="hc-reveal">
           <span class="hc-kicker">Inverse Design</span>
           <h2>Name the target. Get the recipe.</h2>
-          <p>Normally you guess a formulation and measure what you get. Invert it: state the performance you need, and the engine searches the design space for the formulation that delivers it.</p>
+          <p>State the performance you need. The engine searches the design space for the formulation that delivers it.</p>
 
           <div class="hc-ai-targets">
             <label class="hc-ai-range">
@@ -148,12 +150,12 @@
           </div>
         </div>
         <div class="hc-reveal">
-          <span class="hc-kicker">Property Prediction</span>
+          <span class="hc-kicker">Prediction</span>
           <h2>Predict the outcome before the lab</h2>
-          <p>Set the formulation knobs and the engine estimates the properties you'd measure — with an honest uncertainty band that widens when the inputs (like dispersion quality) make the result harder to call.</p>
+          <p>Set the inputs and the engine estimates the properties you would measure, with an uncertainty band.</p>
           <div class="hc-metric">
             <strong>ms</strong>
-            <span>per prediction — versus weeks of lab iteration</span>
+            <span>per prediction, versus weeks of lab iteration</span>
           </div>
         </div>
       </div>
@@ -164,8 +166,8 @@
       <div class="container hc-grid hc-grid-2 hc-demo-row">
         <div class="hc-reveal">
           <span class="hc-kicker">Active Learning</span>
-          <h2>Find the best recipe in the fewest experiments</h2>
-          <p>The panel is a map of two recipe knobs — CNT loading and dispersion energy. Somewhere on it sits the best recipe, hidden in fog. Each experiment you run lifts the fog a little. The engine always proposes the test most likely to find the winner, so you get there far faster than testing at random.</p>
+          <h2>The best recipe in the fewest experiments</h2>
+          <p>The panel maps CNT loading against dispersion energy. The engine proposes the test most likely to find the best recipe.</p>
           <div class="hc-ai-controls">
             <button class="hc-btn hc-btn-accent" type="button" id="ai-suggest">Suggest next experiment</button>
             <button class="hc-btn hc-btn-ghost" type="button" id="ai-run">Run it</button>
@@ -181,7 +183,7 @@
         </div>
         <div class="hc-reveal">
           <div class="hc-demo-card" data-ai="active"></div>
-          <p class="hc-demo-hint">Try “Auto-run”, or step it yourself: Suggest → Run it.</p>
+          <p class="hc-demo-hint">Try Auto-run, or step through: Suggest, then Run it.</p>
         </div>
       </div>
     </section>
@@ -204,12 +206,11 @@
         <div class="hc-reveal">
           <span class="hc-kicker">Enterprise</span>
           <h2>One engine across every program</h2>
-          <p>Run it at company scale and the engine orchestrates many material programs at once. Each measurement — from any team — compounds into shared knowledge, so every other program starts smarter and moves faster. Toggle the shared engine off to watch siloed teams crawl.</p>
+          <p>Every measurement, from any team, becomes shared knowledge. Switch the shared engine off to compare.</p>
           <ul class="hc-selector-why">
-            <li><strong>Orchestration:</strong> parallel programs from design through qualification, in one view.</li>
-            <li><strong>Compounding knowledge:</strong> every result improves the model for all teams.</li>
-            <li><strong>Governance &amp; traceability:</strong> predictions backed by validated, audited data.</li>
-            <li><strong>Deploy your way:</strong> cloud, on-prem, or API into your existing LIMS and ERP.</li>
+            <li><strong>Orchestration:</strong> parallel programs in one view.</li>
+            <li><strong>Compounding knowledge:</strong> every result improves the model.</li>
+            <li><strong>Deployment:</strong> cloud, on-prem, or API.</li>
           </ul>
         </div>
       </div>
@@ -220,14 +221,14 @@
       <div class="container">
         <div class="hc-reveal" style="max-width:720px;">
           <span class="hc-kicker">The Loop</span>
-          <h2>Design, make, measure, learn — then do it faster</h2>
-          <p>Each measurement feeds back into the model, so the next design starts smarter. That compounding loop is the whole point: knowledge that carries from the first experiment all the way to qualified, production-ready material.</p>
+          <h2>Design, make, measure, learn, then repeat faster</h2>
+          <p>Each measurement feeds back into the model, so the next design starts smarter.</p>
         </div>
         <div class="hc-ai-loop" data-hc-stagger>
-          <article class="hc-ai-loop-step hc-reveal"><span>01</span><h3>Design</h3><p>Inverse design proposes formulations for your target.</p></article>
-          <article class="hc-ai-loop-step hc-reveal"><span>02</span><h3>Make</h3><p>Process guidance maps the recipe to lab and pilot conditions.</p></article>
-          <article class="hc-ai-loop-step hc-reveal"><span>03</span><h3>Measure</h3><p>Results — including images and benchmarks — are validated and stored.</p></article>
-          <article class="hc-ai-loop-step hc-reveal"><span>04</span><h3>Learn</h3><p>The model updates and picks the next most valuable experiment.</p></article>
+          <article class="hc-ai-loop-step hc-reveal"><span>01</span><h3>Design</h3><p>Formulations proposed for your target.</p></article>
+          <article class="hc-ai-loop-step hc-reveal"><span>02</span><h3>Make</h3><p>The recipe mapped to lab and pilot conditions.</p></article>
+          <article class="hc-ai-loop-step hc-reveal"><span>03</span><h3>Measure</h3><p>Results validated and stored.</p></article>
+          <article class="hc-ai-loop-step hc-reveal"><span>04</span><h3>Learn</h3><p>The model updates and picks the next experiment.</p></article>
         </div>
       </div>
     </section>
@@ -236,9 +237,8 @@
     <section class="hc-command-strip-wrap">
       <div class="container">
         <div class="hc-command-strip hc-reveal" data-hc-proof-state="partial" data-hc-hexdecor="tr">
-          <span class="hc-kicker" style="color:rgba(255,255,255,0.9);">Ready to use it?</span>
-          <h2>Put the engine to work on your material problem</h2>
-          <p>Open the live environment, or send us your target and constraints and we'll route it through the engine with you.</p>
+          <h2>Put the engine to work</h2>
+          <p>Open the live environment, or send us your target and constraints.</p>
           <div class="hc-command-actions">
             <a class="hc-btn hc-btn-accent" data-hc-magnetic href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="cta_strip" data-track-event="hc_ai_engine_click" data-track-params='{"page":"ai_engine","location":"cta_strip"}'>Open the Engine</a>
             <a class="hc-btn hc-btn-ghost" href="/quote.html" data-source-page="ai_engine" data-source-section="cta_strip" data-intent-stage="evaluate" data-track-event="hc_quote_click" data-track-params='{"page":"ai_engine","section":"cta_strip","product_name":"general","cta_label":"request_quote"}'>Send Us a Target</a>
@@ -251,29 +251,31 @@
   <footer class="hc-footer">
     <div class="container hc-footer-grid">
       <div>
-        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
-          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" />
-          <span class="hc-visually-hidden">HexCarb™</span>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
+          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" width="695" height="359" />
         </a>
-        <p>Advanced carbon material systems for scalable thermal, electrical, and structural performance.</p>
+        <p>Carbon nanotube and graphene materials, from first sample to production.</p>
       </div>
 
       <div>
-        <h4>Explore</h4>
+        <h3>Explore</h3>
         <ul class="hc-footer-list">
           <li><a href="/power-of-nanotubes.html">Why Nanotubes</a></li>
           <li><a href="/applications/index.html">Applications</a></li>
           <li><a href="/shop.html">Products</a></li>
-          <li><a href="https://ai.hexcarb.in" target="_blank" rel="noopener noreferrer" data-ai-link="ai_engine_footer">Open Engine</a></li>
+          <li><a href="/ai-engine.html" data-ai-link="footer">AI Engine</a></li>
+          <li><a href="/history-of-advanced-nanomaterials.html">History of Nanomaterials</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Company</h4>
+        <h3>Company</h3>
         <ul class="hc-footer-list">
-          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+          <li><a href="/quote.html">Request a Quote</a></li>
           <li><a href="/privacy.html">Privacy Policy</a></li>
-          <li><a href="/shop.html#contact">Sales Enquiry</a></li>
+          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
         </ul>
       </div>
     </div>

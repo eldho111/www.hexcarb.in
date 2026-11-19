@@ -749,3 +749,10 @@
     transition: none !important;
   }
 }
+
+/* Confidence chips: readable in both themes. */
+.hc-history-confidence-established,
+.hc-history-confidence-strong,
+.hc-history-confidence-emerging {
+  color: var(--hc-text-muted);
+}

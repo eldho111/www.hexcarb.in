@@ -3129,3 +3129,56 @@ a.hc-filter-chip {
   box-shadow: none;
 }
 
+/* ─── Quote panel: graphite, with light controls ─── */
+.hc-quote-panel,
+:root[data-theme="dark"] .hc-quote-panel {
+  background-color: var(--hc-graphite-2);
+  background-image: var(--hc-hexgrid-panel), var(--hc-graphite-surface);
+  background-size: 72px auto, auto;
+  border: 1px solid #000000;
+  box-shadow: var(--shadow-graphite), var(--hc-graphite-edge);
+  color: var(--hc-on-graphite);
+}
+
+:root[data-theme="dark"] .hc-quote-panel {
+  border-color: #2c2c2c;
+}
+
+.hc-quote-panel p,
+.hc-quote-panel li {
+  color: var(--hc-on-graphite-muted);
+}
+
+.hc-quote-panel .hc-btn-accent,
+.hc-quote-panel .hc-btn-primary,
+:root[data-theme="dark"] .hc-quote-panel .hc-btn-accent,
+:root[data-theme="dark"] .hc-quote-panel .hc-btn-primary {
+  background: linear-gradient(180deg, #ffffff 0%, #d2d2d2 100%);
+  color: #000000;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 2px 3px rgba(0, 0, 0, 0.5), 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hc-quote-panel .hc-btn-ghost,
+:root[data-theme="dark"] .hc-quote-panel .hc-btn-ghost {
+  color: var(--hc-on-graphite);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.hc-quote-panel .hc-btn-ghost:hover,
+:root[data-theme="dark"] .hc-quote-panel .hc-btn-ghost:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* Hero visual must never push the page wider than a phone screen. */
+.hc-home-hero-inner > * {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .hc-hero-visual {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}

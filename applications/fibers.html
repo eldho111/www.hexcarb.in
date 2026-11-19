@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <script>try{var t=localStorage.getItem("hc-theme-mode");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <noscript><style>.hc-reveal,.hc-word{opacity:1!important;transform:none!important}</style></noscript>
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>HexCarb™ Applications | Fibers</title>
@@ -29,7 +32,7 @@
   <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261119a" />
 
 </head>
-<body class="hc-premium" data-hc-signature-bg="field" data-hc-bg-video-disabled="true">
+<body class="hc-premium" data-hc-signature-bg="field">
   <a class="hc-skip-link" href="#main-content">Skip to content</a>
   <header class="hc-header">
     <div class="container hc-nav">
@@ -64,17 +67,18 @@
       <a href="/index.html#about">About</a>
       <a href="/index.html#contact">Contact</a>
       <a href="/quote.html" data-source-page="mobile_nav" data-source-section="mobile_primary" data-intent-stage="evaluate" data-industry="other" data-priority="performance">Quote</a>
-      <a href="/ai-engine.html" data-ai-link="fibers_mobile">AI Engine</a>
+      <a href="/ai-engine.html" data-ai-link="mobile" data-track-event="hc_ai_engine_click" data-track-params='{"page":"home","location":"mobile_menu"}'>AI Engine</a>
     </nav>
   </header>
 
   <main id="main-content">
-    <section class="hc-page-hero">
+    <section class="hc-page-hero hc-page-hero--scene">
+      <div class="hc-3d hc-page-hero-scene" data-hc-3d="fibre"></div>
       <div class="container hc-reveal">
         <span class="hc-kicker">Application Pathway</span>
         <h1 style="margin-top:0.8rem;">Fibers</h1>
         <p>
-          For teams building conductive, sensing, or reinforced flexible structures. This pathway maps textile architecture and integration constraints to HexWeave formats.
+          Maps textile architecture and integration constraints to HexWeave formats.
         </p>
       </div>
     </section>
@@ -83,11 +87,11 @@
       <div class="container hc-grid hc-grid-2">
         <article class="hc-card hc-reveal">
           <h2>Why this pathway</h2>
-          <p style="margin-top:0.7rem;">Fiber-based nanocarbon systems can support lightweight conductivity and embedded sensing, but final performance depends on yarn architecture, contact design, and cyclic durability.</p>
+          <p style="margin-top:0.7rem;">Performance depends on yarn architecture, contact design and cyclic durability.</p>
           <ul style="margin-top:0.9rem;">
-            <li>Balance conductivity targets against bend radius, strain range, and fatigue cycles.</li>
-            <li>Select yarn architecture for weaving, lamination, or surface integration.</li>
-            <li>Plan connector, terminal, and environmental test strategy early in prototype stages.</li>
+            <li>Balance conductivity against bend radius, strain and fatigue.</li>
+            <li>Select yarn architecture for your integration method.</li>
+            <li>Plan connectors and environmental testing early.</li>
           </ul>
         </article>
 
@@ -96,15 +100,15 @@
           <ol class="hc-steps" style="margin-top:0.8rem;">
             <li>
               <strong>Sensing yarn route</strong>
-              <p>For strain monitoring and responsive textile behavior where repeatability over flex cycles is critical.</p>
+              <p>Strain monitoring where flex-cycle repeatability is critical.</p>
             </li>
             <li>
               <strong>Conductive fiber route</strong>
-              <p>For low-mass current pathways where metal alternatives can add weight or stiffness.</p>
+              <p>Low-mass current paths where metal can add weight.</p>
             </li>
             <li>
               <strong>Tape route</strong>
-              <p>For directional reinforcement and guided conductive runs across laminate or composite stacks.</p>
+              <p>Directional reinforcement and conductive runs in laminates.</p>
             </li>
           </ol>
         </article>
@@ -114,14 +118,13 @@
     <section class="hc-section hc-soft-bg">
       <div class="container">
         <div class="hc-reveal" style="max-width:760px; margin-bottom:1rem;">
-          <span class="hc-kicker">Recommended Offerings</span>
-          <h2 style="margin-top:0.75rem;">Mapped product families in the shop</h2>
+          <h2 style="margin-top:0.75rem;">Recommended product families</h2>
         </div>
 
         <div class="hc-grid hc-grid-3">
           <article class="hc-card hc-reveal">
             <h3>HexWeave F10</h3>
-            <p>Sensor-ready conductive fiber for quick functional prototyping.</p>
+            <p>Sensor-ready conductive fiber for quick prototyping.</p>
             <div class="hc-btn-row" style="margin-top:1rem;">
               <a class="hc-btn hc-btn-ghost" href="/shop.html#hexweave" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"fibers","cta_type":"open_shop_hexweave_f10"}'>Open in Products</a>
             </div>
@@ -129,7 +132,7 @@
 
           <article class="hc-card hc-reveal">
             <h3>HexWeave Y50</h3>
-            <p>Weavable yarn configuration for longer routing and flexible assemblies.</p>
+            <p>Weavable yarn for longer routing and flexible assemblies.</p>
             <div class="hc-btn-row" style="margin-top:1rem;">
               <a class="hc-btn hc-btn-ghost" href="/shop.html#hexweave" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"fibers","cta_type":"open_shop_hexweave_y50"}'>Open in Products</a>
             </div>
@@ -137,7 +140,7 @@
 
           <article class="hc-card hc-reveal">
             <h3>HexWeave T10</h3>
-            <p>Tape format for directional reinforcement and sensor trace routing.</p>
+            <p>Tape for directional reinforcement and sensor traces.</p>
             <div class="hc-btn-row" style="margin-top:1rem;">
               <a class="hc-btn hc-btn-ghost" href="/shop.html#hexweave" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"fibers","cta_type":"open_shop_hexweave_t10"}'>Open in Products</a>
             </div>
@@ -149,18 +152,17 @@
     <section class="hc-section">
       <div class="container hc-grid hc-grid-2">
         <div class="hc-card hc-reveal">
-          <h3>What to include in your quote request</h3>
+          <h3>What to include</h3>
           <ul style="margin-top:0.8rem;">
-            <li>Target conductivity or resistance range, including acceptable drift across flex cycles.</li>
-            <li>Substrate and joining method (weave, laminate, adhesive, stitch).</li>
-            <li>Mechanical loading profile and environmental conditions (humidity, temperature, wash/chemical exposure).</li>
-            <li>Length/volume requirements and qualification timeline.</li>
+            <li>Conductivity or resistance range, with acceptable drift over flex cycles.</li>
+            <li>Substrate and joining method.</li>
+            <li>Loading, environment, volume and timeline.</li>
           </ul>
         </div>
 
         <aside class="hc-quote-panel hc-reveal">
           <h3>Request a fibers quote</h3>
-          <p style="margin-top:0.6rem;">Share your integration method and performance targets for a tailored recommendation.</p>
+          <p style="margin-top:0.6rem;">Share your integration method and performance targets.</p>
           <div class="hc-btn-row" style="margin-top:1rem;">
             <a class="hc-btn hc-btn-accent" href="/quote.html?source_page=applications_fibers&source_section=request_quote&application_slug=fibers&product_family=HexWeave" data-track-event="hc_application_cta_click" data-track-params='{"application_slug":"fibers","cta_type":"request_quote"}'>Request Quote</a>
             <a class="hc-btn hc-btn-ghost" href="/applications/index.html" data-track-event="hc_application_nav_click" data-track-params='{"source_page":"fibers","target_page":"applications_hub"}'>Back to Hub</a>
@@ -173,27 +175,31 @@
   <footer class="hc-footer">
     <div class="container hc-footer-grid">
       <div>
-        <a class="hc-brand hc-brand-on-dark" href="/index.html" style="color:#fff; margin-bottom:0.8rem;">
-          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" />
-          <span class="hc-visually-hidden">HexCarb™</span>
+        <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
+          <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" width="695" height="359" />
         </a>
-        <p>Application-focused material guidance for production and R&amp;D teams.</p>
+        <p>Carbon nanotube and graphene materials, from first sample to production.</p>
       </div>
 
       <div>
-        <h4>Pages</h4>
+        <h3>Explore</h3>
         <ul class="hc-footer-list">
-          <li><a href="/applications/index.html">Applications Hub</a></li>
+          <li><a href="/power-of-nanotubes.html">Why Nanotubes</a></li>
+          <li><a href="/applications/index.html">Applications</a></li>
           <li><a href="/shop.html">Products</a></li>
-          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/ai-engine.html" data-ai-link="footer">AI Engine</a></li>
+          <li><a href="/history-of-advanced-nanomaterials.html">History of Nanomaterials</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Contact</h4>
+        <h3>Company</h3>
         <ul class="hc-footer-list">
-          <li><a href="mailto:sales@hexcarb.in">sales@hexcarb.in</a></li>
-          <li><a href="/index.html#contact">General Contact</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+          <li><a href="/quote.html">Request a Quote</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="mailto:info@hexcarb.in">info@hexcarb.in</a></li>
         </ul>
       </div>
     </div>
@@ -206,18 +212,6 @@
   <script src="/assets/js/hexcarb-config.js?v=20261119a"></script>
   <script src="/assets/js/hexcarb-ui.js?v=20261119a"></script>
   <script src="/assets/js/hexcarb-signature.js?v=20261119a"></script>
+  <script src="/assets/js/hexcarb-3d.js?v=20261119a"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-

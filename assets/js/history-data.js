@@ -10,7 +10,7 @@
       year_label: "1958",
       title: "A chemistry recipe that still powers graphene production today",
       summary:
-        "The Hummers method for oxidizing graphite — developed in 1958 — remains the starting point for making graphene oxide in labs and factories worldwide.",
+        "The Hummers method for oxidizing graphite, developed in 1958, remains the starting point for making graphene oxide worldwide.",
       material_family: "Graphene oxide (GO)",
       breakthrough_type: "Synthesis chemistry",
       current_use_snapshot:
@@ -35,7 +35,7 @@
       year_label: "1976",
       title: "Growing carbon fibers from gas — the technique behind nanotubes",
       summary:
-        "Scientists learned to grow thin carbon fibers from vapor in the 1970s. That same process knowledge later made nanotube manufacturing possible.",
+        "In the 1970s scientists learned to grow thin carbon fibers from vapor, process knowledge that later made nanotube manufacturing possible.",
       material_family: "Carbon nanofibers / hybrid carbon systems",
       breakthrough_type: "Process foundation",
       current_use_snapshot:
@@ -60,7 +60,7 @@
       year_label: "1985",
       title: "A soccer-ball-shaped carbon molecule opens a new era",
       summary:
-        "The discovery of C60 buckminsterfullerene showed carbon could form perfect molecular cages — expanding possibilities far beyond graphite and diamond.",
+        "The discovery of C60 buckminsterfullerene showed carbon could form molecular cages, beyond graphite and diamond.",
       material_family: "Fullerenes",
       breakthrough_type: "Allotrope discovery",
       current_use_snapshot:
@@ -85,7 +85,7 @@
       year_label: "Late 1980s",
       title: "Explosions create nanoscale diamonds — at industrial scale",
       summary:
-        "Controlled detonation methods made it possible to produce nanodiamond particles in bulk — opening the door to ultra-hard polishing and coating applications.",
+        "Controlled detonation made it possible to produce nanodiamond particles in bulk for ultra-hard polishing and coating applications.",
       material_family: "Nanodiamond",
       breakthrough_type: "Scale-up pathway",
       current_use_snapshot:
@@ -110,7 +110,7 @@
       year_label: "1991",
       title: "The paper that launched the nanotube revolution",
       summary:
-        "Iijima's 1991 electron microscopy images of multi-walled carbon nanotubes sparked worldwide research and turned nanotubes into a household name in science.",
+        "Iijima's 1991 electron microscopy images of multi-walled carbon nanotubes sparked worldwide research.",
       material_family: "MWCNT",
       breakthrough_type: "Foundational observation",
       current_use_snapshot:
@@ -135,7 +135,7 @@
       year_label: "1993",
       title: "Single-walled nanotubes — thinner, purer, and electronically tuneable",
       summary:
-        "Using metal catalysts, researchers grew single-walled carbon nanotubes for the first time — opening the door to controllable electronic properties.",
+        "Using metal catalysts, researchers grew single-walled carbon nanotubes for the first time, opening the door to controllable electronic properties.",
       material_family: "SWCNT",
       breakthrough_type: "Catalytic synthesis",
       current_use_snapshot:
@@ -160,7 +160,7 @@
       year_label: "1996",
       title: "Nanotube ropes reveal their true electrical potential",
       summary:
-        "By assembling purified nanotubes into crystalline ropes, scientists measured their electrical and structural properties — key data for engineering applications.",
+        "By assembling purified nanotubes into crystalline ropes, scientists measured their electrical and structural properties.",
       material_family: "SWCNT",
       breakthrough_type: "Characterization advance",
       current_use_snapshot:
@@ -185,7 +185,7 @@
       year_label: "1998",
       title: "Understanding graphene oxide — the key to controlling it",
       summary:
-        "Detailed spectroscopy work revealed the actual structure of graphene oxide, giving chemists better control over how to process and reduce it.",
+        "Spectroscopy revealed the structure of graphene oxide, giving chemists better control over how to process and reduce it.",
       material_family: "Graphene oxide (GO)",
       breakthrough_type: "Structure model",
       current_use_snapshot:
@@ -210,7 +210,7 @@
       year_label: "2004",
       title: "Graphene isolated for the first time — and it works",
       summary:
-        "Using sticky tape on graphite, researchers isolated single-atom-thick graphene and proved it conducted electricity — launching a global research boom.",
+        "Using sticky tape on graphite, researchers isolated single-atom-thick graphene and proved it conducted electricity, launching a global research boom.",
       material_family: "Graphene",
       breakthrough_type: "Device milestone",
       current_use_snapshot:
@@ -235,7 +235,7 @@
       year_label: "2008",
       title: "Graphene conducts heat better than almost anything",
       summary:
-        "Lab measurements showed graphene's thermal conductivity is among the highest ever recorded — making it a top candidate for cooling electronics.",
+        "Lab measurements showed graphene's thermal conductivity is among the highest ever recorded, making it a top candidate for cooling electronics.",
       material_family: "Graphene",
       breakthrough_type: "Property benchmark",
       current_use_snapshot:
@@ -260,7 +260,7 @@
       year_label: "2009",
       title: "Growing graphene on copper foil — a manufacturing breakthrough",
       summary:
-        "By growing graphene on copper foil using chemical vapor deposition, researchers showed it was possible to make large sheets — moving graphene toward real manufacturing.",
+        "By growing graphene on copper foil using chemical vapor deposition, researchers showed large sheets were possible, moving graphene toward manufacturing.",
       material_family: "Graphene",
       breakthrough_type: "Scale process",
       current_use_snapshot:
@@ -285,7 +285,7 @@
       year_label: "2010",
       title: "Graphene wins the Nobel Prize in Physics",
       summary:
-        "Geim and Novoselov received the 2010 Nobel Prize for their graphene work, bringing massive research funding and industrial interest worldwide.",
+        "Geim and Novoselov received the 2010 Nobel Prize for their graphene work, bringing research funding and industrial interest worldwide.",
       material_family: "Graphene",
       breakthrough_type: "Scientific recognition",
       current_use_snapshot:
@@ -310,7 +310,7 @@
       year_label: "2012",
       title: "Graphene membranes can filter water while blocking gases",
       summary:
-        "Research showed that graphene-based membranes allow water to pass through while blocking other molecules — a breakthrough for filtration and barrier applications.",
+        "Research showed that graphene-based membranes let water pass while blocking other molecules, a breakthrough for filtration and barrier applications.",
       material_family: "Graphene / GO",
       breakthrough_type: "Application mechanism",
       current_use_snapshot:
@@ -335,11 +335,11 @@
       year_label: "2013",
       title: "Nanotubes go commercial — with manufacturing challenges mapped out",
       summary:
-        "A landmark review catalogued the real challenges of producing nanotubes at scale: consistency, purity, and dispersion — the roadmap for industrial CNT.",
+        "A landmark review catalogued the challenges of producing nanotubes at scale: consistency, purity, and dispersion.",
       material_family: "SWCNT / MWCNT",
       breakthrough_type: "Industrial readiness",
       current_use_snapshot:
-        "The same quality challenges identified here — consistency, purity, dispersion — still define CNT procurement today.",
+        "The same challenges of consistency, purity, and dispersion still define CNT procurement today.",
       image: "/assets/media/history/timeline-v2-04.svg",
       references: [
         {
@@ -360,7 +360,7 @@
       year_label: "2015-2016",
       title: "Stacking different 2D materials together — like Lego for atoms",
       summary:
-        "Researchers showed that layering graphene with other 2D materials creates hybrid structures with tuneable properties — a powerful design tool.",
+        "Researchers showed that layering graphene with other 2D materials creates hybrid structures with tuneable properties.",
       material_family: "Graphene / hybrid carbon systems",
       breakthrough_type: "System integration",
       current_use_snapshot:
@@ -385,7 +385,7 @@
       year_label: "2016-2017",
       title: "Carbon additives make plastics conductive — at production scale",
       summary:
-        "CNT, graphene, and carbon black additives matured to the point where they could reliably add electrical conductivity and EMI shielding to mass-produced plastics.",
+        "CNT, graphene, and carbon black additives matured enough to reliably add electrical conductivity and EMI shielding to mass-produced plastics.",
       material_family: "CNT / graphene / conductive carbon black systems",
       breakthrough_type: "Application scaling",
       current_use_snapshot:
@@ -410,7 +410,7 @@
       year_label: "2018-2019",
       title: "Wearable tech needs flexible conductors — carbon delivers",
       summary:
-        "The rise of smart watches, health monitors, and e-textiles drove demand for lightweight, flexible conductive materials based on carbon nanotubes and graphene.",
+        "Smart watches, health monitors, and e-textiles drove demand for lightweight, flexible conductors based on carbon nanotubes and graphene.",
       material_family: "SWCNT / graphene / CNF",
       breakthrough_type: "Wearable transition",
       current_use_snapshot:
@@ -460,7 +460,7 @@
       year_label: "2022-2023",
       title: "Chips get hotter — carbon materials cool them down",
       summary:
-        "As processors pack more power into smaller spaces, graphene and nanotube thermal pads and spreaders become critical for keeping electronics cool.",
+        "As processors pack more power into smaller spaces, graphene and nanotube thermal pads and spreaders become critical for cooling.",
       material_family: "Graphene / CNT / TIM hybrids",
       breakthrough_type: "Thermal management focus",
       current_use_snapshot:
@@ -672,7 +672,7 @@
       fact_id: "fact_hummers_route",
       title: "A 1958 recipe still powers today's graphene oxide production",
       statement:
-        "The Hummers oxidation method — nearly 70 years old — is still the most common starting point for making graphene oxide in labs and factories.",
+        "The Hummers oxidation method, nearly 70 years old, is still the most common starting point for making graphene oxide.",
       material_family: "Graphene oxide (GO)",
       confidence_level: "established",
       references: [
@@ -690,7 +690,7 @@
       fact_id: "fact_fullerene_allotrope",
       title: "New forms of carbon keep reshaping the industry",
       statement:
-        "Fullerenes in 1985, then graphene's Nobel Prize in 2010 — each new carbon discovery rapidly changed what materials scientists thought was possible.",
+        "Fullerenes in 1985, then graphene's Nobel Prize in 2010: each new carbon discovery changed what materials scientists thought was possible.",
       material_family: "Fullerenes / Graphene",
       confidence_level: "established",
       references: [
@@ -716,7 +716,7 @@
       fact_id: "fact_cnt_current_density",
       title: "Nanotubes can carry far more current than copper",
       statement:
-        "In lab tests, individual carbon nanotubes handle current densities far beyond what copper wires can tolerate — a key reason for their use in electronics.",
+        "In lab tests, individual carbon nanotubes handle current densities far beyond what copper wires can tolerate.",
       material_family: "SWCNT / MWCNT",
       confidence_level: "strong",
       references: [
@@ -742,7 +742,7 @@
       fact_id: "fact_graphene_strength",
       title: "Graphene is one atom thick but stronger than steel",
       statement:
-        "Lab measurements show monolayer graphene has extraordinary strength for its thickness — one reason it's so valued for reinforced materials and coatings.",
+        "Lab measurements show monolayer graphene has extraordinary strength for its thickness.",
       material_family: "Graphene",
       confidence_level: "established",
       references: [
@@ -778,7 +778,7 @@
       fact_id: "fact_graphene_impermeability",
       title: "Graphene membranes let water through but block gases",
       statement:
-        "Graphene-based membranes can selectively filter molecules — letting water pass while blocking helium — opening up filtration and barrier applications.",
+        "Graphene-based membranes can let water pass while blocking helium, opening up filtration and barrier applications.",
       material_family: "Graphene / GO",
       confidence_level: "strong",
       references: [
@@ -804,7 +804,7 @@
       fact_id: "fact_large_area_graphene",
       title: "Growing graphene on copper foil changed the game",
       statement:
-        "CVD on copper foil made it possible to grow large sheets of graphene — moving it from tiny lab flakes to manufacturing-ready films.",
+        "CVD on copper foil made it possible to grow large sheets of graphene, moving it from lab flakes to manufacturing-ready films.",
       material_family: "Graphene",
       confidence_level: "strong",
       references: [
@@ -822,7 +822,7 @@
       fact_id: "fact_cnt_commercial_signal",
       title: "Nanotubes went from lab curiosity to commercial material",
       statement:
-        "By the early 2010s, carbon nanotubes were already in commercial products — though challenges with scale and consistency remained.",
+        "By the early 2010s, carbon nanotubes were already in commercial products, though challenges with scale and consistency remained.",
       material_family: "CNT",
       confidence_level: "established",
       references: [
@@ -840,7 +840,7 @@
       fact_id: "fact_2d_integration_challenge",
       title: "The material works — getting it into products is the challenge",
       statement:
-        "The biggest hurdles for 2D materials aren't performance — they're integration, process compatibility, and long-term reliability in real products.",
+        "The biggest hurdles for 2D materials are integration, process compatibility, and long-term reliability in real products, not performance.",
       material_family: "Graphene / 2D hybrids",
       confidence_level: "strong",
       references: [
@@ -876,7 +876,7 @@
       fact_id: "fact_energy_pathways",
       title: "Batteries and supercapacitors rely on carbon nanomaterials",
       statement:
-        "Graphene and nanotube additives improve how batteries and supercapacitors conduct electricity and store energy — a major active research area.",
+        "Graphene and nanotube additives improve how batteries and supercapacitors conduct electricity and store energy.",
       material_family: "Graphene / CNT",
       confidence_level: "strong",
       references: [
@@ -915,7 +915,7 @@
       gap_id: "gap_purity_consistency",
       title: "Every batch needs to be the same — and that's still hard",
       summary:
-        "Scaling up often stalls when batches aren't consistent. Small changes in purity, shape, or how the material disperses can derail a production run.",
+        "Scale-up often stalls when small changes in purity, shape, or dispersion make batches inconsistent.",
       constraint_type: "Batch consistency",
       references: [
         {
@@ -932,7 +932,7 @@
       gap_id: "gap_dispersion_interface",
       title: "Mixing nanomaterials evenly into products is harder than it sounds",
       summary:
-        "Performance depends on how well the material blends with its host — the right chemistry, even distribution, and stability through processing.",
+        "Performance depends on how well the material blends with its host: the right chemistry, even distribution, and stability through processing.",
       constraint_type: "Dispersion & mixing",
       references: [
         {
@@ -974,7 +974,7 @@
       gap_id: "gap_cost_performance",
       title: "The cost only makes sense if the performance gain is big enough",
       summary:
-        "Carbon nanomaterials are powerful, but whether they're worth the cost depends on the specific application, process fit, and reliability needs.",
+        "Whether carbon nanomaterials are worth the cost depends on the application, process fit, and reliability needs.",
       constraint_type: "Cost vs. performance",
       references: [
         {
