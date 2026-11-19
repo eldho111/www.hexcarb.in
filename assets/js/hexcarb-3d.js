@@ -514,21 +514,51 @@
 
     /* Hero film. One world, one camera, eight forms of the same material:
          one tube (atoms) -> dispersed -> yarn -> dense film -> standing
-         forest (thermal) -> composite -> battery slurry -> one tube as a
+         forest (thermal) -> composite -> battery electrode -> one tube as a
          transistor -> back to one tube.
        The long strands share the atom tube's radius, so the tube simply turns
        out to be one of them as the camera retreats. Every strand carries six
-       positions and glides from one form to the next. */
+       positions and glides from one form to the next.
+
+       Each form follows how the material is really built:
+         yarn      hundreds of tubes aligned with the axis, twisted ~20-25 deg
+         film      a flat random network of long curved tubes that touch and cross
+         forest    tubes grown upright, slightly wavy, joining chip to heat sink
+         composite tubes at every angle through a panel, a connected network
+         electrode tubes threading between storage particles on a metal foil
+       A second set of finer tubes joins for the yarn, film and forest, where
+       real material is far denser than a few hundred strands. */
     journey: function () {
       var small = window.innerWidth < 760;
       var N = small ? 70 : 200, S = small ? 18 : 24, R = 3.9;
+      var N2 = small ? 110 : 440, R2 = 2.3;
       var rand = rng(2026), tubeModel = MODELS.nanotube({ hero: true });
-      var atoms = [], bonds = [], k, i, j;
-      var cols = Math.ceil(Math.sqrt(N * 1000 / 760)), rows = Math.ceil(N / cols);
+      var atoms = [], bonds = [], bonds2 = [], k, i, j;
+      var BUNDLE = 80, FW = 1000, FH = 760;
 
       function unit() {
         var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
         return [q * Math.cos(th), z, q * Math.sin(th)];
+      }
+      /* yarn: a place in the round bundle, twisted along the axis */
+      function yarnAt(rr, ph, u) {
+        var y = (u - 0.5) * 1900, tw = ph + y * 0.0055;
+        return [rr * Math.cos(tw), y, rr * Math.sin(tw)];
+      }
+      /* film: one long curved tube lying in the sheet */
+      function filmTube(level) {
+        var a = rand() * 3.1416, cx = (rand() - 0.5) * FW, cy = (rand() - 0.5) * FH, len = 420 + rand() * 320;
+        var b1 = (rand() - 0.5) * 150, b2 = (rand() - 0.5) * 70, p2 = rand() * 6.28, z = level;
+        return function (u) {
+          var sl = (u - 0.5) * len, bow = b1 * Math.sin(u * 3.1416) + b2 * Math.sin(u * 9.42 + p2);
+          var x = cx + Math.cos(a) * sl - Math.sin(a) * bow, y = cy + Math.sin(a) * sl + Math.cos(a) * bow;
+          return [Math.max(-FW / 2, Math.min(FW / 2, x)), Math.max(-FH / 2, Math.min(FH / 2, y)), z];
+        };
+      }
+      /* forest: upright, slightly wavy, rooted on the lower plate */
+      function forestTube() {
+        var gx = (rand() - 0.5) * (FW - 30), gy = (rand() - 0.5) * (FH - 30), gp = rand() * 6.28, wob = 4 + rand() * 7;
+        return function (u) { return [gx + wob * Math.sin(u * 5 + gp), gy + wob * Math.cos(u * 4 + gp), u * 500]; };
       }
 
       for (k = 0; k < N; k++) {
@@ -537,31 +567,24 @@
         var p0 = k === 0
           ? wavy(rand, [0, 0, 0], [0, 1, 0], 1900, S, 0)
           : wavy(rand, [(rand() - 0.5) * 1300, (rand() - 0.5) * 1300, (rand() - 0.5) * 900], unit(), 1300 + rand() * 600, S, 130);
-        /* 1 yarn: packed in a round bundle, twisted along the axis */
-        var rr = 60 * Math.sqrt(k / N), ph = k * 2.39996;
-        /* 2 film: short, flat, crossing, densely packed on a sheet */
-        var fa = rand() * 3.1416, fx = (rand() - 0.5) * 1000, fy = (rand() - 0.5) * 760;
-        var fl = 300 + rand() * 240, fw = (rand() - 0.5) * 40, fz = (k % 8) * 3;
-        /* 3 forest: standing on the sheet in rows */
-        var gx = ((k % cols) / (cols - 1) - 0.5) * 1000 + (rand() - 0.5) * 22;
-        var gy = (Math.floor(k / cols) / Math.max(1, rows - 1) - 0.5) * 760 + (rand() - 0.5) * 22;
-        var gp = rand() * 6.28;
-        /* 4 composite: every direction, inside a block */
-        var cd = unit(), cc = [(rand() - 0.5) * 760, (rand() - 0.5) * 520, 60 + rand() * 340], cl = 260 + rand() * 200;
-        /* 5 slurry: a loose tangle around the battery particles */
-        var p5 = wavy(rand, [(rand() - 0.5) * 900, (rand() - 0.5) * 760, 230 + (rand() - 0.5) * 420], unit(), 620 + rand() * 420, S, 120);
+        var rr = BUNDLE * Math.sqrt(k / N), ph = k * 2.39996;
+        var film = filmTube((k % 8) * 3), forest = forestTube();
+        /* 4 composite: every direction through a panel 150 thick */
+        var cd = unit(), cc = [(rand() - 0.5) * 800, (rand() - 0.5) * 580, 20 + rand() * 110], cl = 300 + rand() * 260;
+        /* 5 electrode: winding between the particles, within the coated layer */
+        var ed = unit(); ed[2] *= 0.35;
+        var p5 = wavy(rand, [(rand() - 0.5) * 880, (rand() - 0.5) * 660, 130], ed, 520 + rand() * 380, S, 70);
 
         var pts = [];
         for (i = 0; i <= S; i++) {
-          var u = i / S, y = (u - 0.5) * 1900, tw = ph + y * 0.006, sl = (u - 0.5) * fl, bow = fw * Math.sin(u * 3.1416);
-          var cs = (u - 0.5) * cl;
+          var u = i / S, cs = (u - 0.5) * cl, ya = yarnAt(rr, ph, u), fa = film(u), fo = forest(u);
           pts.push([
             p0[i][0], p0[i][1], p0[i][2],
-            rr * Math.cos(tw), y, rr * Math.sin(tw),
-            fx + Math.cos(fa) * sl - Math.sin(fa) * bow, fy + Math.sin(fa) * sl + Math.cos(fa) * bow, fz,
-            gx + 7 * Math.sin(u * 5 + gp), gy + 7 * Math.cos(u * 4 + gp), u * 500,
-            Math.max(-440, Math.min(440, cc[0] + cd[0] * cs)), Math.max(-315, Math.min(315, cc[1] + cd[1] * cs)), Math.max(12, Math.min(428, cc[2] + cd[2] * cs)),
-            p5[i][0], p5[i][1], p5[i][2]
+            ya[0], ya[1], ya[2],
+            fa[0], fa[1], fa[2],
+            fo[0], fo[1], fo[2],
+            Math.max(-445, Math.min(445, cc[0] + cd[0] * cs)), Math.max(-320, Math.min(320, cc[1] + cd[1] * cs)), Math.max(10, Math.min(140, cc[2] + cd[2] * cs * 0.4)),
+            Math.max(-490, Math.min(490, p5[i][0])), Math.max(-370, Math.min(370, p5[i][1])), Math.max(14, Math.min(250, p5[i][2]))
           ]);
         }
         for (i = 0; i <= S; i++) {
@@ -575,23 +598,55 @@
         }
       }
 
-      /* battery particles for the slurry stage: same six-slot layout, fixed */
-      var grains = [];
-      for (j = 0; j < (small ? 9 : 16); j++) {
-        var g = [(rand() - 0.5) * 900, (rand() - 0.5) * 760, 230 + (rand() - 0.5) * 420];
-        for (i = 0; i < 6; i++) grains.push(g[0], g[1], g[2]);
-        grains.push(58 + rand() * 30);
+      /* finer tubes that exist only in the yarn, film and forest */
+      for (k = 0; k < N2; k++) {
+        var rr2 = BUNDLE * Math.sqrt(rand()), ph2 = rand() * 6.28, film2 = filmTube(26 + (k % 10) * 2.4), forest2 = forestTube(), prev = null;
+        for (i = 0; i <= S; i++) {
+          var u2 = i / S, y2 = yarnAt(rr2, ph2, u2), f2 = film2(u2), o2 = forest2(u2);
+          var cur = [y2[0], y2[1], y2[2], y2[0], y2[1], y2[2], f2[0], f2[1], f2[2], o2[0], o2[1], o2[2], o2[0], o2[1], o2[2], o2[0], o2[1], o2[2]];
+          if (prev) {
+            Array.prototype.push.apply(bonds2, prev);
+            Array.prototype.push.apply(bonds2, cur);
+            bonds2.push(R2);
+          }
+          prev = cur;
+        }
       }
+
+      /* fixed things use the same six-slot layout with one position repeated */
+      function fixed(list, x, y, z, r) {
+        for (var n = 0; n < 6; n++) list.push(x, y, z);
+        list.push(r);
+      }
+      /* storage particles: two packed layers sitting on the foil */
+      var grains = [], gx2, gy2;
+      for (j = 0; j < 2; j++) {
+        for (gx2 = -4; gx2 <= 4; gx2++) {
+          for (gy2 = -3; gy2 <= 3; gy2++) {
+            if (small && (gx2 + gy2) % 2) continue;
+            fixed(grains, gx2 * 112 + (j ? 56 : 0) + (rand() - 0.5) * 22, gy2 * 108 + (j ? 54 : 0) + (rand() - 0.5) * 22, 62 + j * 104, 48 + rand() * 9);
+          }
+        }
+      }
+      /* incoming waves for the shielding panel: beads on lines above it */
+      var waves = [];
+      [[-250, -120], [0, 90], [260, -40]].forEach(function (wv) {
+        for (i = 0; i < 80; i++) fixed(waves, wv[0], wv[1], 6 + i * 11, 8);
+      });
 
       return {
         journey: true,
         tube: tubeModel,
         mAtoms: new Float32Array(atoms),
         mBonds: new Float32Array(bonds),
+        mBonds2: new Float32Array(bonds2),
         mAtomCount: atoms.length / 19,
         mBondCount: bonds.length / 37,
+        mBond2Count: bonds2.length / 37,
         mGrains: new Float32Array(grains),
         mGrainCount: grains.length / 19,
+        mWaves: new Float32Array(waves),
+        mWaveCount: waves.length / 19,
         radius: tubeModel.radius,
         orient: tubeModel.orient,
         plates: [], atoms: new Float32Array(0), bonds: new Float32Array(0), atomCount: 0, bondCount: 0,
@@ -909,7 +964,7 @@
      uStrand scales the radius in; uHeat sends bright points up the forest. */
   var MORPH_COMMON = [
     "uniform mat4 uProj; uniform mat4 uMV; uniform float uW[6]; uniform float uStrand;",
-    "uniform float uHeat; uniform float uTime;",
+    "uniform float uHeat; uniform float uTime; uniform float uWave;",
     "float heat(vec3 c, vec3 seed){",
     "  return uHeat*pow(max(0.0, sin(c.z*0.022 - uTime*3.0 + seed.x*0.31 + seed.y*0.17)), 40.0);",
     "}"
@@ -931,7 +986,13 @@
     "void main(){",
     "  vec3 c = iP0*uW[0] + iP1*uW[1] + iP2*uW[2] + iP3*uW[3] + iP4*uW[4] + iP5*uW[5];",
     "  float g = heat(c, iP3);",
-    "  vec4 mv = uMV*vec4(c + aPos*iR*uStrand*(1.0+0.9*g), 1.0);",
+    "  float rad = iR*uStrand*(1.0+0.9*g);",
+    "  if(uWave>0.5){",                         // travelling wave: full above the panel, fading inside it
+    "    float env = c.z>150.0 ? 1.0 : exp((c.z-150.0)*0.03);",
+    "    c.x += 34.0*env*sin(c.z*0.03 + uTime*4.0 + c.y*0.02);",
+    "    rad *= 0.25 + 0.75*env;",
+    "  }",
+    "  vec4 mv = uMV*vec4(c + aPos*rad, 1.0);",
     "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
@@ -1220,6 +1281,8 @@
     turn += 0.1 * Math.sin(c * 0.45) * ease(15.6, 18, c) * (1 - ease(35.5, 37, c));
     /* swing round to look between the two plates of the thermal stage */
     turn -= 1.0 * ease(18, 20.6, c) * (1 - ease(23.5, 26, c));
+    /* a lower three-quarter view for the panel and the electrode */
+    turn -= 0.62 * ease(23.5, 26, c) * (1 - ease(35.5, 37, c));
     return {
       dist: d,
       w: w,
@@ -1259,7 +1322,9 @@
     this.film = {
       atoms: build(self.sphereLo, d.mAtoms, 76, atomLayout),
       bonds: build(self.cyl, d.mBonds, 148, bondLayout),
-      grains: build(self.sphere, d.mGrains, 76, atomLayout)
+      bonds2: build(self.cyl, d.mBonds2, 148, bondLayout),
+      grains: build(self.sphere, d.mGrains, 76, atomLayout),
+      waves: build(self.sphereLo, d.mWaves, 76, atomLayout)
     };
     return this.film;
   };
@@ -1357,22 +1422,32 @@
 
       /* sheet under the film and the forest; a second plate closes the forest */
       var base = Math.min(1, st.w[2] + st.w[3]);
-      /* pale under the film; the forest sits between two darker plates */
-      var f3 = st.w[3], plate = [0, 1, 2].map(function (n) { return sheet[n] + (metalPart[n] - sheet[n]) * f3; });
-      slab(0, 0, -16, 1120 * base, 880 * base, 18, plate);
-      slab(0, 0, 516, 1120 * f3, 880 * f3, 18, plate);
+      var f2 = st.w[2], f3 = st.w[3], f4 = st.w[4], f5 = st.w[5];
+      function tone(a, b, k) { return [0, 1, 2].map(function (n) { return a[n] + (b[n] - a[n]) * k; }); }
 
-      /* composite: the block the tubes are cast into, drawn as its edges */
-      if (st.w[4] > 0.01) {
-        var q = st.w[4], X = 450 * q, Y = 325 * q, Z0 = 4, Z1 = 436, T = 7, sx, sy;
-        for (sx = -1; sx <= 1; sx += 2) {
-          for (sy = -1; sy <= 1; sy += 2) {
-            slab(sx * X, sy * Y, (Z0 + Z1) / 2, T, T, (Z1 - Z0) * q, metalPart);
-            slab(0, sy * Y, sx < 0 ? Z0 : Z1 * q + Z0 * (1 - q), 2 * X, T, T, metalPart);
-            slab(sx * X, 0, sy < 0 ? Z0 : Z1 * q + Z0 * (1 - q), T, 2 * Y, T, metalPart);
+      /* film: a pale sheet. thermal: the same footprint becomes the chip,
+         and a finned heat sink closes the top. */
+      var base = Math.min(1, f2 + f3);
+      slab(0, 0, -16, 1120 * base, 880 * base, 18, tone(sheet, metalPart, f3));
+      if (f3 > 0.01) {
+        slab(0, 0, 520, 1120 * f3, 880 * f3, 26, metalPart);
+        for (var fin = -4; fin <= 4; fin++) slab(fin * 130 * f3, 0, 533 + 95 * f3, 34 * f3, 880 * f3, 190 * f3, metalPart);
+      }
+
+      /* composite: a panel 150 thick, drawn by its edges so the network shows */
+      if (f4 > 0.01) {
+        var X = 460 * f4, Y = 335 * f4, T = 7, ex, ey;
+        for (ex = -1; ex <= 1; ex += 2) {
+          for (ey = -1; ey <= 1; ey += 2) {
+            slab(ex * X, ey * Y, 75, T, T, 150 * f4, metalPart);
+            slab(0, ey * Y, ex < 0 ? 0 : 150, 2 * X, T, T, metalPart);
+            slab(ex * X, 0, ey < 0 ? 0 : 150, T, 2 * Y, T, metalPart);
           }
         }
       }
+
+      /* electrode: metal foil (the current collector) under the coated layer */
+      if (f5 > 0.01) slab(0, 0, -10, 1060 * f5, 820 * f5, 14, sheet);
 
       [this.mBondProg, this.mAtomProg].forEach(function (prog) {
         use(prog);
@@ -1380,14 +1455,35 @@
         gl.uniform1f(prog.u.uStrand, strand);
         gl.uniform1f(prog.u.uHeat, heat);
       });
+      [this.mBondProg, this.mAtomProg].forEach(function (prog) {
+        gl.useProgram(prog.p);
+        gl.uniform1f(prog.u.uWave, 0);
+      });
       gl.useProgram(this.mBondProg.p);
       gl.bindVertexArray(buf.bonds);
       gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.mBondCount);
+      /* the finer tubes swell in for the yarn, film and forest only */
+      var fine = Math.min(1, st.w[1] + st.w[2] + st.w[3]);
+      if (fine > 0.01) {
+        gl.uniform1f(this.mBondProg.u.uStrand, strand * fine);
+        gl.bindVertexArray(buf.bonds2);
+        gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.mBond2Count);
+      }
       gl.useProgram(this.mAtomProg.p);
       gl.bindVertexArray(buf.atoms);
       gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.mAtomCount);
 
-      /* slurry: battery particles swell in among the tubes */
+      /* shielding: waves arrive at the panel and die out inside it */
+      if (st.w[4] > 0.01) {
+        gl.uniform1f(this.mAtomProg.u.uStrand, st.w[4] * strand);
+        gl.uniform1f(this.mAtomProg.u.uHeat, 0);
+        gl.uniform1f(this.mAtomProg.u.uWave, 1);
+        gl.bindVertexArray(buf.waves);
+        gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.mWaveCount);
+        gl.uniform1f(this.mAtomProg.u.uWave, 0);
+      }
+
+      /* electrode: storage particles packed on the foil, tubes between them */
       if (st.w[5] > 0.01) {
         gl.uniform1f(this.mAtomProg.u.uStrand, st.w[5] * strand);
         gl.uniform1f(this.mAtomProg.u.uHeat, 0);
