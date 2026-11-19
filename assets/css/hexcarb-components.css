@@ -2037,8 +2037,7 @@ section.is-section-empty {
   display: flex;
   justify-content: center;
   background: #fff;
-  border-radius: 16px 6px 16px 6px;
-  corner-shape: bevel;
+  border-radius: var(--radius-md);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
 }
 
@@ -2376,12 +2375,6 @@ section.is-section-empty {
   z-index: 1;
 }
 
-@supports (corner-shape: bevel) {
-  .hc-ai-loop-step,
-  .hc-ai-recipe {
-    corner-shape: bevel;
-  }
-}
 
 @media (max-width: 900px) {
   .hc-ai-loop {
@@ -2515,85 +2508,43 @@ a.hc-filter-chip {
   transform: scale(1.2);
 }
 
-/* ===== Hexagonal shape language =====
-   corner-shape: bevel turns radii into straight cuts, so pills become
-   elongated hexagons and cards get hex-cut corners - while borders,
-   shadows, and focus outlines still follow the shape. Browsers without
-   support keep the rounded fallback. Lives at the end of the last-loaded
-   stylesheet so these radii win the cascade. */
-@supports (corner-shape: bevel) {
-  .hc-btn,
-  .hc-filter-chip,
-  .hc-product-badge,
-  .hc-proof-meta,
-  .hc-step-dot,
-  .hc-quote-context-chip,
-  .hc-family-nav a,
-  .hc-shop-toc a,
-  #hc-shop-search {
-    corner-shape: bevel;
-    border-radius: 999px;
-  }
+/* ===== Shape language: plain =====
+   Crisp rectangles for buttons, soft pills only for small tags, one even
+   radius for panels. No cut corners. */
+.hc-btn {
+  border-radius: 6px;
+  padding: 0.95rem 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
 
-  .hc-btn {
-    padding-inline: 1.35rem;
-    white-space: nowrap;
-  }
+.hc-btn::after {
+  content: none;
+}
 
-  .hc-filter-chip,
-  .hc-family-nav a,
-  .hc-shop-toc a {
-    padding-inline: 1rem;
-  }
+.hc-filter-chip,
+.hc-product-badge,
+.hc-proof-meta,
+.hc-step-dot,
+.hc-quote-context-chip,
+.hc-family-nav a,
+.hc-shop-toc a,
+#hc-shop-search {
+  border-radius: 999px;
+}
 
-  .hc-product-badge {
-    padding-inline: 0.8rem;
-  }
-
-  /* Panels and cards: asymmetric hex-cut corners. The even/odd flip keys
-     off DOM position, so the cut corner varies card to card - deliberately
-     not symmetric. */
-  .hc-card,
-  .hc-quote-flow,
-  .hc-quote-panel,
-  .hc-engine-panel,
-  .hc-hero-visual,
-  .hc-command-strip,
-  .hc-proof-item,
-  .hc-stat,
-  .hc-hero-stat,
-  .hc-thank-card {
-    corner-shape: bevel;
-    border-radius: 22px 8px 22px 8px;
-  }
-
-  .hc-card:nth-child(even),
-  .hc-proof-item:nth-child(even),
-  .hc-stat:nth-child(even),
-  .hc-hero-stat:nth-child(even) {
-    border-radius: 8px 22px 8px 22px;
-  }
-
-  .hc-command-point,
-  .hc-ai-vision-step,
-  .hc-product-figure {
-    corner-shape: bevel;
-    border-radius: 16px 6px 16px 6px;
-  }
-
-  .hc-command-point:nth-child(even),
-  .hc-ai-vision-step:nth-child(even) {
-    border-radius: 6px 16px 6px 16px;
-  }
-
-  .hc-hero-visual {
-    border-radius: 34px 12px 34px 12px;
-  }
-
-  .hc-hero-visual-cta {
-    corner-shape: bevel;
-    border-radius: 18px 7px 18px 7px;
-  }
+.hc-card,
+.hc-quote-flow,
+.hc-quote-panel,
+.hc-engine-panel,
+.hc-hero-visual,
+.hc-command-strip,
+.hc-stat,
+.hc-hero-stat,
+.hc-thank-card {
+  border-radius: var(--radius-md);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -3182,3 +3133,62 @@ a.hc-filter-chip {
     min-width: 0;
   }
 }
+
+/* ─── No decorative honeycomb: surfaces are plain ─── */
+.hc-hexdecor-wrap {
+  display: none;
+}
+
+/* ─── Five application cards; small status tag ─── */
+@media (min-width: 1200px) {
+  .hc-app-cards.hc-monument-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1199px) {
+  .hc-app-cards.hc-monument-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.hc-app-card h3 {
+  font-size: 1.12rem;
+}
+
+.hc-tag {
+  align-self: flex-start;
+  margin-bottom: 0.5rem;
+  padding: 0.22rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hc-on-graphite-muted);
+}
+
+.hc-app-card .hc-tag + h3 {
+  margin-top: 0;
+}
+
+.hc-app-card .hc-app-card-scene + .hc-tag {
+  margin-top: auto;
+}
+
+/* Inner-page hero: room for a full object beside the headline. */
+.hc-page-hero--scene {
+  min-height: clamp(340px, 34vw, 460px);
+  display: flex;
+  align-items: center;
+}
+
+.hc-page-hero--scene > .container {
+  width: min(var(--container-max), calc(100% - (var(--container-pad) * 2)));
+}
+
+.hc-page-hero-scene {
+  width: min(36vw, 440px);
+}
+

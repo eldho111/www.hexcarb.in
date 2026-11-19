@@ -74,9 +74,9 @@
   --hc-accent-ink: #000000;
   --hc-focus-ring: #000000;
 
-  /* Seamless pointy-top honeycomb tile (one hexagon + bottom stem). */
-  --hc-hexgrid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(0,0,0,0.05)' stroke-width='1'/%3E%3C/svg%3E");
-  --hc-hexgrid-panel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3C/svg%3E");
+  /* Honeycomb textures retired: kept as tokens so surfaces stay plain. */
+  --hc-hexgrid: none;
+  --hc-hexgrid-panel: none;
 }
 
 :root[data-theme="dark"] {
@@ -101,7 +101,7 @@
   --hc-accent-ink: #ffffff;
   --hc-focus-ring: #ffffff;
 
-  --hc-hexgrid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27.7128 48'%3E%3Cpath d='M13.8564 0L27.7128 8v16l-13.8564 8L0 24V8zM13.8564 32v16' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1'/%3E%3C/svg%3E");
+  --hc-hexgrid: none;
 }
 
 * {
@@ -299,12 +299,7 @@ video {
 }
 
 .hc-kicker::before {
-  content: "";
-  width: 9px;
-  height: 10px;
-  flex-shrink: 0;
-  clip-path: polygon(50% 0, 100% 27%, 100% 73%, 50% 100%, 0 73%, 0 27%);
-  background: var(--hc-heading);
+  content: none;
 }
 
 /* Asymmetric stagger: stats sit at slightly different heights on desktop. */

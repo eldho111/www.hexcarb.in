@@ -26,9 +26,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20261119a" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20261119a" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261119a" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20261119b" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20261119b" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261119b" />
 
   <script type="application/ld+json">
   {
@@ -127,6 +127,7 @@
                       <option value="fibers">Fibers</option>
                       <option value="thermal_interface_materials">Thermal Interface Materials</option>
                       <option value="swcnt_graphene_hybrid">SWCNT and Graphene Hybrid</option>
+                      <option value="emi_shielding">EMI Shielding</option>
                       <option value="general">General</option>
                     </select>
                   </label>
@@ -245,7 +246,7 @@
         <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
           <img class="hc-brand-logo" src="/logo-mono.svg" alt="HexCarb™" width="695" height="359" />
         </a>
-        <p>Carbon nanotube and graphene materials, from first sample to production.</p>
+        <p>Carbon nanotubes, formulated to work in real products.</p>
       </div>
 
       <div>
@@ -276,9 +277,9 @@
     </div>
   </footer>
 
-  <script src="/assets/js/hexcarb-config.js?v=20261119a"></script>
-  <script src="/assets/js/hexcarb-ui.js?v=20261119a"></script>
-  <script src="/assets/js/hexcarb-signature.js?v=20261119a"></script>
+  <script src="/assets/js/hexcarb-config.js?v=20261119b"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20261119b"></script>
+  <script src="/assets/js/hexcarb-signature.js?v=20261119b"></script>
   <script>
     (function () {
       var form = document.getElementById("hc-quote-form");
@@ -308,7 +309,7 @@
 
       function normalizeApplication(value) {
         var normalized = String(value || "").toLowerCase();
-        if (normalized === "dispersions" || normalized === "fibers" || normalized === "thermal_interface_materials" || normalized === "swcnt_graphene_hybrid") {
+        if (normalized === "dispersions" || normalized === "fibers" || normalized === "thermal_interface_materials" || normalized === "swcnt_graphene_hybrid" || normalized === "emi_shielding") {
           return normalized;
         }
         return "general";

@@ -1,13 +1,28 @@
-/* HexCarb 3D — real-time WebGL2 molecular scenes (no dependencies).
+/* HexCarb 3D — real-time WebGL2 material scenes (no dependencies).
 
    Usage:  <div class="hc-3d" data-hc-3d="nanotube"></div>
-   Models: nanotube | mwcnt | graphene | layers | fibre
+
+   Material models (atom by atom):
+     nanotube    single-walled tube
+     mwcnt       multi-walled tube (three nested walls)
+     graphene    one rippling sheet
+     layers      stacked sheets
+
+   Application models (each shows how the material is actually used):
+     dispersion  many very long, wavy nanotubes drifting in a liquid
+     fibre       nanotubes aligned and twisted into a yarn
+     tim         an aligned nanotube forest between two plates; heat pulses
+                 travel along the tube axes from the hot plate to the cold one
+     shield      a nanotube network coating on a surface; incoming waves die
+                 out inside the coating
+     hybrid      nanotubes bridging across a graphene sheet
+
    Options (data attributes):
-     data-hc-3d-view="hero"      wide cinematic framing, tube runs off-frame
+     data-hc-3d-view="hero"         wide cinematic framing, tube runs off-frame
      data-hc-3d-surface="graphite"  scene sits on a graphite panel (fixed dark)
 
-   Everything is monochrome: the material and the depth fade are derived from
-   the page theme, so the scene inverts with light / dark mode.
+   Everything is monochrome: material and depth fade come from the page theme,
+   so a scene inverts with light / dark mode.
 
    One WebGL context is shared by every small scene on a page (rendered
    off-screen, then copied into each scene's 2D canvas). A hero scene gets a
@@ -63,6 +78,18 @@
   function rotZ(a) {
     var c = Math.cos(a), s = Math.sin(a);
     return new Float32Array([c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+  }
+
+  /* Deterministic random numbers so a model looks the same on every visit. */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6d2b79f5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   /* ---------- meshes ---------- */
@@ -121,10 +148,33 @@
     return { pos: new Float32Array(v), idx: new Uint16Array(f) };
   }
 
-  /* ---------- lattice builders (bond length = 1) ---------- */
+  /* Unit cube centred on the origin, flat-shaded: position + normal per vertex. */
+  function cube() {
+    var faces = [
+      [1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]
+    ];
+    var v = [], f = [];
+    faces.forEach(function (n, i) {
+      var u = [n[1], n[2], n[0]], w = [n[2], n[0], n[1]];
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (c) {
+        v.push(
+          (n[0] + u[0] * c[0] + w[0] * c[1]) / 2,
+          (n[1] + u[1] * c[0] + w[1] * c[1]) / 2,
+          (n[2] + u[2] * c[0] + w[2] * c[1]) / 2,
+          n[0], n[1], n[2]
+        );
+      });
+      f.push(i * 4, i * 4 + 1, i * 4 + 2, i * 4, i * 4 + 2, i * 4 + 3);
+    });
+    return { data: new Float32Array(v), idx: new Uint16Array(f) };
+  }
 
-  /* Honeycomb sheet. nx cells of width sqrt(3) across, ny cells of height 3
-     along. wrap=true joins the two long edges (used to roll a tube). */
+  /* ---------- lattice and strand builders ---------- */
+
+  var ATOM_R = 0.2, BOND_R = 0.085;
+
+  /* Honeycomb sheet (bond length 1). nx cells of width sqrt(3) across, ny
+     cells of height 3 along. wrap=true joins the long edges to roll a tube. */
   function honeycomb(nx, ny, wrap) {
     var atoms = [], bonds = [];
     function id(i, j, k) { return (j * nx + i) * 4 + k; }
@@ -145,111 +195,222 @@
     return { atoms: atoms, bonds: bonds, width: nx * S3, length: ny * 3 - 1 };
   }
 
-  function pack(atoms3, bonds, atomR) {
-    var a = new Float32Array(atoms3.length * 4);
-    for (var i = 0; i < atoms3.length; i++) {
-      a[i * 4] = atoms3[i][0]; a[i * 4 + 1] = atoms3[i][1]; a[i * 4 + 2] = atoms3[i][2]; a[i * 4 + 3] = atomR;
-    }
-    var b = new Float32Array(bonds.length * 6);
-    for (var k = 0; k < bonds.length; k++) {
-      var p = atoms3[bonds[k][0]], q = atoms3[bonds[k][1]];
-      b[k * 6] = p[0]; b[k * 6 + 1] = p[1]; b[k * 6 + 2] = p[2];
-      b[k * 6 + 3] = q[0]; b[k * 6 + 4] = q[1]; b[k * 6 + 5] = q[2];
-    }
-    return { atoms: a, bonds: b, atomCount: atoms3.length, bondCount: bonds.length };
+  /* A model under construction: spheres, sticks and flat plates. */
+  function Builder() {
+    this.a = [];   // x, y, z, radius  (negative radius marks a wave particle)
+    this.b = [];   // ax, ay, az, bx, by, bz, radius
+    this.plates = [];
   }
+
+  Builder.prototype.lattice = function (atoms3, bonds) {
+    var self = this;
+    atoms3.forEach(function (p) { self.a.push(p[0], p[1], p[2], ATOM_R); });
+    bonds.forEach(function (k) {
+      var p = atoms3[k[0]], q = atoms3[k[1]];
+      self.b.push(p[0], p[1], p[2], q[0], q[1], q[2], BOND_R);
+    });
+  };
+
+  /* A smooth tube through a list of points: sticks with round joints. */
+  Builder.prototype.strand = function (pts, r) {
+    for (var i = 0; i < pts.length; i++) {
+      this.a.push(pts[i][0], pts[i][1], pts[i][2], r);
+      if (i) this.b.push(pts[i - 1][0], pts[i - 1][1], pts[i - 1][2], pts[i][0], pts[i][1], pts[i][2], r);
+    }
+  };
+
+  Builder.prototype.plate = function (cx, cy, cz, sx, sy, sz) {
+    this.plates.push({ c: [cx, cy, cz], s: [sx, sy, sz] });
+  };
+
+  Builder.prototype.done = function (props) {
+    var m = {
+      atoms: new Float32Array(this.a),
+      bonds: new Float32Array(this.b),
+      atomCount: this.a.length / 4,
+      bondCount: this.b.length / 7,
+      plates: this.plates,
+      mode: 0,
+      amp: 0,
+      pulse: 0,
+      spin: "turn",
+      speed: 1
+    };
+    for (var k in props) m[k] = props[k];
+    return m;
+  };
 
   /* Zigzag tube (n,0): the sheet's short axis wraps the circumference. */
-  function tubeAtoms(n, cells, yOffset) {
+  function tube(n, cells) {
     var h = honeycomb(n, cells, true);
     var radius = h.width / (Math.PI * 2);
-    var out = h.atoms.map(function (p) {
-      var th = (p[0] / h.width) * Math.PI * 2;
-      return [radius * Math.cos(th), p[1] - h.length / 2 + (yOffset || 0), radius * Math.sin(th)];
-    });
-    return { atoms: out, bonds: h.bonds, radius: radius, length: h.length };
+    return {
+      atoms: h.atoms.map(function (p) {
+        var th = (p[0] / h.width) * Math.PI * 2;
+        return [radius * Math.cos(th), p[1] - h.length / 2, radius * Math.sin(th)];
+      }),
+      bonds: h.bonds,
+      radius: radius,
+      length: h.length
+    };
   }
 
-  function merge(parts) {
-    var atoms = [], bonds = [];
-    parts.forEach(function (p) {
-      var base = atoms.length;
-      p.atoms.forEach(function (a) { atoms.push(a); });
-      p.bonds.forEach(function (b) { bonds.push([b[0] + base, b[1] + base]); });
-    });
-    return { atoms: atoms, bonds: bonds };
+  /* A long wavy nanotube: a straight run from p along unit direction d, bent
+     by two slow sine waves across it. */
+  function wavy(rand, p, d, len, steps, wobble) {
+    var up = Math.abs(d[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+    var u = [d[1] * up[2] - d[2] * up[1], d[2] * up[0] - d[0] * up[2], d[0] * up[1] - d[1] * up[0]];
+    var ul = Math.hypot(u[0], u[1], u[2]);
+    u = [u[0] / ul, u[1] / ul, u[2] / ul];
+    var w = [d[1] * u[2] - d[2] * u[1], d[2] * u[0] - d[0] * u[2], d[0] * u[1] - d[1] * u[0]];
+    var f1 = 0.6 + rand() * 0.9, f2 = 0.5 + rand() * 1.1, p1 = rand() * 6.28, p2 = rand() * 6.28;
+    var pts = [];
+    for (var i = 0; i <= steps; i++) {
+      var t = i / steps, s = (t - 0.5) * len;
+      var a = wobble * Math.sin(t * 6.28 * f1 + p1), b = wobble * Math.sin(t * 6.28 * f2 + p2);
+      pts.push([
+        p[0] + d[0] * s + u[0] * a + w[0] * b,
+        p[1] + d[1] * s + u[1] * a + w[1] * b,
+        p[2] + d[2] * s + u[2] * a + w[2] * b
+      ]);
+    }
+    return pts;
   }
 
   var MODELS = {
     nanotube: function (opts) {
-      var t = tubeAtoms(opts.hero ? 14 : 10, opts.hero ? 30 : 6);
-      var m = pack(t.atoms, t.bonds, 0.2);
-      m.radius = opts.hero ? t.radius : Math.hypot(t.radius, t.length / 2);
-      m.tube = t.radius;
-      m.mode = 2;
-      m.orient = opts.hero ? mul(rotZ(-0.6), rotX(-0.62)) : mul(rotZ(-0.95), rotX(0.45));
-      m.spinAxis = "y";
-      return m;
+      var t = tube(opts.hero ? 14 : 10, opts.hero ? 30 : 6);
+      var b = new Builder();
+      b.lattice(t.atoms, t.bonds);
+      return b.done({
+        radius: opts.hero ? t.radius : Math.hypot(t.radius, t.length / 2),
+        mode: 2,
+        amp: 1.1,
+        orient: opts.hero ? mul(rotZ(-0.6), rotX(-0.62)) : mul(rotZ(-0.95), rotX(0.45))
+      });
     },
+
     mwcnt: function () {
-      var a = tubeAtoms(7, 6), b = tubeAtoms(12, 5, 0), c = tubeAtoms(17, 4, 0);
-      var g = merge([a, b, c]);
-      var m = pack(g.atoms, g.bonds, 0.2);
-      m.radius = Math.hypot(c.radius, a.length / 2);
-      m.mode = 0;
-      m.orient = mul(rotZ(-0.9), rotX(0.5));
-      m.spinAxis = "y";
-      return m;
+      var b = new Builder();
+      var walls = [tube(7, 6), tube(12, 5), tube(17, 4)];
+      walls.forEach(function (w) { b.lattice(w.atoms, w.bonds); });
+      return b.done({
+        radius: Math.hypot(walls[2].radius, walls[0].length / 2),
+        orient: mul(rotZ(-0.9), rotX(0.5))
+      });
     },
-    graphene: function (opts) {
-      var nx = opts.hero ? 30 : 7, ny = opts.hero ? 14 : 4;
-      var h = honeycomb(nx, ny, false);
-      var atoms = h.atoms.map(function (p) { return [p[0] - h.width / 2, 0, p[1] - h.length / 2]; });
-      var m = pack(atoms, h.bonds, 0.2);
-      m.radius = opts.hero ? h.length * 0.62 : Math.hypot(h.width, h.length) / 2;
-      m.mode = 1;
-      m.orient = rotX(opts.hero ? 1.02 : 0.9);
-      m.spinAxis = "sheet";
-      return m;
+
+    graphene: function () {
+      var h = honeycomb(8, 4, false);
+      var b = new Builder();
+      b.lattice(h.atoms.map(function (p) { return [p[0] - h.width / 2, 0, p[1] - h.length / 2]; }), h.bonds);
+      return b.done({
+        radius: Math.hypot(h.width, h.length) / 2,
+        mode: 1,
+        amp: 0.5,
+        orient: rotX(0.9),
+        spin: "sway"
+      });
     },
+
     layers: function () {
-      var parts = [];
+      var b = new Builder();
       for (var l = -1; l <= 1; l++) {
         var h = honeycomb(6, 3, false);
         var shift = l === 0 ? S3 / 2 : 0;
-        parts.push({
-          atoms: h.atoms.map(function (p) { return [p[0] - h.width / 2 + shift, l * 2.3, p[1] - h.length / 2]; }),
-          bonds: h.bonds
-        });
+        b.lattice(h.atoms.map(function (p) { return [p[0] - h.width / 2 + shift, l * 2.3, p[1] - h.length / 2]; }), h.bonds);
       }
-      var g = merge(parts);
-      var m = pack(g.atoms, g.bonds, 0.2);
-      m.radius = 6.6;
-      m.mode = 0;
-      m.orient = rotX(0.62);
-      m.spinAxis = "y";
-      return m;
+      return b.done({ radius: 6.6, orient: rotX(0.62) });
     },
+
+    /* Dispersion: long tubes at every angle, suspended and slowly drifting. */
+    dispersion: function () {
+      var rand = rng(11), b = new Builder();
+      for (var i = 0; i < 54; i++) {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        var d = [q * Math.cos(th), z, q * Math.sin(th)];
+        var p = [(rand() - 0.5) * 7, (rand() - 0.5) * 7, (rand() - 0.5) * 7];
+        b.strand(wavy(rand, p, d, 13 + rand() * 9, 60, 0.7 + rand() * 0.9), 0.075);
+      }
+      return b.done({ radius: 7.4, mode: 3, amp: 0.34, orient: rotX(0.25), speed: 0.45 });
+    },
+
+    /* Fibre: many aligned tubes twisted together into one yarn. */
     fibre: function () {
-      /* Twisted bundle of seven strands drawn as smooth bead chains. */
-      var atoms = [], bonds = [], strands = 7, steps = 56, len = 13;
-      for (var s = 0; s < strands; s++) {
-        var ring = s === 0 ? 0 : 1.25;
-        var phase = ((s - 1) / 6) * Math.PI * 2;
-        for (var i = 0; i < steps; i++) {
-          var y = (i / (steps - 1) - 0.5) * len;
-          var tw = phase + y * 0.42;
-          atoms.push([ring * Math.cos(tw), y, ring * Math.sin(tw)]);
-          if (i) bonds.push([atoms.length - 2, atoms.length - 1]);
+      var b = new Builder(), steps = 84, len = 17;
+      var rings = [[1, 0], [6, 0.66], [12, 1.3]];
+      rings.forEach(function (ring) {
+        for (var s = 0; s < ring[0]; s++) {
+          var phase = (s / ring[0]) * Math.PI * 2, pts = [];
+          for (var i = 0; i <= steps; i++) {
+            var y = (i / steps - 0.5) * len, tw = phase + y * 0.36;
+            pts.push([ring[1] * Math.cos(tw), y, ring[1] * Math.sin(tw)]);
+          }
+          b.strand(pts, 0.33);
+        }
+      });
+      return b.done({ radius: 5.6, orient: mul(rotZ(-0.95), rotX(0.4)), speed: 1.4 });
+    },
+
+    /* Thermal interface: a vertically aligned forest between a hot surface
+       and a heat sink. Heat travels along each tube's axis. */
+    tim: function () {
+      var rand = rng(5), b = new Builder(), n = 8, gap = 0.92, h = 3.6;
+      for (var ix = 0; ix < n; ix++) {
+        for (var iz = 0; iz < n; iz++) {
+          var x = (ix - (n - 1) / 2) * gap + (rand() - 0.5) * 0.3;
+          var z = (iz - (n - 1) / 2) * gap + (rand() - 0.5) * 0.3;
+          var ph = rand() * 6.28, wob = 0.07 + rand() * 0.1, pts = [];
+          for (var i = 0; i <= 22; i++) {
+            var t = i / 22;
+            pts.push([x + wob * Math.sin(t * 5 + ph), -h + t * 2 * h, z + wob * Math.cos(t * 4 + ph)]);
+          }
+          b.strand(pts, 0.135);
         }
       }
-      var m = pack(atoms, bonds, 0.6);
-      m.bondR = 0.6;
-      m.radius = len / 2 + 0.6;
-      m.mode = 0;
-      m.orient = mul(rotZ(-0.95), rotX(0.4));
-      m.spinAxis = "y";
-      return m;
+      b.plate(0, -h - 0.3, 0, 8.6, 0.6, 8.6);
+      b.plate(0, h + 0.3, 0, 8.6, 0.6, 8.6);
+      return b.done({ radius: 7.2, pulse: 1, orient: rotX(0.36), speed: 0.55 });
+    },
+
+    /* Shielding: a nanotube network coating on a surface. Waves arrive from
+       above and lose their amplitude inside the coating. */
+    shield: function () {
+      var rand = rng(23), b = new Builder(), half = 4.2, top = 0.1, base = -1.5;
+      for (var i = 0; i < 90; i++) {
+        var th = rand() * 6.28;
+        var d = [Math.cos(th), (rand() - 0.5) * 0.16, Math.sin(th)];
+        var l = Math.hypot(d[0], d[1], d[2]);
+        d = [d[0] / l, d[1] / l, d[2] / l];
+        var p = [(rand() - 0.5) * 2 * half, base + 0.15 + rand() * (top - base - 0.3), (rand() - 0.5) * 2 * half];
+        var pts = wavy(rand, p, d, 5 + rand() * 5, 34, 0.14).filter(function (q) {
+          return Math.abs(q[0]) < half && Math.abs(q[2]) < half && q[1] < top && q[1] > base;
+        });
+        if (pts.length > 3) b.strand(pts, 0.07);
+      }
+      b.plate(0, base - 0.3, 0, half * 2 + 0.2, 0.6, half * 2 + 0.2);
+      /* Wave trains: beads on vertical lines; the shader swings them sideways. */
+      [[-2.4, -1.6], [0.2, 1.4], [2.6, -0.4]].forEach(function (w) {
+        for (var k = 0; k < 70; k++) {
+          b.a.push(w[0], base + 0.05 + (k / 69) * 8.2, w[1], -0.1);
+        }
+      });
+      return b.done({ radius: 7.2, mode: 4, amp: 0.62, coat: top, orient: rotX(0.3), speed: 0.5, offsetY: -0.28 });
+    },
+
+    /* Hybrid: nanotubes lying across a graphene sheet, bridging it. */
+    hybrid: function () {
+      var rand = rng(41), b = new Builder();
+      var h = honeycomb(9, 5, false);
+      b.lattice(h.atoms.map(function (p) { return [p[0] - h.width / 2, 0, p[1] - h.length / 2]; }), h.bonds);
+      [[-0.9, 0.35], [0.5, -0.5], [1.25, 0.2], [-0.3, 1.1]].forEach(function (s, i) {
+        var d = [Math.cos(s[0]), 0, Math.sin(s[0])];
+        var pts = wavy(rand, [s[1] * 3, 0.62, (i - 1.5) * 2.6], d, 19, 44, 0.3).map(function (q) {
+          return [q[0], 0.62 + Math.abs(q[1] - 0.62) * 0.4, q[2]];
+        });
+        b.strand(pts, 0.34);
+      });
+      return b.done({ radius: 10.4, orient: rotX(0.82), spin: "sway" });
     }
   };
 
@@ -261,14 +422,23 @@
     "uniform float uTime;",
     "uniform float uMode;",
     "uniform float uAmp;",
+    "uniform float uPulse;",
     "vec3 deform(vec3 p){",
-    "  if(uMode>0.5 && uMode<1.5){",
+    "  if(uMode>0.5 && uMode<1.5){",          // rippling sheet
     "    p.y += uAmp*(sin(p.x*0.42+uTime*0.9)*0.9 + sin(p.z*0.36-uTime*0.7)*0.7);",
-    "  } else if(uMode>1.5){",
+    "  } else if(uMode>1.5 && uMode<2.5){",   // slow sway along a tube
     "    p.x += uAmp*sin(p.y*0.085+uTime*0.5);",
     "    p.z += uAmp*0.6*cos(p.y*0.07+uTime*0.37);",
+    "  } else if(uMode>2.5 && uMode<3.5){",   // drifting in a liquid
+    "    p += uAmp*vec3(sin(p.y*0.5+uTime*0.6), sin(p.z*0.45+uTime*0.5+1.7), sin(p.x*0.55+uTime*0.55+3.1));",
     "  }",
     "  return p;",
+    "}",
+    /* A heat pulse climbing each tube: 0 between pulses, 1 at the crest. */
+    "float pulse(vec3 p){",
+    "  if(uPulse<0.5) return 0.0;",
+    "  float ph = floor(p.x*1.09+0.5)*2.3 + floor(p.z*1.09+0.5)*4.1;",
+    "  return pow(max(0.0, sin(p.y*0.8 - uTime*2.4 + ph)), 10.0);",
     "}"
   ].join("\n");
 
@@ -277,12 +447,22 @@
     "precision highp float;",
     "layout(location=0) in vec3 aPos;",
     "layout(location=1) in vec4 iAtom;",
+    "uniform float uCoat;",
     COMMON,
-    "out vec3 vN; out vec3 vP;",
+    "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
     "  vec3 c = deform(iAtom.xyz);",
-    "  vec4 mv = uMV*vec4(c + aPos*iAtom.w, 1.0);",
-    "  vN = mat3(uMV)*aPos; vP = mv.xyz;",
+    "  float r = abs(iAtom.w);",
+    "  float g = pulse(iAtom.xyz);",
+    "  if(iAtom.w<0.0){",                      // wave bead: swings, then dies in the coating
+    "    float env = c.y>uCoat ? 1.0 : exp((c.y-uCoat)*2.6);",
+    "    c.x += uAmp*env*sin(c.y*1.9 + uTime*3.4 + c.z);",
+    "    r *= 0.45 + 0.55*env;",
+    "    g = 0.6*env;",
+    "  }",
+    "  r *= 1.0 + 0.55*g*uPulse;",
+    "  vec4 mv = uMV*vec4(c + aPos*r, 1.0);",
+    "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
   ].join("\n");
@@ -293,47 +473,70 @@
     "layout(location=0) in vec3 aPos;",
     "layout(location=1) in vec3 iA;",
     "layout(location=2) in vec3 iB;",
-    "uniform float uBondR;",
+    "layout(location=3) in float iR;",
     COMMON,
-    "out vec3 vN; out vec3 vP;",
+    "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
     "  vec3 a = deform(iA); vec3 b = deform(iB);",
     "  vec3 ax = b-a; float len = length(ax); ax /= max(len,1e-5);",
     "  vec3 up = abs(ax.y)<0.95 ? vec3(0.,1.,0.) : vec3(1.,0.,0.);",
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
     "  vec3 n = u*aPos.x + w*aPos.z;",
-    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*uBondR, 1.0);",
-    "  vN = mat3(uMV)*n; vP = mv.xyz;",
+    "  float g = pulse(mix(iA,iB,aPos.y));",
+    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*(1.0+0.55*g*uPulse), 1.0);",
+    "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
   ].join("\n");
 
-  /* Studio lighting: soft key from upper left, cool fill, strong rim, and a
-     depth fade into the page colour so the object dissolves into the surface. */
+  var VS_BOX = [
+    "#version 300 es",
+    "precision highp float;",
+    "layout(location=0) in vec3 aPos;",
+    "layout(location=1) in vec3 aNor;",
+    "uniform mat4 uProj; uniform mat4 uMV;",
+    "uniform vec3 uC; uniform vec3 uS;",
+    "out vec3 vN; out vec3 vP; out float vGlow;",
+    "void main(){",
+    "  vec4 mv = uMV*vec4(uC + aPos*uS, 1.0);",
+    "  vN = mat3(uMV)*aNor; vP = mv.xyz; vGlow = 0.0;",
+    "  gl_Position = uProj*mv;",
+    "}"
+  ].join("\n");
+
+  /* Studio lighting in linear light: a soft key, a fill, and two softbox
+     reflections picked up through a Fresnel term, so surfaces read as polished
+     graphite or ceramic. Depth fades into the page colour. */
   var FS = [
     "#version 300 es",
     "precision highp float;",
-    "in vec3 vN; in vec3 vP;",
+    "in vec3 vN; in vec3 vP; in float vGlow;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
-    "uniform float uSpec; uniform float uRim; uniform float uAmb;",
+    "uniform float uSpec; uniform float uF0; uniform float uAmb; uniform float uGlow;",
     "out vec4 o;",
     "void main(){",
     "  vec3 n = normalize(vN); vec3 v = normalize(-vP);",
     "  if(dot(n,v)<0.0) n = -n;",
-    "  vec3 l1 = normalize(vec3(-0.55,0.75,0.6));",
-    "  vec3 l2 = normalize(vec3(0.8,0.1,0.45));",
+    "  float ndv = max(dot(n,v),0.0);",
+    "  vec3 l1 = normalize(vec3(-0.55,0.78,0.55));",
+    "  vec3 l2 = normalize(vec3(0.8,0.05,0.5));",
     "  float d1 = max(dot(n,l1),0.0);",
     "  float d2 = max(dot(n,l2),0.0);",
     "  float hemi = 0.5+0.5*n.y;",
-    "  float s1 = pow(max(dot(n,normalize(l1+v)),0.0),64.0);",
-    "  float s2 = pow(max(dot(n,normalize(l2+v)),0.0),24.0);",
-    "  float fres = pow(1.0-max(dot(n,v),0.0),3.0);",
-    "  vec3 c = uBase*(uAmb*(0.55+0.45*hemi) + 0.85*d1 + 0.22*d2);",
-    "  c += uSpec*(s1 + 0.22*s2) + uRim*fres;",
+    "  vec3 base = pow(uBase, vec3(2.2));",
+    "  vec3 c = base*(uAmb*(0.4+0.6*hemi) + 0.95*d1 + 0.2*d2);",
+    "  vec3 r = reflect(-v,n);",
+    "  float boxTop = smoothstep(0.52,0.9,r.y)*smoothstep(-0.75,-0.15,r.x)*(1.0-smoothstep(0.35,0.8,r.x));",
+    "  float boxSide = smoothstep(0.55,0.92,r.x)*smoothstep(-0.35,0.25,r.y)*(1.0-smoothstep(0.55,0.85,r.y));",
+    "  float sharp = pow(max(dot(n,normalize(l1+v)),0.0),90.0);",
+    "  float fres = uF0 + (1.0-uF0)*pow(1.0-ndv,5.0);",
+    "  c += uSpec*(fres*(1.1*boxTop + 0.45*boxSide) + 0.5*sharp);",
+    "  c *= 0.62 + 0.38*ndv;",                 // edges fall off: rounder forms
+    "  c += uGlow*vGlow;",
     "  float f = smoothstep(uNear,uFar,-vP.z);",
-    "  c = mix(c,uFog,f);",
-    "  o = vec4(c,1.0);",
+    "  c = mix(c, pow(uFog, vec3(2.2)), f);",
+    "  o = vec4(pow(c, vec3(1.0/2.2)), 1.0);",
     "}"
   ].join("\n");
 
@@ -368,11 +571,12 @@
     this.canvas = canvas;
     this.atomProg = compile(gl, VS_ATOM, FS);
     this.bondProg = compile(gl, VS_BOND, FS);
-    this.sphere = this.mesh(icosphere(lowDetail ? 1 : 2));
-    this.cyl = this.mesh(cylinder(lowDetail ? 8 : 12));
+    this.boxProg = compile(gl, VS_BOX, FS);
+    this.sphere = this.mesh(icosphere(lowDetail ? 2 : 3));
+    this.cyl = this.mesh(cylinder(lowDetail ? 12 : 20));
+    this.box = this.boxMesh(cube());
     this.cache = {};
     gl.enable(gl.DEPTH_TEST);
-
   }
 
   Engine.prototype.mesh = function (m) {
@@ -384,6 +588,24 @@
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.idx, gl.STATIC_DRAW);
     return { vb: vb, ib: ib, count: m.idx.length };
+  };
+
+  Engine.prototype.boxMesh = function (m) {
+    var gl = this.gl;
+    var vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    var vb = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+    gl.bufferData(gl.ARRAY_BUFFER, m.data, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
+    var ib = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.idx, gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    return { vao: vao, count: m.idx.length };
   };
 
   /* GPU buffers for a model, built once per engine. */
@@ -410,7 +632,7 @@
     }
     var out = {
       atomVao: vao(this.sphere, data.atoms, [[1, 4, 0]], 16),
-      bondVao: vao(this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12]], 24)
+      bondVao: data.bondCount ? vao(this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12], [3, 1, 24]], 28) : null
     };
     this.cache[key] = out;
     return out;
@@ -429,41 +651,56 @@
     var dist = scene.hero ? d.radius * scene.heroDist : (d.radius / Math.sin(fov / 2)) * 1.04;
     var proj = perspective(fov, w / h, Math.max(0.1, dist - d.radius * 4), dist + d.radius * 12);
 
-    var spin = scene.spin;
-    var model = d.spinAxis === "sheet" ? mul(d.orient, rotY(spin * 0.35)) : mul(d.orient, rotY(spin));
+    var turn = d.spin === "sway" ? Math.sin(scene.spin * 0.6) * 0.5 : scene.spin;
+    var model = mul(d.orient, rotY(turn));
     /* offX / offY place the object as a fraction of the half-frame. */
     var halfH = dist * Math.tan(fov / 2);
-    var view = mul(translation(scene.offX * halfH * (w / h), scene.offY * halfH, -dist), mul(rotX(scene.tiltX), rotY(scene.tiltY)));
+    var offY = scene.offY + (d.offsetY || 0);
+    var view = mul(translation(scene.offX * halfH * (w / h), offY * halfH, -dist), mul(rotX(scene.tiltX), rotY(scene.tiltY)));
     var mv = mul(view, model);
 
-    var near = scene.hero ? dist - d.radius * 1.1 : dist - d.radius * 0.1;
-    var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 2.4;
+    var near = scene.hero ? dist - d.radius * 1.1 : dist - d.radius * 0.2;
+    var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 2.2;
 
-    var self = this;
     function use(prog) {
       gl.useProgram(prog.p);
       gl.uniformMatrix4fv(prog.u.uProj, false, proj);
       gl.uniformMatrix4fv(prog.u.uMV, false, mv);
       gl.uniform1f(prog.u.uTime, time);
       gl.uniform1f(prog.u.uMode, d.mode);
-      gl.uniform1f(prog.u.uAmp, d.mode === 1 ? 0.5 : d.mode === 2 ? 1.1 : 0);
+      gl.uniform1f(prog.u.uAmp, d.amp);
+      gl.uniform1f(prog.u.uPulse, d.pulse);
       gl.uniform3fv(prog.u.uBase, look.base);
       gl.uniform3fv(prog.u.uFog, look.fog);
       gl.uniform1f(prog.u.uNear, near);
       gl.uniform1f(prog.u.uFar, far);
       gl.uniform1f(prog.u.uSpec, look.spec);
-      gl.uniform1f(prog.u.uRim, look.rim);
+      gl.uniform1f(prog.u.uF0, look.f0);
       gl.uniform1f(prog.u.uAmb, look.amb);
+      gl.uniform1f(prog.u.uGlow, look.glow);
     }
 
-    use(this.bondProg);
-    gl.uniform1f(this.bondProg.u.uBondR, d.bondR || 0.085);
-    gl.bindVertexArray(gpu.bondVao);
-    gl.drawElementsInstanced(gl.TRIANGLES, self.cyl.count, gl.UNSIGNED_SHORT, 0, d.bondCount);
+    if (d.plates.length) {
+      use(this.boxProg);
+      gl.uniform3fv(this.boxProg.u.uBase, look.plate);
+      gl.bindVertexArray(this.box.vao);
+      for (var i = 0; i < d.plates.length; i++) {
+        gl.uniform3fv(this.boxProg.u.uC, d.plates[i].c);
+        gl.uniform3fv(this.boxProg.u.uS, d.plates[i].s);
+        gl.drawElements(gl.TRIANGLES, this.box.count, gl.UNSIGNED_SHORT, 0);
+      }
+    }
+
+    if (gpu.bondVao) {
+      use(this.bondProg);
+      gl.bindVertexArray(gpu.bondVao);
+      gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.bondCount);
+    }
 
     use(this.atomProg);
+    gl.uniform1f(this.atomProg.u.uCoat, d.coat || 0);
     gl.bindVertexArray(gpu.atomVao);
-    gl.drawElementsInstanced(gl.TRIANGLES, self.sphere.count, gl.UNSIGNED_SHORT, 0, d.atomCount);
+    gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.atomCount);
     gl.bindVertexArray(null);
   };
 
@@ -482,15 +719,15 @@
     var surface = el.getAttribute("data-hc-3d-surface");
     if (surface === "graphite") {
       /* Polished silver on a graphite panel, in both themes. */
-      return { base: [0.62, 0.62, 0.62], fog: [0.1, 0.1, 0.1], spec: 0.75, rim: 0.3, amb: 0.3 };
+      return { base: [0.74, 0.74, 0.74], plate: [0.4, 0.4, 0.4], fog: [0.1, 0.1, 0.1], spec: 0.9, f0: 0.5, amb: 0.2, glow: 0.9 };
     }
     var bg = parse(getComputedStyle(document.documentElement).getPropertyValue("--hc-bg")) || (dark ? [0, 0, 0] : [1, 1, 1]);
     if (dark) {
       /* White ceramic dissolving into black. */
-      return { base: [0.78, 0.78, 0.78], fog: bg, spec: 0.55, rim: 0.22, amb: 0.22 };
+      return { base: [0.86, 0.86, 0.86], plate: [0.45, 0.45, 0.45], fog: bg, spec: 0.7, f0: 0.35, amb: 0.16, glow: 0.7 };
     }
-    /* Graphite dissolving into white. */
-    return { base: [0.09, 0.09, 0.09], fog: bg, spec: 0.5, rim: 0.2, amb: 0.5 };
+    /* Polished graphite dissolving into white. */
+    return { base: [0.2, 0.2, 0.2], plate: [0.42, 0.42, 0.42], fog: bg, spec: 0.85, f0: 0.16, amb: 0.5, glow: 0.5 };
   }
 
   /* ---------- scenes ---------- */
@@ -538,12 +775,12 @@
 
     try {
       if (hero) {
-        scene.engine = new Engine(canvas, mobile());
+        scene.engine = new Engine(canvas, true);
       } else {
         if (sharedFailed) throw new Error("shared");
         if (!shared) {
           try {
-            shared = new Engine(document.createElement("canvas"), true);
+            shared = new Engine(document.createElement("canvas"), mobile());
           } catch (e) {
             sharedFailed = true;
             throw e;
@@ -562,7 +799,8 @@
 
   function measure(scene) {
     var r = scene.el.getBoundingClientRect();
-    var dpr = Math.min(window.devicePixelRatio || 1, scene.hero ? (mobile() ? 1.5 : 1.75) : 2);
+    var px = window.devicePixelRatio || 1;
+    var dpr = scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
     var w = Math.max(1, Math.round(r.width * dpr));
     var h = Math.max(1, Math.round(r.height * dpr));
     if (w !== scene.w || h !== scene.h) {
@@ -620,7 +858,7 @@
       if (STATIC && s.drawn) continue;
       if (!STATIC) {
         any = true;
-        s.spin += dt * (s.hero ? 0.16 : 0.34);
+        s.spin += dt * (s.hero ? 0.16 : 0.34) * (s.data.speed || 1);
         var tx = pointer.y * (s.hero ? 0.1 : 0.22);
         var ty = pointer.x * (s.hero ? 0.14 : 0.3);
         s.tiltX += (tx - s.tiltX) * 0.06;
