@@ -98,7 +98,7 @@
   --hc-border: #333333;
   --hc-heading: #ffffff;
   --hc-text: #ffffff;
-  --hc-text-muted: #b4b4b4;
+  --hc-text-muted: #cfcfcf;
   --hc-grain: url("/assets/media/texture/grain-light.png");
   --hc-brushed: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.05) 30%, transparent 46%, rgba(255, 255, 255, 0.04) 72%, transparent 100%);
   --hc-metal-surface: linear-gradient(180deg, #0e0e0e 0%, #030303 100%);

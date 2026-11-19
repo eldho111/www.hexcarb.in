@@ -3739,53 +3739,6 @@ a.hc-filter-chip {
   margin-bottom: 0.9rem;
 }
 
-/* ─── Moving line of forms: outlined words drifting past ─── */
-.hc-ticker {
-  overflow: hidden;
-  padding-block: clamp(1.6rem, 4vw, 3rem);
-  border-bottom: 1px solid var(--hc-heading);
-  background: var(--hc-bg);
-}
-
-.hc-ticker-track {
-  display: flex;
-  width: max-content;
-  animation: hcTicker 46s linear infinite;
-}
-
-.hc-ticker-track span {
-  padding-inline: clamp(1rem, 2.6vw, 2.4rem);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: clamp(2.6rem, 8vw, 6.4rem);
-  line-height: 1;
-  letter-spacing: -0.05em;
-  white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--hc-heading);
-}
-
-.hc-ticker-track span:nth-child(3n + 1) {
-  color: var(--hc-heading);
-  -webkit-text-stroke: 0;
-}
-
-.hc-ticker:hover .hc-ticker-track {
-  animation-play-state: paused;
-}
-
-@keyframes hcTicker {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hc-ticker-track {
-    animation: none;
-  }
-}
-
 /* Sections rise into place with a slight tilt, cards one after another. */
 .hc-reveal {
   transform: perspective(900px) translateY(26px) rotateX(6deg);
@@ -3822,5 +3775,96 @@ a.hc-filter-chip {
     transform: scaleX(0.9);
     opacity: 0.75;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Quieter surfaces
+   Grain is a whisper, and only on the large black bands. Cards, silver
+   bands and the hero are clean. Dark mode is flat black with white type.
+   ═══════════════════════════════════════════════════════════════════ */
+.hc-stage,
+:root[data-theme="dark"] .hc-stage {
+  background: radial-gradient(90% 70% at 78% 108%, rgba(0, 0, 0, 0.08) 0%, transparent 62%), var(--hc-bg);
+}
+
+:root[data-theme="dark"] .hc-stage {
+  background: #000000;
+}
+
+.hc-soft-bg,
+:root[data-theme="dark"] .hc-soft-bg {
+  background-image: var(--hc-metal-surface);
+  background-size: auto;
+}
+
+:root[data-theme="dark"] .hc-soft-bg {
+  background: #080808;
+}
+
+.hc-graphite,
+.hc-command-strip,
+.hc-quote-panel,
+.hc-app-card,
+.hc-app-cards .hc-app-card:nth-child(n),
+:root[data-theme="dark"] .hc-graphite,
+:root[data-theme="dark"] .hc-command-strip,
+:root[data-theme="dark"] .hc-quote-panel,
+:root[data-theme="dark"] .hc-app-card,
+:root[data-theme="dark"] .hc-app-cards .hc-app-card:nth-child(n) {
+  background-image: var(--hc-graphite-surface);
+  background-size: auto;
+}
+
+.hc-closing::after {
+  background: linear-gradient(180deg, transparent 40%, #000000 92%);
+}
+
+/* Dark mode: flat surfaces, full-strength type. */
+:root[data-theme="dark"] .hc-card {
+  background: #0c0c0c;
+  border-color: #3a3a3a;
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .hc-graphite,
+:root[data-theme="dark"] .hc-command-strip,
+:root[data-theme="dark"] .hc-quote-panel,
+:root[data-theme="dark"] .hc-app-card,
+:root[data-theme="dark"] .hc-app-cards .hc-app-card:nth-child(n) {
+  background: #0c0c0c;
+  border-color: #3a3a3a;
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .hc-metric-band,
+:root[data-theme="dark"] .hc-footer {
+  background-color: #000000;
+  background-image: var(--hc-grain-light);
+  background-size: 180px 180px;
+  border-top: 1px solid #2e2e2e;
+}
+
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] li,
+:root[data-theme="dark"] .hc-card p,
+:root[data-theme="dark"] .hc-muted,
+:root[data-theme="dark"] .hc-app-card p,
+:root[data-theme="dark"] .hc-graphite p,
+:root[data-theme="dark"] .hc-quote-panel p,
+:root[data-theme="dark"] .hc-quote-panel li,
+:root[data-theme="dark"] .hc-footer a,
+:root[data-theme="dark"] .hc-footer p,
+:root[data-theme="dark"] .hc-metric > span,
+:root[data-theme="dark"] .hc-prop-figure span {
+  color: #d6d6d6;
+}
+
+:root[data-theme="dark"] .hc-stage-copy p,
+:root[data-theme="dark"] .hc-prop-copy p {
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .hc-closing h2 {
+  color: #9a9a9a;
 }
 
