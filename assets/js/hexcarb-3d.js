@@ -286,6 +286,9 @@
     return pts;
   }
 
+  /* Tubes lie left to right, tilted slightly toward the viewer. */
+  var PROP_VIEW = mul(rotX(0.3), rotZ(-Math.PI / 2));
+
   var MODELS = {
     nanotube: function (opts) {
       var t = tube(opts.hero ? 14 : 10, opts.hero ? 30 : 6);
@@ -332,32 +335,54 @@
       return b.done({ radius: 6.6, orient: rotX(0.62) });
     },
 
+    /* Property scenes: the nanotube (upper) beside the everyday material it
+       is compared with (lower). Both lie along local y; the comparison object
+       sits at positive local x, which the shaders test against uSplit. */
     stretch: function () {
-      var t = tube(10, 7), b = new Builder();
-      b.lattice(t.atoms, t.bonds);
-      return b.done({ radius: 9.6, mode: 5, amp: 0.13, orient: mul(rotZ(-1.0), rotX(0.35)), speed: 0.5 });
+      var t = tube(10, 7), b = new Builder(), GAP = 4.6;
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      [-1, 1].forEach(function (side) {          // steel bar in two halves so it can part
+        var pts = [];
+        for (var i = 0; i < 20; i++) pts.push([GAP, side * (0.26 + i * 0.51), 0]);
+        b.strand(pts, 1.9);
+      });
+      return b.done({ radius: 11.2, mode: 5, split: 0, orient: PROP_VIEW, spin: "none" });
     },
 
     current: function () {
-      var t = tube(10, 8), b = new Builder(), rand = rng(3);
-      b.lattice(t.atoms, t.bonds);
-      for (var i = 0; i < 16; i++) {
-        var a = rand() * 6.28, r = rand() * t.radius * 0.55;
-        b.a.push(r * Math.cos(a), (rand() - 0.5) * t.length, r * Math.sin(a), -0.3);
+      var t = tube(10, 8), b = new Builder(), rand = rng(3), GAP = 4.6;
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      for (var i = 0; i < 14; i++) {
+        var a = rand() * 6.28, r = rand() * t.radius * 0.5;
+        b.a.push(-GAP + r * Math.cos(a), (rand() - 0.5) * t.length, r * Math.sin(a), -0.3);
       }
-      return b.done({ radius: 10.4, mode: 7, amp: 0, len: t.length, orient: mul(rotZ(-1.0), rotX(0.35)), speed: 0.5 });
+      for (var ix = -1; ix <= 1; ix++) {         // copper: a regular block of atoms
+        for (var iz = -1; iz <= 1; iz++) {
+          for (var iy = 0; iy < 17; iy++) b.a.push(GAP + ix * 1.35, (iy - 8) * 1.38, iz * 1.35, 0.46);
+        }
+      }
+      for (var k = 0; k < 12; k++) {
+        b.a.push(GAP + (rand() - 0.5) * 2.4, (rand() - 0.5) * t.length, (rand() - 0.5) * 2.4, -0.26);
+      }
+      return b.done({ radius: 11.6, mode: 7, split: 0, len: t.length, orient: PROP_VIEW, spin: "none" });
     },
 
     heat: function () {
-      var t = tube(10, 8), b = new Builder();
-      b.lattice(t.atoms, t.bonds);
-      return b.done({ radius: 10.4, pulse: 2, orient: mul(rotZ(-1.0), rotX(0.35)), speed: 0.5 });
+      var t = tube(10, 8), b = new Builder(), rand = rng(9), GAP = 4.6;
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      for (var i = 0; i < 5; i++) {              // polymer: a few tangled chains
+        var p = [GAP + (rand() - 0.5) * 1.6, 0, (rand() - 0.5) * 1.6];
+        b.strand(wavy(rand, p, [0, 1, 0], t.length, 46, 0.55), 0.5);
+      }
+      return b.done({ radius: 11.6, pulse: 2, split: 0, orient: PROP_VIEW, spin: "none" });
     },
 
     bend: function () {
-      var t = tube(8, 9), b = new Builder();
-      b.lattice(t.atoms, t.bonds);
-      return b.done({ radius: 11.2, mode: 6, amp: 0.02, orient: mul(rotZ(-1.2), rotX(0.3)), spin: "sway" });
+      var t = tube(8, 9), b = new Builder(), GAP = 3.6, pts = [];
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      for (var i = 0; i <= 48; i++) pts.push([GAP, (i / 48 - 0.5) * 25, 0]);
+      b.strand(pts, 0.85);                       // steel rod
+      return b.done({ radius: 12.4, mode: 6, amp: 0.02, split: 0, orient: PROP_VIEW, spin: "none" });
     },
 
     /* Backdrop: a jittered grid of points; the shader lifts it into dunes. */
@@ -475,8 +500,11 @@
     "uniform float uAmp;",
     "uniform float uPulse;",
     "uniform float uGrow;",
+    "uniform float uSplit;",                 // local x beyond this = the comparison object
+    "float rs = 1.0;",                       // radius scale set by deform()
     "float grow(vec3 p){ return smoothstep(0.0, 7.0, uGrow + p.y); }",
     "vec3 deform(vec3 p){",
+    "  rs = 1.0;",
     "  if(uMode>0.5 && uMode<1.5){",          // rippling sheet
     "    p.y += uAmp*(sin(p.x*0.42+uTime*0.9)*0.9 + sin(p.z*0.36-uTime*0.7)*0.7);",
     "  } else if(uMode>1.5 && uMode<2.5){",   // slow sway along a tube
@@ -484,19 +512,30 @@
     "    p.z += uAmp*0.6*cos(p.y*0.07+uTime*0.37);",
     "  } else if(uMode>2.5 && uMode<3.5){",   // drifting in a liquid
     "    p += uAmp*vec3(sin(p.y*0.5+uTime*0.6), sin(p.z*0.45+uTime*0.5+1.7), sin(p.x*0.55+uTime*0.55+3.1));",
-    "  } else if(uMode>4.5 && uMode<5.5){",   // pulled along the axis, necking slightly
-    "    float k = uAmp*(0.5-0.5*cos(uTime*1.3));",
-    "    p.y *= 1.0+k; p.xz *= 1.0-0.45*k;",
-    "  } else if(uMode>5.5 && uMode<6.5){",   // flexed into an arc and back
-    "    float b = uAmp*sin(uTime*1.1);",
-    "    p.x += b*p.y*p.y - b*60.0;",
+    "  } else if(uMode>4.5 && uMode<5.5){",   // same load on both: steel necks and snaps, the tube holds
+    "    float ph = fract(uTime/7.0); float load = smoothstep(0.0,0.5,ph); float gone = smoothstep(0.92,1.0,ph);",
+    "    if(p.x<uSplit){ p.y *= 1.0+0.05*load*(1.0-gone); }",
+    "    else {",
+    "      float snap = step(0.5,ph);",
+    "      rs = mix(1.0-0.64*load*exp(-p.y*p.y/7.0), 1.0, gone);",
+    "      p.y *= 1.0+0.12*load*(1.0-snap);",
+    "      p.y += sign(p.y)*1.7*snap*(1.0-gone);",
+    "    }",
+    "  } else if(uMode>5.5 && uMode<6.5){",   // both bent: the tube springs back, the rod stays kinked
+    "    float ph = fract(uTime/7.0); float up = smoothstep(0.0,0.3,ph); float gone = smoothstep(0.92,1.0,ph);",
+    "    if(p.x<uSplit){ p.x -= uAmp*up*(1.0-smoothstep(0.36,0.62,ph))*p.y*p.y; }",
+    "    else { p.x += 9.0*uAmp*up*(1.0-gone)*abs(p.y); }",
     "  }",
     "  return p;",
     "}",
     /* A heat pulse climbing each tube: 0 between pulses, 1 at the crest. */
     "float pulse(vec3 p){",
     "  if(uPulse<0.5) return 0.0;",
-    "  if(uPulse>1.5) return pow(max(0.0, sin(p.y*0.3 - uTime*2.6)), 5.0);",   // one front along a single tube
+    "  if(uPulse>1.5){",                       // heat front: crosses the tube at once, crawls through the polymer
+    "    float ph = fract(uTime/7.0); float gone = 1.0-smoothstep(0.9,1.0,ph);",
+    "    float front = p.x<uSplit ? -14.0+90.0*ph : -14.0+8.0*ph;",
+    "    return gone*(p.x<uSplit ? 1.0 : 0.7)*(1.0-smoothstep(front-2.5,front+2.5,p.y));",
+    "  }",
     "  float ph = floor(p.x*1.09+0.5)*2.3 + floor(p.z*1.09+0.5)*4.1;",
     "  return pow(max(0.0, sin(p.y*0.8 - uTime*2.4 + ph)), 60.0);",
     "}"
@@ -515,8 +554,13 @@
     "  vec3 c = deform(iAtom.xyz);",
     "  float r = abs(iAtom.w);",
     "  float g = pulse(iAtom.xyz);",
-    "  if(iAtom.w<0.0 && uMode>6.5){",         // charge carrier: streams along the bore
-    "    c.y = mod(c.y + uTime*(7.0+3.0*fract(c.x*7.3)) + uLen*0.5, uLen) - uLen*0.5;",
+    "  if(iAtom.w<0.0 && uMode>6.5){",         // charge carriers: straight through the tube, scattering in copper
+    "    if(iAtom.x<uSplit){",
+    "      c.y = mod(c.y + uTime*(9.0+3.0*fract(c.z*7.3)) + uLen*0.5, uLen) - uLen*0.5;",
+    "    } else {",
+    "      c.y = mod(c.y + uTime*1.2 + uLen*0.5, uLen) - uLen*0.5;",
+    "      c.x += 0.6*sin(uTime*7.0 + iAtom.y*5.0); c.z += 0.6*cos(uTime*6.1 + iAtom.y*3.0);",
+    "    }",
     "    g = 1.0;",
     "  } else if(iAtom.w<0.0){",               // wave bead: swings, then dies in the coating
     "    float env = c.y>uCoat ? 1.0 : exp((c.y-uCoat)*2.6);",
@@ -524,7 +568,7 @@
     "    r *= 0.45 + 0.55*env;",
     "    g = 0.0;",
     "  }",
-    "  r *= (1.0 + 0.3*g*min(uPulse,1.0))*grow(iAtom.xyz);",
+    "  r *= (1.0 + 0.3*g*(uPulse>1.5 ? 0.0 : uPulse))*grow(iAtom.xyz)*rs;",
     "  vec4 mv = uMV*vec4(c + aPos*r, 1.0);",
     "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
@@ -547,7 +591,7 @@
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
     "  vec3 n = u*aPos.x + w*aPos.z;",
     "  float g = pulse(mix(iA,iB,aPos.y));",
-    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*(1.0+0.3*g*min(uPulse,1.0))*grow(0.5*(iA+iB)), 1.0);",
+    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*rs*(1.0+0.3*g*(uPulse>1.5 ? 0.0 : uPulse))*grow(0.5*(iA+iB)), 1.0);",
     "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
@@ -803,6 +847,7 @@
       gl.uniform1f(prog.u.uSheen, look.sheen || 0);
       gl.uniform1f(prog.u.uFogMax, scene.hero ? 1 : (look.depth === undefined ? 1 : look.depth));
       gl.uniform1f(prog.u.uGrow, scene.grow === undefined ? 1e5 : scene.grow);
+      gl.uniform1f(prog.u.uSplit, d.split === undefined ? 1e5 : d.split);
     }
 
     if (gpu.pointVao) {
@@ -859,15 +904,15 @@
     return null;
   }
 
-  /* Product objects follow one rule: in light mode a pitch-black object on
-     pure white, in dark mode a white object on pure black. Light comes from
-     above; the page draws the shadow (or glow) underneath. */
+  /* Product objects follow one rule in both themes: a pitch-black object on
+     a pure white window, lit from above, with the page drawing the shadow
+     underneath. Only the frameless home hero follows the theme. */
   function lookFor(el) {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
     if (el.getAttribute("data-hc-3d") === "dunes") {
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
-    if (dark) {
+    if (dark && el.getAttribute("data-hc-3d-view") === "hero") {
       return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.5, sheen: 0, depth: 0.5 };
     }
     return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.5, cut: 0, sheen: 0.5, depth: 0.26 };
