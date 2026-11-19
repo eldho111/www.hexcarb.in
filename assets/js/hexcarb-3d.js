@@ -381,7 +381,7 @@
         var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
         var d = [q * Math.cos(th), z, q * Math.sin(th)];
         var p = [(rand() - 0.5) * 7, (rand() - 0.5) * 7, (rand() - 0.5) * 7];
-        b.strand(wavy(rand, p, d, 13 + rand() * 9, 60, 0.7 + rand() * 0.9), 0.075);
+        b.strand(wavy(rand, p, d, 13 + rand() * 9, 96, 0.7 + rand() * 0.9), 0.085);
       }
       return b.done({ radius: 7.4, mode: 3, amp: 0.34, orient: rotX(0.25), speed: 0.45 });
     },
@@ -474,6 +474,8 @@
     "uniform float uMode;",
     "uniform float uAmp;",
     "uniform float uPulse;",
+    "uniform float uGrow;",
+    "float grow(vec3 p){ return smoothstep(0.0, 7.0, uGrow + p.y); }",
     "vec3 deform(vec3 p){",
     "  if(uMode>0.5 && uMode<1.5){",          // rippling sheet
     "    p.y += uAmp*(sin(p.x*0.42+uTime*0.9)*0.9 + sin(p.z*0.36-uTime*0.7)*0.7);",
@@ -496,7 +498,7 @@
     "  if(uPulse<0.5) return 0.0;",
     "  if(uPulse>1.5) return pow(max(0.0, sin(p.y*0.3 - uTime*2.6)), 5.0);",   // one front along a single tube
     "  float ph = floor(p.x*1.09+0.5)*2.3 + floor(p.z*1.09+0.5)*4.1;",
-    "  return pow(max(0.0, sin(p.y*0.8 - uTime*2.4 + ph)), 10.0);",
+    "  return pow(max(0.0, sin(p.y*0.8 - uTime*2.4 + ph)), 60.0);",
     "}"
   ].join("\n");
 
@@ -520,9 +522,9 @@
     "    float env = c.y>uCoat ? 1.0 : exp((c.y-uCoat)*2.6);",
     "    c.x += uAmp*env*sin(c.y*1.9 + uTime*3.4 + c.z);",
     "    r *= 0.45 + 0.55*env;",
-    "    g = 0.6*env;",
+    "    g = 0.0;",
     "  }",
-    "  r *= 1.0 + 0.55*g*min(uPulse,1.0);",
+    "  r *= (1.0 + 0.3*g*min(uPulse,1.0))*grow(iAtom.xyz);",
     "  vec4 mv = uMV*vec4(c + aPos*r, 1.0);",
     "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
@@ -545,7 +547,7 @@
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
     "  vec3 n = u*aPos.x + w*aPos.z;",
     "  float g = pulse(mix(iA,iB,aPos.y));",
-    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*(1.0+0.55*g*min(uPulse,1.0)), 1.0);",
+    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*(1.0+0.3*g*min(uPulse,1.0))*grow(0.5*(iA+iB)), 1.0);",
     "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
@@ -576,7 +578,7 @@
     "in vec3 vN; in vec3 vP; in float vGlow;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
-    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut;",
+    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut; uniform float uSheen; uniform float uFogMax;",
     "out vec4 o;",
     "float env(vec3 r){",
     "  float v = mix(uEnvLo, uEnvHi, smoothstep(-0.35,0.75,r.y));",
@@ -600,9 +602,14 @@
     "  float sharp = pow(max(dot(n,normalize(l1+v)),0.0),120.0);",
     "  vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(0.9*sharp + 0.25*fres);",
     "  vec3 c = mix(diffuse + vec3(0.08*mirror*fres), metal, uMetal);",
+    "  vec3 rr = reflect(-v,n);",
+    /* Piano-black gloss: a long overhead softbox, a tight hot spot, a thin rim. */
+    "  float band = smoothstep(0.45,0.98,rr.y);",
+    "  float hot = pow(max(dot(n,normalize(l1+v)),0.0),34.0);",
+    "  c += uSheen*(0.16*band*band*band + 0.7*hot + 0.22*fres);",
     "  c += uGlow*vGlow;",
     "  c *= 1.0 - uCut*vGlow;",
-    "  float f = smoothstep(uNear,uFar,-vP.z);",
+    "  float f = uFogMax*smoothstep(uNear,uFar,-vP.z);",
     "  c = mix(c, pow(uFog, vec3(2.2)), f);",
     "  o = vec4(pow(c, vec3(1.0/2.2)), 1.0);",
     "}"
@@ -772,8 +779,8 @@
     var view = mul(translation(scene.offX * halfH * (w / h), offY * halfH, -dist), mul(rotX(scene.tiltX), rotY(scene.tiltY)));
     var mv = mul(view, model);
 
-    var near = scene.hero ? dist - d.radius * 1.1 : dist + d.radius * 6;
-    var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 40;
+    var near = scene.hero ? dist - d.radius * 1.1 : dist - d.radius * 0.5;
+    var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 1.1;
 
     function use(prog) {
       gl.useProgram(prog.p);
@@ -793,6 +800,9 @@
       gl.uniform1f(prog.u.uAmb, look.amb);
       gl.uniform1f(prog.u.uGlow, look.glow);
       gl.uniform1f(prog.u.uCut, look.cut || 0);
+      gl.uniform1f(prog.u.uSheen, look.sheen || 0);
+      gl.uniform1f(prog.u.uFogMax, scene.hero ? 1 : (look.depth === undefined ? 1 : look.depth));
+      gl.uniform1f(prog.u.uGrow, scene.grow === undefined ? 1e5 : scene.grow);
     }
 
     if (gpu.pointVao) {
@@ -858,9 +868,9 @@
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
     if (dark) {
-      return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.55 };
+      return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.5, sheen: 0, depth: 0.5 };
     }
-    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.85, cut: 0 };
+    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.5, cut: 0, sheen: 0.5, depth: 0.26 };
   }
 
   /* ---------- scenes ---------- */
@@ -903,7 +913,8 @@
       w: 0,
       h: 0,
       dpr: 1,
-      drawn: false
+      drawn: false,
+      born: 0
     };
 
     try {
@@ -979,12 +990,16 @@
   }
 
   var last = 0;
+  var lastScroll = window.scrollY || 0;
   function frame(now) {
     running = false;
     var dt = Math.min(0.05, (now - last) / 1000 || 0);
     last = now;
     var time = (now - start) / 1000;
     var any = false;
+    var sy = window.scrollY || 0;
+    var scrollDelta = sy - lastScroll;
+    lastScroll = sy;
     for (var i = 0; i < scenes.length; i++) {
       var s = scenes[i];
       if (!s.visible) continue;
@@ -992,6 +1007,12 @@
       if (!STATIC) {
         any = true;
         s.spin += dt * (s.hero ? 0.16 : 0.34) * (s.data.speed || 1);
+        if (s.hero) {
+          /* Build-in on first sight, then turn with the page scroll. */
+          if (!s.born) s.born = now;
+          s.grow = -52 + ((now - s.born) / 1000) * 62;
+          s.spin += scrollDelta * 0.0035;
+        }
         var tx = pointer.y * (s.hero ? 0.1 : 0.22);
         var ty = pointer.x * (s.hero ? 0.14 : 0.3);
         s.tiltX += (tx - s.tiltX) * 0.06;

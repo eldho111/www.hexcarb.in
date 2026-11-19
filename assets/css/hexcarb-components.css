@@ -3739,3 +3739,88 @@ a.hc-filter-chip {
   margin-bottom: 0.9rem;
 }
 
+/* ─── Moving line of forms: outlined words drifting past ─── */
+.hc-ticker {
+  overflow: hidden;
+  padding-block: clamp(1.6rem, 4vw, 3rem);
+  border-bottom: 1px solid var(--hc-heading);
+  background: var(--hc-bg);
+}
+
+.hc-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: hcTicker 46s linear infinite;
+}
+
+.hc-ticker-track span {
+  padding-inline: clamp(1rem, 2.6vw, 2.4rem);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 8vw, 6.4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hc-heading);
+}
+
+.hc-ticker-track span:nth-child(3n + 1) {
+  color: var(--hc-heading);
+  -webkit-text-stroke: 0;
+}
+
+.hc-ticker:hover .hc-ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes hcTicker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-ticker-track {
+    animation: none;
+  }
+}
+
+/* Sections rise into place with a slight tilt, cards one after another. */
+.hc-reveal {
+  transform: perspective(900px) translateY(26px) rotateX(6deg);
+  transform-origin: 50% 100%;
+  transition: opacity 620ms var(--ease), transform 720ms var(--ease);
+}
+
+.hc-reveal.in-view {
+  transform: none;
+}
+
+.hc-grid > .hc-reveal:nth-child(2),
+.hc-app-cards > .hc-reveal:nth-child(2),
+.hc-metric-grid > .hc-reveal:nth-child(2) { transition-delay: 90ms; }
+.hc-grid > .hc-reveal:nth-child(3),
+.hc-app-cards > .hc-reveal:nth-child(3),
+.hc-metric-grid > .hc-reveal:nth-child(3) { transition-delay: 180ms; }
+.hc-app-cards > .hc-reveal:nth-child(4),
+.hc-metric-grid > .hc-reveal:nth-child(4) { transition-delay: 270ms; }
+.hc-app-cards > .hc-reveal:nth-child(5) { transition-delay: 360ms; }
+
+/* Floor shadow breathes slightly, as if the object hovers. */
+@media (prefers-reduced-motion: no-preference) {
+  .hc-app-card-scene::before,
+  .hc-showcase-scene::before,
+  .hc-page-hero-scene::before,
+  .hc-prop-stage .hc-3d::before {
+    animation: hcShadow 5s ease-in-out infinite;
+  }
+}
+
+@keyframes hcShadow {
+  50% {
+    transform: scaleX(0.9);
+    opacity: 0.75;
+  }
+}
+
