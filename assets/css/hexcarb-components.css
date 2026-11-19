@@ -4303,3 +4303,48 @@ a.hc-filter-chip {
   }
 }
 
+/* ─── Header never squeezes the logo ─── */
+.hc-brand {
+  flex-shrink: 0;
+}
+
+.hc-brand-logo {
+  max-width: none;
+}
+
+/* Medium widths: tighten the bar before anything collides. */
+@media (max-width: 1300px) {
+  .hc-theme-toggle-label {
+    display: none;
+  }
+
+  .hc-nav-actions .hc-btn {
+    padding-inline: 1rem;
+  }
+
+  .hc-nav-links {
+    gap: 0.9rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Below this the full menu no longer fits: use the menu button. */
+@media (max-width: 1120px) {
+  .hc-header {
+    height: auto;
+  }
+
+  .hc-nav-links,
+  .hc-nav-actions .hc-btn {
+    display: none;
+  }
+
+  .hc-menu-btn {
+    display: inline-flex;
+  }
+
+  .hc-header.menu-open .hc-mobile-nav {
+    display: block;
+  }
+}
+
