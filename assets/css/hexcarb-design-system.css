@@ -20,11 +20,11 @@
   --hc-graphite-2: #1c1c1c;
   --hc-graphite-3: #0d0d0d;
   --hc-graphite-surface: linear-gradient(128deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 22%, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, 0.07) 100%), linear-gradient(180deg, #0c0c0c 0%, #000000 100%);
-  /* Texture: film grain (dark and light), a brushed-metal line, a silver sweep. */
+  /* Texture: film grain (dark and light), a soft metal sheen, a silver sweep. */
   --hc-grain: url("/assets/media/texture/grain-dark.png");
   --hc-grain-light: url("/assets/media/texture/grain-light.png");
-  --hc-brushed: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.028) 0 1px, transparent 1px 3px);
-  --hc-brushed-dark: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
+  --hc-brushed: linear-gradient(100deg, transparent 0%, rgba(0, 0, 0, 0.05) 30%, transparent 46%, rgba(0, 0, 0, 0.04) 72%, transparent 100%);
+  --hc-brushed-dark: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.05) 30%, transparent 46%, rgba(255, 255, 255, 0.04) 72%, transparent 100%);
   --hc-metal-surface: linear-gradient(180deg, #f7f7f7 0%, #e3e3e3 100%);
   --hc-graphite-line: rgba(255, 255, 255, 0.1);
   --hc-on-graphite: #ffffff;
@@ -100,7 +100,7 @@
   --hc-text: #ffffff;
   --hc-text-muted: #b4b4b4;
   --hc-grain: url("/assets/media/texture/grain-light.png");
-  --hc-brushed: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 3px);
+  --hc-brushed: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.05) 30%, transparent 46%, rgba(255, 255, 255, 0.04) 72%, transparent 100%);
   --hc-metal-surface: linear-gradient(180deg, #0e0e0e 0%, #030303 100%);
   --hc-page-bg: #000000;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.5);
