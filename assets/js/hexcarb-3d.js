@@ -1092,7 +1092,7 @@
 
   /* ---------- engine: one WebGL2 context ---------- */
 
-  function Engine(canvas, lowDetail) {
+  function Engine(canvas, lowDetail, sides) {
     var gl = canvas.getContext("webgl2", { antialias: true, alpha: true, premultipliedAlpha: true, powerPreference: "high-performance" });
     if (!gl) throw new Error("no webgl2");
     this.gl = gl;
@@ -1105,7 +1105,7 @@
     this.mBondProg = compile(gl, VS_MBOND, FS);
     this.sphereLo = this.mesh(icosphere(1));
     this.sphere = this.mesh(icosphere(lowDetail ? 2 : 3));
-    this.cyl = this.mesh(cylinder(lowDetail ? 12 : 20));
+    this.cyl = this.mesh(cylinder(sides || (lowDetail ? 12 : 20)));
     this.box = this.boxMesh(cube());
     this.cache = {};
     gl.enable(gl.DEPTH_TEST);
@@ -1663,7 +1663,7 @@
 
     try {
       if (hero) {
-        scene.engine = new Engine(canvas, true);
+        scene.engine = new Engine(canvas, true, scene.data.journey && !mobile() ? 18 : 0);
       } else {
         if (sharedFailed) throw new Error("shared");
         if (!shared) {
@@ -1688,8 +1688,9 @@
   function measure(scene) {
     var r = scene.el.getBoundingClientRect();
     var px = window.devicePixelRatio || 1;
-    /* the film fills the screen with dense geometry: draw it at screen density, no more */
-    var dpr = scene.data.journey ? Math.min(px, mobile() ? 1.5 : 1.75) : scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
+    /* the film is drawn sharper than the screen when the machine allows; see tune() */
+    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : 1.5;
+    var dpr = scene.data.journey ? Math.min(px * scene.quality, mobile() ? 2 : 2.6) : scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
     var w = Math.max(1, Math.round(r.width * dpr));
     var h = Math.max(1, Math.round(r.height * dpr));
     if (w !== scene.w || h !== scene.h) {
@@ -1755,6 +1756,18 @@
       }
     }
     if (scene.barEl) scene.barEl.style.transform = "scaleX(" + st.progress.toFixed(4) + ")";
+    if (scene.whatEl === undefined) {
+      scene.whatEl = document.querySelector("[data-hc-film-what]") || null;
+      try {
+        scene.names = scene.whatEl ? JSON.parse(scene.whatEl.getAttribute("data-names")) : [];
+      } catch (e2) {
+        scene.names = [];
+      }
+    }
+    if (scene.whatEl && scene.whatStage !== st.stage) {
+      scene.whatStage = st.stage;
+      scene.whatEl.textContent = scene.names[st.stage] || "";
+    }
     if (scene.scaleEl === undefined) {
       scene.scaleEl = document.querySelector("[data-hc-film-scale]") || null;
       scene.scaleBarEl = document.querySelector("[data-hc-film-scalebar]") || null;
@@ -1772,6 +1785,26 @@
       el.classList.remove("is-in");
       window.setTimeout(function () { el.textContent = text; el.classList.add("is-in"); }, 180);
     }
+  }
+
+  /* Keep the film as sharp as this machine can draw smoothly. Slow frames
+     lower the render scale a step; a long smooth run raises it again. */
+  function tune(scene, dt) {
+    if (STATIC || !scene.data.journey || scene.el.hasAttribute("data-hc-film-at")) return;
+    scene.load = scene.load === undefined ? dt : scene.load * 0.94 + dt * 0.06;
+    scene.settle = (scene.settle || 0) + 1;
+    if (scene.settle < 90) return;
+    var top = mobile() ? 1.15 : 1.5;
+    if (scene.load > 1 / 40 && scene.quality > 0.7) {
+      scene.quality = Math.max(0.7, scene.quality - 0.15);
+    } else if (scene.load < 1 / 57 && scene.quality < top && scene.settle > 420) {
+      scene.quality = Math.min(top, scene.quality + 0.1);
+    } else {
+      return;
+    }
+    scene.settle = 0;
+    scene.load = undefined;
+    measure(scene);
   }
 
   var last = 0;
@@ -1793,6 +1826,7 @@
         any = true;
         s.spin += dt * (s.hero ? 0.16 : 0.34) * (s.data.speed || 1);
         if (s.hero) {
+          tune(s, dt);
           /* Build-in on first sight, then turn with the page scroll. */
           if (!s.born) s.born = now;
           s.grow = -52 + ((now - s.born) / 1000) * 62;
