@@ -27,7 +27,8 @@
      dunes       a drifting field of particles (drawn as points)
 
    Hero film:
-     journey     one tube -> dispersed -> yarn -> film -> everyday objects,
+     journey     one tube -> dispersed -> yarn -> film -> thermal forest ->
+                 composite -> battery slurry -> transistor -> one tube,
                  looping; captions via [data-hc-film-caption]
 
    Options (data attributes):
@@ -511,84 +512,86 @@
       return b.done({ radius: 5.5, orient: rotX(0.42), offsetY: -0.12, spin: "sway" });
     },
 
-    /* Hero film. One world, one slow pull-back:
-         a single tube (atoms) -> many tubes dispersed -> spun into a yarn
-         -> spread into a film -> inside everyday objects -> back into one tube.
+    /* Hero film. One world, one camera, eight forms of the same material:
+         one tube (atoms) -> dispersed -> yarn -> dense film -> standing
+         forest (thermal) -> composite -> battery slurry -> one tube as a
+         transistor -> back to one tube.
        The long strands share the atom tube's radius, so the tube simply turns
-       out to be one of them as the camera retreats. Each strand carries three
-       positions (dispersed, yarn, film) and glides between them. */
+       out to be one of them as the camera retreats. Every strand carries six
+       positions and glides from one form to the next. */
     journey: function () {
       var small = window.innerWidth < 760;
-      var N = small ? 56 : 120, S = small ? 20 : 28, R = 3.9;
+      var N = small ? 70 : 200, S = small ? 18 : 24, R = 3.9;
       var rand = rng(2026), tubeModel = MODELS.nanotube({ hero: true });
-      var atoms = [], bonds = [], k, i;
+      var atoms = [], bonds = [], k, i, j;
+      var cols = Math.ceil(Math.sqrt(N * 1000 / 760)), rows = Math.ceil(N / cols);
+
+      function unit() {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        return [q * Math.cos(th), z, q * Math.sin(th)];
+      }
 
       for (k = 0; k < N; k++) {
-        /* dispersed: long, wavy, every direction. Strand 0 runs straight
+        /* 0 dispersed: long, wavy, every direction. Strand 0 runs straight
            through the atom tube so the two coincide. */
-        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
         var p0 = k === 0
           ? wavy(rand, [0, 0, 0], [0, 1, 0], 1900, S, 0)
-          : wavy(rand, [(rand() - 0.5) * 1300, (rand() - 0.5) * 1300, (rand() - 0.5) * 900],
-                 [q * Math.cos(th), z, q * Math.sin(th)], 1300 + rand() * 600, S, 130);
-        /* yarn: packed in a round bundle and twisted along the axis */
-        var rr = 58 * Math.sqrt(k / N), ph = k * 2.39996;
-        /* film: lying flat in one plane, crossing each other */
-        var fa = rand() * 3.1416, fx = (rand() - 0.5) * 1050, fy = (rand() - 0.5) * 820;
-        var fl = 480 + rand() * 360, fw = (rand() - 0.5) * 70, fz = (k % 6) * 5;
+          : wavy(rand, [(rand() - 0.5) * 1300, (rand() - 0.5) * 1300, (rand() - 0.5) * 900], unit(), 1300 + rand() * 600, S, 130);
+        /* 1 yarn: packed in a round bundle, twisted along the axis */
+        var rr = 60 * Math.sqrt(k / N), ph = k * 2.39996;
+        /* 2 film: short, flat, crossing, densely packed on a sheet */
+        var fa = rand() * 3.1416, fx = (rand() - 0.5) * 1000, fy = (rand() - 0.5) * 760;
+        var fl = 300 + rand() * 240, fw = (rand() - 0.5) * 40, fz = (k % 8) * 3;
+        /* 3 forest: standing on the sheet in rows */
+        var gx = ((k % cols) / (cols - 1) - 0.5) * 1000 + (rand() - 0.5) * 22;
+        var gy = (Math.floor(k / cols) / Math.max(1, rows - 1) - 0.5) * 760 + (rand() - 0.5) * 22;
+        var gp = rand() * 6.28;
+        /* 4 composite: every direction, inside a block */
+        var cd = unit(), cc = [(rand() - 0.5) * 760, (rand() - 0.5) * 520, 60 + rand() * 340], cl = 260 + rand() * 200;
+        /* 5 slurry: a loose tangle around the battery particles */
+        var p5 = wavy(rand, [(rand() - 0.5) * 900, (rand() - 0.5) * 760, 230 + (rand() - 0.5) * 420], unit(), 620 + rand() * 420, S, 120);
+
         var pts = [];
         for (i = 0; i <= S; i++) {
-          var u = i / S, y = (u - 0.5) * 1900, tw = ph + y * 0.006, sl = (u - 0.5) * fl;
-          var bow = fw * Math.sin(u * 3.1416);
+          var u = i / S, y = (u - 0.5) * 1900, tw = ph + y * 0.006, sl = (u - 0.5) * fl, bow = fw * Math.sin(u * 3.1416);
+          var cs = (u - 0.5) * cl;
           pts.push([
             p0[i][0], p0[i][1], p0[i][2],
             rr * Math.cos(tw), y, rr * Math.sin(tw),
-            fx + Math.cos(fa) * sl - Math.sin(fa) * bow, fy + Math.sin(fa) * sl + Math.cos(fa) * bow, fz
+            fx + Math.cos(fa) * sl - Math.sin(fa) * bow, fy + Math.sin(fa) * sl + Math.cos(fa) * bow, fz,
+            gx + 7 * Math.sin(u * 5 + gp), gy + 7 * Math.cos(u * 4 + gp), u * 500,
+            Math.max(-440, Math.min(440, cc[0] + cd[0] * cs)), Math.max(-315, Math.min(315, cc[1] + cd[1] * cs)), Math.max(12, Math.min(428, cc[2] + cd[2] * cs)),
+            p5[i][0], p5[i][1], p5[i][2]
           ]);
         }
         for (i = 0; i <= S; i++) {
           Array.prototype.push.apply(atoms, pts[i]);
           atoms.push(R);
           if (i) {
-            var a = pts[i - 1], b = pts[i];
-            bonds.push(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
-                       b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], R);
+            Array.prototype.push.apply(bonds, pts[i - 1]);
+            Array.prototype.push.apply(bonds, pts[i]);
+            bonds.push(R);
           }
         }
       }
 
-      /* Everyday objects as simple line drawings, facing the viewer. */
-      var ob = new Builder(), W = 9;
-      function line(pts, cx, cy, sc) {
-        ob.strand(pts.map(function (q) { return [cx + q[0] * sc, cy + q[1] * sc, 0]; }), W);
+      /* battery particles for the slurry stage: same six-slot layout, fixed */
+      var grains = [];
+      for (j = 0; j < (small ? 9 : 16); j++) {
+        var g = [(rand() - 0.5) * 900, (rand() - 0.5) * 760, 230 + (rand() - 0.5) * 420];
+        for (i = 0; i < 6; i++) grains.push(g[0], g[1], g[2]);
+        grains.push(58 + rand() * 30);
       }
-      function rect(x0, y0, x1, y1) { return [[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]; }
-      /* battery cell */
-      line(rect(-1, -1.7, 1, 1.5), -600, 520, 92);
-      line(rect(-0.4, 1.5, 0.4, 1.8), -600, 520, 92);
-      line([[-0.55, 0.7], [0.55, 0.7]], -600, 520, 92);
-      line([[-0.55, 0], [0.55, 0]], -600, 520, 92);
-      line([[-0.55, -0.7], [0.55, -0.7]], -600, 520, 92);
-      /* phone */
-      line(rect(-0.95, -1.9, 0.95, 1.9), 610, 520, 88);
-      line(rect(-0.75, -1.45, 0.75, 1.55), 610, 520, 88);
-      line([[-0.2, -1.68], [0.2, -1.68]], 610, 520, 88);
-      /* garment */
-      line([[-0.6, 1.5], [-1.9, 0.9], [-1.5, 0.1], [-0.95, 0.4], [-0.95, -1.7], [0.95, -1.7], [0.95, 0.4],
-            [1.5, 0.1], [1.9, 0.9], [0.6, 1.5], [0.25, 1.25], [-0.25, 1.25], [-0.6, 1.5]], -610, -540, 96);
-      /* aircraft, seen from above */
-      line([[0, 2], [0.22, 1.2], [0.22, 0.35], [2.1, -0.45], [2.1, -0.8], [0.22, -0.35], [0.18, -1.35],
-            [0.8, -1.8], [0.8, -2.05], [0, -1.85], [-0.8, -2.05], [-0.8, -1.8], [-0.18, -1.35],
-            [-0.22, -0.35], [-2.1, -0.8], [-2.1, -0.45], [-0.22, 0.35], [-0.22, 1.2], [0, 2]], 610, -540, 104);
 
       return {
         journey: true,
         tube: tubeModel,
-        objects: ob.done({}),
         mAtoms: new Float32Array(atoms),
         mBonds: new Float32Array(bonds),
-        mAtomCount: atoms.length / 10,
-        mBondCount: bonds.length / 19,
+        mAtomCount: atoms.length / 19,
+        mBondCount: bonds.length / 37,
+        mGrains: new Float32Array(grains),
+        mGrainCount: grains.length / 19,
         radius: tubeModel.radius,
         orient: tubeModel.orient,
         plates: [], atoms: new Float32Array(0), bonds: new Float32Array(0), atomCount: 0, bondCount: 0,
@@ -902,8 +905,16 @@
     "}"
   ].join("\n");
 
-  /* Morphing strands: each instance carries three positions and blends
-     them with uW (dispersed, yarn, film). uStrand scales the radius in. */
+  /* Morphing strands: each instance carries six positions, blended by uW.
+     uStrand scales the radius in; uHeat sends bright points up the forest. */
+  var MORPH_COMMON = [
+    "uniform mat4 uProj; uniform mat4 uMV; uniform float uW[6]; uniform float uStrand;",
+    "uniform float uHeat; uniform float uTime;",
+    "float heat(vec3 c, vec3 seed){",
+    "  return uHeat*pow(max(0.0, sin(c.z*0.022 - uTime*3.0 + seed.x*0.31 + seed.y*0.17)), 40.0);",
+    "}"
+  ].join("\n");
+
   var VS_MATOM = [
     "#version 300 es",
     "precision highp float;",
@@ -911,13 +922,17 @@
     "layout(location=1) in vec3 iP0;",
     "layout(location=2) in vec3 iP1;",
     "layout(location=3) in vec3 iP2;",
-    "layout(location=4) in float iR;",
-    "uniform mat4 uProj; uniform mat4 uMV; uniform vec3 uW; uniform float uStrand;",
+    "layout(location=4) in vec3 iP3;",
+    "layout(location=5) in vec3 iP4;",
+    "layout(location=6) in vec3 iP5;",
+    "layout(location=7) in float iR;",
+    MORPH_COMMON,
     "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
-    "  vec3 c = iP0*uW.x + iP1*uW.y + iP2*uW.z;",
-    "  vec4 mv = uMV*vec4(c + aPos*iR*uStrand, 1.0);",
-    "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = 0.0;",
+    "  vec3 c = iP0*uW[0] + iP1*uW[1] + iP2*uW[2] + iP3*uW[3] + iP4*uW[4] + iP5*uW[5];",
+    "  float g = heat(c, iP3);",
+    "  vec4 mv = uMV*vec4(c + aPos*iR*uStrand*(1.0+0.9*g), 1.0);",
+    "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
   ].join("\n");
@@ -929,21 +944,28 @@
     "layout(location=1) in vec3 iA0;",
     "layout(location=2) in vec3 iA1;",
     "layout(location=3) in vec3 iA2;",
-    "layout(location=4) in vec3 iB0;",
-    "layout(location=5) in vec3 iB1;",
-    "layout(location=6) in vec3 iB2;",
-    "layout(location=7) in float iR;",
-    "uniform mat4 uProj; uniform mat4 uMV; uniform vec3 uW; uniform float uStrand;",
+    "layout(location=4) in vec3 iA3;",
+    "layout(location=5) in vec3 iA4;",
+    "layout(location=6) in vec3 iA5;",
+    "layout(location=7) in vec3 iB0;",
+    "layout(location=8) in vec3 iB1;",
+    "layout(location=9) in vec3 iB2;",
+    "layout(location=10) in vec3 iB3;",
+    "layout(location=11) in vec3 iB4;",
+    "layout(location=12) in vec3 iB5;",
+    "layout(location=13) in float iR;",
+    MORPH_COMMON,
     "out vec3 vN; out vec3 vP; out float vGlow;",
     "void main(){",
-    "  vec3 a = iA0*uW.x + iA1*uW.y + iA2*uW.z;",
-    "  vec3 b = iB0*uW.x + iB1*uW.y + iB2*uW.z;",
+    "  vec3 a = iA0*uW[0] + iA1*uW[1] + iA2*uW[2] + iA3*uW[3] + iA4*uW[4] + iA5*uW[5];",
+    "  vec3 b = iB0*uW[0] + iB1*uW[1] + iB2*uW[2] + iB3*uW[3] + iB4*uW[4] + iB5*uW[5];",
     "  vec3 ax = b-a; float len = length(ax); ax /= max(len,1e-5);",
     "  vec3 up = abs(ax.y)<0.95 ? vec3(0.,1.,0.) : vec3(1.,0.,0.);",
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
     "  vec3 n = u*aPos.x + w*aPos.z;",
-    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*uStrand, 1.0);",
-    "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = 0.0;",
+    "  float g = heat(mix(a,b,aPos.y), mix(iA3,iB3,aPos.y));",
+    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*uStrand*(1.0+0.9*g), 1.0);",
+    "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
   ].join("\n");
@@ -1157,10 +1179,14 @@
 
   /* ---------- hero film: timeline, camera, stages ---------- */
 
-  var FILM_LENGTH = 28;   // seconds per loop
+  var FILM_LENGTH = 46;   // seconds per loop
   /* camera distance over time: [second, distance]; eased in log space */
-  var FILM_CAMERA = [[0, 46], [5, 62], [9, 2300], [11.6, 1150], [14.2, 1150], [16.8, 2050],
-                     [19.3, 2050], [22.3, 4300], [25.6, 4300], [28, 46]];
+  var FILM_CAMERA = [[0, 46], [4, 62], [8, 2300], [10.4, 1150], [13, 1150], [15.6, 2500], [18, 2500],
+                     [20.6, 2750], [23.5, 2750], [26, 2650], [29.5, 2650], [32, 2900], [35.5, 2900],
+                     [38.5, 170], [43, 170], [46, 46]];
+  /* when each form takes over from the one before: [start, end] */
+  var FILM_MORPH = [[8, 10.4], [13, 15.6], [18, 20.6], [23.5, 26], [29.5, 32]];
+  var FILM_RETURN = [35.5, 37.5];
 
   function ease(a, b, x) {
     x = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -1168,7 +1194,7 @@
   }
 
   function filmState(c) {
-    var d = 46, i;
+    var d = 46, i, k;
     for (i = 1; i < FILM_CAMERA.length; i++) {
       if (c <= FILM_CAMERA[i][0]) {
         var a = FILM_CAMERA[i - 1], b = FILM_CAMERA[i];
@@ -1176,16 +1202,30 @@
         break;
       }
     }
-    var toYarn = ease(9.2, 11.6, c), toFilm = ease(14.2, 16.8, c), back = ease(25.6, 27.2, c);
-    var w0 = 1 - toYarn, w1 = toYarn * (1 - toFilm), w2 = toFilm;
-    w0 = w0 + (1 - w0) * back; w1 *= 1 - back; w2 *= 1 - back;
-    var turn = c < 5 ? c * 0.16 : 0.8 + 0.22 * Math.sin((c - 5) * 0.5);
-    turn *= 1 - ease(26, 28, c);
+    var w = [1, 0, 0, 0, 0, 0], stage = c < 4 ? 0 : 1;
+    for (k = 0; k < FILM_MORPH.length; k++) {
+      var m = ease(FILM_MORPH[k][0], FILM_MORPH[k][1], c);
+      for (i = 0; i < 6; i++) w[i] *= 1 - m;
+      w[k + 1] += m;
+      if (c >= FILM_MORPH[k][0]) stage = k + 2;
+    }
+    var back = ease(FILM_RETURN[0], FILM_RETURN[1], c);
+    for (i = 0; i < 6; i++) w[i] *= 1 - back;
+    w[0] += back;
+    if (c >= FILM_RETURN[0] + 1.2) stage = 7;
+    if (c >= 44.5) stage = 0;
+    /* turn freely while it is a tube and a yarn; face the viewer from the film on */
+    var turn = c < 4 ? c * 0.15 : c < 13 ? 0.6 + (c - 4) * 0.045 : 1.005;
+    turn *= 1 - ease(13, 15.6, c);
+    turn += 0.1 * Math.sin(c * 0.45) * ease(15.6, 18, c) * (1 - ease(35.5, 37, c));
+    /* swing round to look between the two plates of the thermal stage */
+    turn -= 1.0 * ease(18, 20.6, c) * (1 - ease(23.5, 26, c));
     return {
       dist: d,
-      w: [w0, w1, w2],
+      w: w,
       turn: turn,
-      stage: c < 5 ? 0 : c < 9.2 ? 1 : c < 14.2 ? 2 : c < 19.3 ? 3 : c < 25.6 ? 4 : 0,
+      stage: stage,
+      gate: ease(37.2, 39, c) * (1 - ease(43, 45, c)),
       progress: c / FILM_LENGTH
     };
   }
@@ -1211,9 +1251,15 @@
       gl.bindVertexArray(null);
       return v;
     }
+    var i, atomLayout = [], bondLayout = [];
+    for (i = 0; i < 6; i++) atomLayout.push([i + 1, 3, i * 12]);
+    atomLayout.push([7, 1, 72]);
+    for (i = 0; i < 12; i++) bondLayout.push([i + 1, 3, i * 12]);
+    bondLayout.push([13, 1, 144]);
     this.film = {
-      atoms: build(self.sphereLo, d.mAtoms, 40, [[1, 3, 0], [2, 3, 12], [3, 3, 24], [4, 1, 36]]),
-      bonds: build(self.cyl, d.mBonds, 76, [[1, 3, 0], [2, 3, 12], [3, 3, 24], [4, 3, 36], [5, 3, 48], [6, 3, 60], [7, 1, 72]])
+      atoms: build(self.sphereLo, d.mAtoms, 76, atomLayout),
+      bonds: build(self.cyl, d.mBonds, 148, bondLayout),
+      grains: build(self.sphere, d.mGrains, 76, atomLayout)
     };
     return this.film;
   };
@@ -1237,11 +1283,13 @@
     var fogNear = (dist - d.radius * 1.1) * (1 - far) + dist * 0.75 * far;
     var fogFar = (dist + d.radius * 5.5) * (1 - far) + dist * 2.6 * far;
     var fogMax = 1 - 0.78 * far;
+    var sheet = look.sheet || [0.82, 0.82, 0.82];
+    var metalPart = look.part || [0.42, 0.42, 0.42];
 
-    function use(prog, matrix) {
+    function use(prog) {
       gl.useProgram(prog.p);
       gl.uniformMatrix4fv(prog.u.uProj, false, proj);
-      gl.uniformMatrix4fv(prog.u.uMV, false, matrix);
+      gl.uniformMatrix4fv(prog.u.uMV, false, mv);
       gl.uniform1f(prog.u.uTime, clock);
       gl.uniform1f(prog.u.uMode, 0);
       gl.uniform1f(prog.u.uAmp, 0);
@@ -1256,64 +1304,99 @@
       gl.uniform1f(prog.u.uEnvLo, look.envLo);
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
       gl.uniform1f(prog.u.uAmb, look.amb);
-      gl.uniform1f(prog.u.uGlow, 0);
+      gl.uniform1f(prog.u.uGlow, look.heat === undefined ? 0.7 : look.heat);
       gl.uniform1f(prog.u.uCut, 0);
       gl.uniform1f(prog.u.uSheen, look.sheen || 0);
       gl.uniform1f(prog.u.uShine, look.shine === undefined ? 1 : look.shine);
       gl.uniform1f(prog.u.uFogMax, fogMax);
     }
 
-    function drawLattice(key, data, matrix) {
-      var gpu = self.model(key, data);
-      if (gpu.bondVao) {
-        use(self.bondProg, matrix);
-        gl.bindVertexArray(gpu.bondVao);
-        gl.drawElementsInstanced(gl.TRIANGLES, self.cyl.count, gl.UNSIGNED_SHORT, 0, data.bondCount);
-      }
-      if (gpu.atomVao) {
-        use(self.atomProg, matrix);
-        gl.uniform1f(self.atomProg.u.uCoat, 0);
-        gl.uniform1f(self.atomProg.u.uLen, 1);
-        gl.bindVertexArray(gpu.atomVao);
-        gl.drawElementsInstanced(gl.TRIANGLES, self.sphere.count, gl.UNSIGNED_SHORT, 0, data.atomCount);
-      }
+    /* a flat-shaded slab in model space */
+    function slab(cx, cy, cz, sx, sy, sz, colour) {
+      if (sx <= 0.01 || sy <= 0.01 || sz <= 0.01) return;
+      var bp = self.boxProg;
+      use(bp);
+      gl.uniform3fv(bp.u.uBase, colour);
+      gl.uniform1f(bp.u.uMetal, 0);
+      gl.uniform1f(bp.u.uSheen, 0);
+      gl.uniform1f(bp.u.uShine, 0);
+      gl.uniform1f(bp.u.uAmb, 1.0);
+      gl.uniform3fv(bp.u.uC, [cx, cy, cz]);
+      gl.uniform3fv(bp.u.uS, [sx, sy, sz]);
+      gl.bindVertexArray(self.box.vao);
+      gl.drawElements(gl.TRIANGLES, self.box.count, gl.UNSIGNED_SHORT, 0);
     }
 
     /* 1. the atom-by-atom tube, while it is large enough to see */
-    if (dist < 900) drawLattice("journey:tube", d.tube, mv);
+    if (dist < 900) {
+      var gpu = this.model("journey:tube", d.tube);
+      use(this.bondProg);
+      gl.bindVertexArray(gpu.bondVao);
+      gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.tube.bondCount);
+      use(this.atomProg);
+      gl.uniform1f(this.atomProg.u.uCoat, 0);
+      gl.uniform1f(this.atomProg.u.uLen, 1);
+      gl.bindVertexArray(gpu.atomVao);
+      gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+    }
 
-    /* 2. the strands, once the camera is far enough for them to read */
+    /* 2. transistor: the one tube bridging two contacts over a gate */
+    if (st.gate > 0.01) {
+      var g = st.gate;
+      slab(0, 0, -9.5, 26 * g, 78 * g, 2.2, sheet);          // gate insulator
+      slab(0, 0, -15, 30 * g, 86 * g, 8, metalPart);          // gate
+      slab(0, -29, -1, 22 * g, 15 * g, 15 * g, metalPart);    // source
+      slab(0, 29, -1, 22 * g, 15 * g, 15 * g, metalPart);     // drain
+    }
+
+    /* 3. the strands, once the camera is far enough for them to read */
     var strand = ease(260, 900, dist);
     if (strand > 0.001) {
-      var buf = this.filmBuffers(d);
-      use(this.mBondProg, mv);
-      gl.uniform3fv(this.mBondProg.u.uW, st.w);
-      gl.uniform1f(this.mBondProg.u.uStrand, strand);
+      var buf = this.filmBuffers(d), wv = new Float32Array(st.w);
+      var heat = st.w[3] * ease(20.4, 21.4, clock % FILM_LENGTH);
+
+      /* sheet under the film and the forest; a second plate closes the forest */
+      var base = Math.min(1, st.w[2] + st.w[3]);
+      /* pale under the film; the forest sits between two darker plates */
+      var f3 = st.w[3], plate = [0, 1, 2].map(function (n) { return sheet[n] + (metalPart[n] - sheet[n]) * f3; });
+      slab(0, 0, -16, 1120 * base, 880 * base, 18, plate);
+      slab(0, 0, 516, 1120 * f3, 880 * f3, 18, plate);
+
+      /* composite: the block the tubes are cast into, drawn as its edges */
+      if (st.w[4] > 0.01) {
+        var q = st.w[4], X = 450 * q, Y = 325 * q, Z0 = 4, Z1 = 436, T = 7, sx, sy;
+        for (sx = -1; sx <= 1; sx += 2) {
+          for (sy = -1; sy <= 1; sy += 2) {
+            slab(sx * X, sy * Y, (Z0 + Z1) / 2, T, T, (Z1 - Z0) * q, metalPart);
+            slab(0, sy * Y, sx < 0 ? Z0 : Z1 * q + Z0 * (1 - q), 2 * X, T, T, metalPart);
+            slab(sx * X, 0, sy < 0 ? Z0 : Z1 * q + Z0 * (1 - q), T, 2 * Y, T, metalPart);
+          }
+        }
+      }
+
+      [this.mBondProg, this.mAtomProg].forEach(function (prog) {
+        use(prog);
+        gl.uniform1fv(prog.u["uW[0]"], wv);
+        gl.uniform1f(prog.u.uStrand, strand);
+        gl.uniform1f(prog.u.uHeat, heat);
+      });
+      gl.useProgram(this.mBondProg.p);
       gl.bindVertexArray(buf.bonds);
       gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.mBondCount);
-      use(this.mAtomProg, mv);
-      gl.uniform3fv(this.mAtomProg.u.uW, st.w);
-      gl.uniform1f(this.mAtomProg.u.uStrand, strand);
+      gl.useProgram(this.mAtomProg.p);
       gl.bindVertexArray(buf.atoms);
       gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.mAtomCount);
-    }
 
-    /* the sheet the film sits on: grows in with the film stage */
-    if (st.w[2] > 0.01 && strand > 0.001) {
-      use(this.boxProg, mv);
-      gl.uniform3fv(this.boxProg.u.uBase, look.sheet || [0.8, 0.8, 0.8]);
-      gl.uniform1f(this.boxProg.u.uMetal, 0);
-      gl.uniform1f(this.boxProg.u.uSheen, 0);
-      gl.uniform1f(this.boxProg.u.uShine, 0);
-      gl.uniform1f(this.boxProg.u.uAmb, 1.0);
-      gl.uniform3fv(this.boxProg.u.uC, [0, 0, -14]);
-      gl.uniform3fv(this.boxProg.u.uS, [1500 * st.w[2], 1180 * st.w[2], 10]);
-      gl.bindVertexArray(this.box.vao);
-      gl.drawElements(gl.TRIANGLES, this.box.count, gl.UNSIGNED_SHORT, 0);
+      /* slurry: battery particles swell in among the tubes */
+      if (st.w[5] > 0.01) {
+        gl.uniform1f(this.mAtomProg.u.uStrand, st.w[5] * strand);
+        gl.uniform1f(this.mAtomProg.u.uHeat, 0);
+        gl.uniform3fv(this.mAtomProg.u.uBase, metalPart);
+        gl.uniform1f(this.mAtomProg.u.uMetal, 0.25);
+        gl.bindVertexArray(buf.grains);
+        gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.mGrainCount);
+      }
     }
-
-    /* 3. everyday objects, facing the viewer, in frame only on the long shot */
-    if (dist > 2400) drawLattice("journey:objects", d.objects, view);
     gl.bindVertexArray(null);
   };
 
@@ -1336,7 +1419,7 @@
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
     if (dark && el.getAttribute("data-hc-3d-view") === "hero") {
-      return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.5, sheen: 0, depth: 0.5, sheet: [0.2, 0.2, 0.2] };
+      return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.5, sheen: 0, depth: 0.5, sheet: [0.16, 0.16, 0.16], part: [0.5, 0.5, 0.5], heat: 0.0 };
     }
     return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.3, cut: 0, sheen: 0.16, shine: 0.22, depth: 0.07 };
   }
@@ -1440,7 +1523,7 @@
       if (scene.data.journey) {
         /* data-hc-film-at="seconds" freezes the film at one moment (stills, checks). */
         var hold = scene.el.getAttribute("data-hc-film-at");
-        scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 23 : (performance.now() - (scene.born || performance.now())) / 1000);
+        scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 11.5 : (performance.now() - (scene.born || performance.now())) / 1000);
         caption(scene);
       } else {
         scene.engine.draw(scene, 0, 0, scene.w, scene.h, time);
