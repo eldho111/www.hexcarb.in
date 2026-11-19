@@ -3642,3 +3642,100 @@ a.hc-filter-chip {
   aspect-ratio: 16 / 11;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Product objects: one rule
+   Light mode: pitch-black object on pure white, shadow underneath.
+   Dark mode:  white object on pure black, soft light underneath.
+   Hovering shows a faint box around the object.
+   ═══════════════════════════════════════════════════════════════════ */
+.hc-app-card-scene,
+.hc-showcase-scene,
+.hc-prop-stage,
+.hc-page-hero-scene {
+  background: #ffffff;
+  border-radius: 14px;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color var(--dur-base) var(--ease);
+}
+
+:root[data-theme="dark"] .hc-app-card-scene,
+:root[data-theme="dark"] .hc-showcase-scene,
+:root[data-theme="dark"] .hc-prop-stage,
+:root[data-theme="dark"] .hc-page-hero-scene {
+  background: #000000;
+}
+
+.hc-page-hero-scene {
+  pointer-events: auto;
+}
+
+/* Shadow on the floor: the light is overhead. */
+.hc-app-card-scene::before,
+.hc-showcase-scene::before,
+.hc-page-hero-scene::before,
+.hc-prop-stage .hc-3d::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: 5%;
+  height: 11%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.16) 55%, transparent 100%);
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .hc-app-card-scene::before,
+:root[data-theme="dark"] .hc-showcase-scene::before,
+:root[data-theme="dark"] .hc-page-hero-scene::before,
+:root[data-theme="dark"] .hc-prop-stage .hc-3d::before {
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.14) 55%, transparent 100%);
+}
+
+.hc-showcase-scene::after {
+  content: none;
+}
+
+.hc-3d canvas {
+  z-index: 1;
+}
+
+/* Faint box on hover. */
+.hc-app-card:hover .hc-app-card-scene,
+.hc-showcase:hover .hc-showcase-scene,
+.hc-prop-stage:hover,
+.hc-page-hero-scene:hover,
+.hc-page-hero--scene:hover .hc-page-hero-scene {
+  outline-color: rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme="dark"] .hc-app-card:hover .hc-app-card-scene,
+:root[data-theme="dark"] .hc-showcase:hover .hc-showcase-scene,
+:root[data-theme="dark"] .hc-prop-stage:hover,
+:root[data-theme="dark"] .hc-page-hero-scene:hover,
+:root[data-theme="dark"] .hc-page-hero--scene:hover .hc-page-hero-scene {
+  outline-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Property stages are white (or black) windows now: figures follow the theme. */
+.hc-prop-stage {
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+}
+
+.hc-prop-figure strong {
+  background: none;
+  color: var(--hc-heading);
+  -webkit-text-fill-color: currentColor;
+}
+
+.hc-prop-figure span {
+  color: var(--hc-text-muted);
+}
+
+.hc-app-card-scene {
+  margin-bottom: 0.9rem;
+}
+

@@ -576,7 +576,7 @@
     "in vec3 vN; in vec3 vP; in float vGlow;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
-    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow;",
+    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut;",
     "out vec4 o;",
     "float env(vec3 r){",
     "  float v = mix(uEnvLo, uEnvHi, smoothstep(-0.35,0.75,r.y));",
@@ -590,7 +590,7 @@
     "  vec3 n = normalize(vN); vec3 v = normalize(-vP);",
     "  if(dot(n,v)<0.0) n = -n;",
     "  float ndv = max(dot(n,v),0.0);",
-    "  vec3 l1 = normalize(vec3(-0.55,0.78,0.55));",
+    "  vec3 l1 = normalize(vec3(-0.18,0.95,0.26));",
     "  float d1 = max(dot(n,l1),0.0);",
     "  float hemi = 0.5+0.5*n.y;",
     "  vec3 base = pow(uBase, vec3(2.2));",
@@ -601,6 +601,7 @@
     "  vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(0.9*sharp + 0.25*fres);",
     "  vec3 c = mix(diffuse + vec3(0.08*mirror*fres), metal, uMetal);",
     "  c += uGlow*vGlow;",
+    "  c *= 1.0 - uCut*vGlow;",
     "  float f = smoothstep(uNear,uFar,-vP.z);",
     "  c = mix(c, pow(uFog, vec3(2.2)), f);",
     "  o = vec4(pow(c, vec3(1.0/2.2)), 1.0);",
@@ -771,8 +772,8 @@
     var view = mul(translation(scene.offX * halfH * (w / h), offY * halfH, -dist), mul(rotX(scene.tiltX), rotY(scene.tiltY)));
     var mv = mul(view, model);
 
-    var near = scene.hero ? dist - d.radius * 1.1 : dist - d.radius * 0.2;
-    var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 2.2;
+    var near = scene.hero ? dist - d.radius * 1.1 : dist + d.radius * 6;
+    var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 40;
 
     function use(prog) {
       gl.useProgram(prog.p);
@@ -791,6 +792,7 @@
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
       gl.uniform1f(prog.u.uAmb, look.amb);
       gl.uniform1f(prog.u.uGlow, look.glow);
+      gl.uniform1f(prog.u.uCut, look.cut || 0);
     }
 
     if (gpu.pointVao) {
@@ -847,20 +849,18 @@
     return null;
   }
 
+  /* Product objects follow one rule: in light mode a pitch-black object on
+     pure white, in dark mode a white object on pure black. Light comes from
+     above; the page draws the shadow (or glow) underneath. */
   function lookFor(el) {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
-    var surface = el.getAttribute("data-hc-3d-surface");
-    if (surface === "graphite") {
-      /* Bright chrome on a black panel, in both themes. */
-      return { base: [0.95, 0.95, 0.95], plate: [0.5, 0.5, 0.5], fog: [0.02, 0.02, 0.02], metal: 1, envLo: 0.04, envHi: 0.6, amb: 0.2, glow: 1.2 };
+    if (el.getAttribute("data-hc-3d") === "dunes") {
+      return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
-    var bg = parse(getComputedStyle(document.documentElement).getPropertyValue("--hc-bg")) || (dark ? [0, 0, 0] : [1, 1, 1]);
     if (dark) {
-      /* Chrome dissolving into black. */
-      return { base: [0.95, 0.95, 0.95], plate: [0.5, 0.5, 0.5], fog: bg, metal: 1, envLo: 0.03, envHi: 0.55, amb: 0.16, glow: 1.2 };
+      return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.55 };
     }
-    /* Dark chrome dissolving into white: deep blacks, hard highlights. */
-    return { base: [0.62, 0.62, 0.62], plate: [0.55, 0.55, 0.55], fog: bg, metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.4, glow: 0.9 };
+    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.85, cut: 0 };
   }
 
   /* ---------- scenes ---------- */
