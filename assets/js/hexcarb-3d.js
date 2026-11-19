@@ -622,7 +622,7 @@
     "in vec3 vN; in vec3 vP; in float vGlow;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
-    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut; uniform float uSheen; uniform float uFogMax;",
+    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut; uniform float uSheen; uniform float uFogMax; uniform float uShine;",
     "out vec4 o;",
     "float env(vec3 r){",
     "  float v = mix(uEnvLo, uEnvHi, smoothstep(-0.35,0.75,r.y));",
@@ -644,13 +644,13 @@
     "  float fres = pow(1.0-ndv,5.0);",
     "  float mirror = env(reflect(-v,n));",
     "  float sharp = pow(max(dot(n,normalize(l1+v)),0.0),120.0);",
-    "  vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(0.9*sharp + 0.25*fres);",
+    "  vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(uShine*(0.9*sharp + 0.25*fres));",
     "  vec3 c = mix(diffuse + vec3(0.08*mirror*fres), metal, uMetal);",
     "  vec3 rr = reflect(-v,n);",
     /* Piano-black gloss: a long overhead softbox, a tight hot spot, a thin rim. */
     "  float band = smoothstep(0.45,0.98,rr.y);",
     "  float hot = pow(max(dot(n,normalize(l1+v)),0.0),34.0);",
-    "  c += uSheen*(0.16*band*band*band + 0.7*hot + 0.22*fres);",
+    "  c += uSheen*(0.16*band*band*band + 0.7*hot + 0.1*fres);",
     "  c += uGlow*vGlow;",
     "  c *= 1.0 - uCut*vGlow;",
     "  float f = uFogMax*smoothstep(uNear,uFar,-vP.z);",
@@ -845,6 +845,7 @@
       gl.uniform1f(prog.u.uGlow, look.glow);
       gl.uniform1f(prog.u.uCut, look.cut || 0);
       gl.uniform1f(prog.u.uSheen, look.sheen || 0);
+      gl.uniform1f(prog.u.uShine, look.shine === undefined ? 1 : look.shine);
       gl.uniform1f(prog.u.uFogMax, scene.hero ? 1 : (look.depth === undefined ? 1 : look.depth));
       gl.uniform1f(prog.u.uGrow, scene.grow === undefined ? 1e5 : scene.grow);
       gl.uniform1f(prog.u.uSplit, d.split === undefined ? 1e5 : d.split);
@@ -915,7 +916,7 @@
     if (dark && el.getAttribute("data-hc-3d-view") === "hero") {
       return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.55, envLo: 0.5, envHi: 1.0, amb: 0.75, glow: 0.0, cut: 0.5, sheen: 0, depth: 0.5 };
     }
-    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.5, cut: 0, sheen: 0.5, depth: 0.26 };
+    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.3, cut: 0, sheen: 0.16, shine: 0.22, depth: 0.07 };
   }
 
   /* ---------- scenes ---------- */
