@@ -3976,3 +3976,38 @@ a.hc-filter-chip {
   }
 }
 
+/* --- Use cards: the same white product window as everywhere else --- */
+.hc-use-scene,
+:root[data-theme="dark"] .hc-use-scene {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 1.1rem;
+  background: #ffffff;
+  border-radius: 14px;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color var(--dur-base) var(--ease);
+  pointer-events: none;
+}
+
+.hc-use-scene::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: 5%;
+  height: 11%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.16) 55%, transparent 100%);
+  filter: blur(5px);
+}
+
+.hc-use:hover .hc-use-scene,
+:root[data-theme="dark"] .hc-use:hover .hc-use-scene {
+  outline-color: rgba(0, 0, 0, 0.3);
+}
+
+.hc-use .hc-index {
+  margin-bottom: 0.7rem;
+}
+

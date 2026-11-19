@@ -385,6 +385,128 @@
       return b.done({ radius: 12.4, mode: 6, amp: 0.02, split: 0, orient: PROP_VIEW, spin: "none" });
     },
 
+    /* ---- Use-case models: what the nanotubes do inside each product ---- */
+
+    /* Battery electrode: storage particles wired together by a nanotube web. */
+    "use-battery": function () {
+      var rand = rng(101), b = new Builder();
+      [[0, 0, 0], [2.7, 0.6, 0.4], [-2.5, 0.9, -0.6], [0.6, 2.5, -0.8], [-0.9, -2.5, 0.7], [1.9, -1.9, -1.4], [-1.6, 1.2, 2.2]].forEach(function (c) {
+        b.a.push(c[0], c[1], c[2], 1.35);
+      });
+      for (var i = 0; i < 26; i++) {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        b.strand(wavy(rand, [(rand() - 0.5) * 5, (rand() - 0.5) * 5, (rand() - 0.5) * 4], [q * Math.cos(th), z, q * Math.sin(th)], 7 + rand() * 4, 40, 0.8), 0.07);
+      }
+      return b.done({ radius: 5.0, orient: rotX(0.25), speed: 0.6 });
+    },
+
+    /* Concrete: a crack, with nanotubes stitched across its faces. */
+    "use-concrete": function () {
+      var rand = rng(102), b = new Builder();
+      b.plate(-2.75, 0, 0, 4.6, 3.8, 3.8);
+      b.plate(2.75, 0, 0, 4.6, 3.8, 3.8);
+      for (var i = 0; i < 12; i++) {
+        b.strand(wavy(rand, [0, (rand() - 0.5) * 3.2, (rand() - 0.5) * 3.2], [1, 0, 0], 2.2, 14, 0.1), 0.09);
+      }
+      return b.done({ radius: 5.1, orient: rotX(0.34), spin: "sway" });
+    },
+
+    /* Thin film: a sparse connected network on a sheet. */
+    "use-film": function () {
+      var rand = rng(103), b = new Builder();
+      b.plate(0, -0.2, 0, 9.4, 0.16, 6.2);
+      for (var i = 0; i < 30; i++) {
+        var th = rand() * 6.28;
+        var pts = wavy(rand, [(rand() - 0.5) * 8, 0.02, (rand() - 0.5) * 5], [Math.cos(th), 0, Math.sin(th)], 3 + rand() * 4, 26, 0.22).filter(function (q) {
+          return Math.abs(q[0]) < 4.5 && Math.abs(q[2]) < 2.9;
+        }).map(function (q) { return [q[0], 0.02 + Math.abs(q[1]) * 0.2, q[2]]; });
+        if (pts.length > 3) b.strand(pts, 0.07);
+      }
+      return b.done({ radius: 4.8, orient: rotX(0.6), spin: "sway" });
+    },
+
+    /* E-textile: nanotube yarns woven over and under. */
+    "use-textile": function () {
+      var b = new Builder(), n = 6, pitch = 1.25, half = (n - 1) * pitch / 2 + 1.1;
+      for (var i = 0; i < n; i++) {
+        var o = (i - (n - 1) / 2) * pitch, warp = [], weft = [];
+        for (var k = 0; k <= 60; k++) {
+          var t = (k / 60 - 0.5) * 2 * half;
+          var wave = 0.3 * Math.cos((t / pitch) * Math.PI + (n % 2 ? 0 : Math.PI / 2) + i * Math.PI);
+          warp.push([o, wave, t]);
+          weft.push([t, -wave, o]);
+        }
+        b.strand(warp, 0.3);
+        b.strand(weft, 0.3);
+      }
+      return b.done({ radius: 4.7, orient: rotX(0.75), spin: "sway" });
+    },
+
+    /* Polymer composite: thick polymer chains pinned by fine straight tubes. */
+    "use-composite": function () {
+      var rand = rng(105), b = new Builder(), i, z, th, q;
+      for (i = 0; i < 6; i++) {
+        z = rand() * 2 - 1; th = rand() * 6.28; q = Math.sqrt(1 - z * z);
+        b.strand(wavy(rand, [(rand() - 0.5) * 3, (rand() - 0.5) * 3, (rand() - 0.5) * 3], [q * Math.cos(th), z, q * Math.sin(th)], 8.5, 60, 1.2), 0.42);
+      }
+      for (i = 0; i < 12; i++) {
+        z = rand() * 2 - 1; th = rand() * 6.28; q = Math.sqrt(1 - z * z);
+        b.strand(wavy(rand, [(rand() - 0.5) * 4, (rand() - 0.5) * 4, (rand() - 0.5) * 4], [q * Math.cos(th), z, q * Math.sin(th)], 9, 20, 0.08), 0.08);
+      }
+      return b.done({ radius: 4.7, orient: rotX(0.25), speed: 0.6 });
+    },
+
+    /* Sports gear: a racket frame. */
+    "use-sport": function () {
+      var b = new Builder(), rx = 2.5, ry = 3.1, cy = 1.9, k, x, y, lim, ring = [];
+      for (k = 0; k <= 64; k++) {
+        var a = (k / 64) * Math.PI * 2;
+        ring.push([rx * Math.cos(a), cy + ry * Math.sin(a), 0]);
+      }
+      b.strand(ring, 0.2);
+      for (x = -2; x <= 2.01; x += 0.5) {
+        lim = ry * Math.sqrt(Math.max(0, 1 - (x * x) / (rx * rx)));
+        b.strand([[x, cy - lim, 0], [x, cy + lim, 0]], 0.035);
+      }
+      for (y = -2.5; y <= 2.51; y += 0.5) {
+        lim = rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry)));
+        b.strand([[-lim, cy + y, 0], [lim, cy + y, 0]], 0.035);
+      }
+      b.strand([[-1.05, cy - ry + 0.3, 0], [-0.2, -2.3, 0]], 0.16);
+      b.strand([[1.05, cy - ry + 0.3, 0], [0.2, -2.3, 0]], 0.16);
+      var grip = [];
+      for (k = 0; k <= 10; k++) grip.push([0, -2.2 - k * 0.4, 0]);
+      b.strand(grip, 0.32);
+      return b.done({ radius: 5.5, orient: mul(rotZ(-0.45), rotX(0.15)), offsetY: 0.12, speed: 0.8 });
+    },
+
+    /* Water filtration: water passes down the bores, larger particles do not. */
+    "use-water": function () {
+      var rand = rng(107), b = new Builder(), t = tube(6, 2), pitch = 4.1, i, j;
+      for (i = -1; i <= 1; i++) {
+        for (j = -1; j <= 1; j++) {
+          b.lattice(t.atoms.map(function (a) { return [a[0] + i * pitch, a[1], a[2] + j * pitch]; }), t.bonds);
+          for (var k = 0; k < 2; k++) b.a.push(i * pitch + (rand() - 0.5) * 0.9, (rand() - 0.5) * 13, j * pitch + (rand() - 0.5) * 0.9, -0.3);
+        }
+      }
+      [[-2.05, 3.6, -2.05], [2.05, 3.7, 2.05], [2.05, 3.5, -2.05], [-2.05, 3.8, 2.05]].forEach(function (c) {
+        b.a.push(c[0], c[1], c[2], 1.15);
+      });
+      return b.done({ radius: 6.9, mode: 7, len: 13, orient: rotX(0.36), speed: 0.5 });
+    },
+
+    /* Lightning protection: a conductive veil spreads the strike across the skin. */
+    "use-lightning": function () {
+      var b = new Builder(), x, z, k;
+      b.plate(0, -1.5, 0, 9.4, 0.5, 6.4);
+      for (x = -4; x <= 4.01; x += 1) b.strand([[x, -1.2, -3], [x, -1.2, 3]], 0.06);
+      for (z = -3; z <= 3.01; z += 1) b.strand([[-4.5, -1.2, z], [4.5, -1.2, z]], 0.06);
+      var bolt = [[1.6, 5.6, 0.3], [0.5, 4.2, -0.2], [1.3, 3.2, 0.2], [-0.1, 1.7, -0.3], [0.8, 0.8, 0.1], [0, -1.15, 0]], pts = [];
+      for (k = 0; k < bolt.length; k++) pts.push(bolt[k]);
+      b.strand(pts, 0.15);
+      return b.done({ radius: 5.5, orient: rotX(0.42), offsetY: -0.12, spin: "sway" });
+    },
+
     /* Backdrop: a jittered grid of points; the shader lifts it into dunes. */
     dunes: function () {
       var rand = rng(77), pts = [], nx = 230, nz = 120;
