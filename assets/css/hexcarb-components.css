@@ -4195,3 +4195,73 @@ a.hc-filter-chip {
   }
 }
 
+/* Scale bar sits in the corner of the film, as on a micrograph. */
+.hc-stage > .hc-film-scale {
+  position: absolute;
+  right: clamp(1rem, 4vw, 3.5rem);
+  bottom: clamp(1rem, 3vw, 2.2rem);
+  z-index: 2;
+  margin: 0;
+  display: grid;
+  justify-items: end;
+  gap: 0.35rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--hc-bg);
+  border: 1px solid var(--hc-heading);
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.hc-stage > .hc-film-scale .hc-film-scalebar {
+  height: 9px;
+  border-width: 2px;
+  border-top: 0;
+}
+
+.hc-stage > .hc-film-scale .hc-film-scalelabel {
+  min-width: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.hc-stage > .hc-film-scale .hc-film-note {
+  font-size: 0.66rem;
+}
+
+@media (max-width: 900px) {
+  .hc-stage > .hc-film-scale {
+    top: calc(46vh - 4.6rem);
+    bottom: auto;
+    right: 0.8rem;
+    padding: 0.45rem 0.6rem;
+  }
+}
+
+/* The hero fills exactly the first screen, so the film, caption and scale
+   bar are all visible without scrolling. */
+@media (min-width: 901px) {
+  .hc-stage {
+    min-height: 0;
+    height: calc(100vh - var(--nav-height));
+    height: calc(100svh - var(--nav-height));
+    max-height: 900px;
+  }
+
+  .hc-stage-inner {
+    padding-block: 1.5rem;
+  }
+
+  .hc-stage-copy .hc-heading-hero {
+    font-size: clamp(2.8rem, min(7.4vw, 11.5vh), 6.4rem);
+  }
+
+  .hc-film {
+    margin-top: clamp(1rem, 3vh, 2.2rem);
+  }
+}
+
+.hc-film-caption {
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+}
+
