@@ -4040,3 +4040,37 @@ a.hc-filter-chip {
   gap: clamp(0.7rem, 1.5vw, 1.4rem);
 }
 
+/* ─── Phones: links and chips big enough to tap ─── */
+@media (max-width: 900px) {
+  .hc-footer-list li + li {
+    margin-top: 0;
+  }
+
+  .hc-footer-list a,
+  .hc-inline-link,
+  .hc-link-inline {
+    display: inline-block;
+    padding-block: 0.7rem;
+  }
+
+  .hc-filter-chip,
+  .hc-shop-toc a,
+  .hc-family-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .hc-mobile-nav a {
+    padding: 0.95rem 0;
+  }
+
+  .hc-kicker,
+  .hc-index,
+  .hc-prop-num,
+  .hc-tag,
+  .hc-metric small {
+    font-size: 0.75rem;
+  }
+}
+
