@@ -1911,7 +1911,7 @@
       readSignal();
       scenes.forEach(function (s) { s.look = lookFor(s.el); s.drawn = false; });
       schedule();
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-signal"] });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     scenes.forEach(function (s) {
       if (!s.hero) return;
