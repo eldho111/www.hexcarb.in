@@ -4563,3 +4563,19 @@ select:focus-visible {
 .hc-closing .hc-signal-word {
   --hc-signal-text: #a78bfa;
 }
+
+/* --- Phones: nothing smaller than 11px, sliders tall enough for a thumb --- */
+@media (max-width: 720px) {
+  .hc-product-badge,
+  .hc-history-era-label,
+  .hc-history-breakthrough,
+  .hc-history-sup,
+  .hc-history-confidence {
+    font-size: 0.6875rem;
+  }
+
+  input[type="range"] {
+    min-height: 32px;
+  }
+}
+
