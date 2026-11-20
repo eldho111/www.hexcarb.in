@@ -4348,3 +4348,35 @@ a.hc-filter-chip {
   }
 }
 
+/* Dark mode hero: black nanotubes on a white backdrop. On wide screens the
+   backdrop fades into the black page on the headline side; on phones it is
+   the film's own white window. */
+:root[data-theme="dark"] .hc-stage-scene {
+  background: #ffffff;
+}
+
+@media (min-width: 901px) {
+  :root[data-theme="dark"] .hc-stage::before {
+    background: linear-gradient(90deg, #000000 0%, #000000 38%, rgba(0, 0, 0, 0.55) 48%, transparent 62%);
+  }
+}
+
+:root[data-theme="dark"] .hc-stage > .hc-film-scale {
+  background: #ffffff;
+  border-color: #000000;
+  color: #000000;
+}
+
+:root[data-theme="dark"] .hc-stage > .hc-film-scale .hc-film-what,
+:root[data-theme="dark"] .hc-stage > .hc-film-scale .hc-film-scalelabel {
+  color: #000000;
+}
+
+:root[data-theme="dark"] .hc-stage > .hc-film-scale .hc-film-scalebar {
+  border-color: #000000;
+}
+
+:root[data-theme="dark"] .hc-stage > .hc-film-scale .hc-film-note {
+  color: #474747;
+}
+

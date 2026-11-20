@@ -1605,14 +1605,12 @@
 
   /* Product objects follow one rule in both themes: a pitch-black object on
      a pure white window, lit from above, with the page drawing the shadow
-     underneath. Only the frameless home hero follows the theme. */
+     underneath. The home hero film follows the same rule: in dark mode it
+     plays on a white backdrop that fades into the black page. */
   function lookFor(el) {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
     if (el.getAttribute("data-hc-3d") === "dunes") {
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
-    }
-    if (dark && el.getAttribute("data-hc-3d-view") === "hero") {
-      return { base: [1, 1, 1], plate: [0.82, 0.82, 0.82], fog: [0, 0, 0], metal: 0.35, envLo: 0.12, envHi: 0.95, amb: 0.34, glow: 0.0, cut: 0.5, sheen: 0, depth: 0.5, sheet: [0.16, 0.16, 0.16], part: [0.5, 0.5, 0.5], heat: 0.0 };
     }
     return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.3, cut: 0, sheen: 0.16, shine: 0.22, depth: 0.07 };
   }
