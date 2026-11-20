@@ -4580,231 +4580,201 @@ select:focus-visible {
 }
 
 /* ===================================================================
-   Catalogue: "What are you making?"
-   Pointing at a use shows it on the stage; clicking keeps only the
-   products for it. Pointing at a product shows where it goes to work.
+   Product card: the picture in the middle, its uses in orbit.
+   At rest the card shows the product (a photo, once there is one).
+   On hover the uses come out of the centre and circle it slowly;
+   pointing at the picture pauses them so each can be read.
    =================================================================== */
-.hc-shop-hero {
-  padding: clamp(2rem, 5vw, 4rem) 0 clamp(1.5rem, 3vw, 2.5rem);
-}
+@property --hc-orbit-r { syntax: "<length>"; inherits: true; initial-value: 0px; }
+@property --hc-orbit-spin { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
 
-.hc-shop-hero-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  align-items: center;
-}
-
-.hc-shop-hero-copy h1 {
-  margin: 0.6rem 0 0.8rem;
-}
-
-.hc-use-ask {
-  margin: 1.6rem 0 0.7rem;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: var(--hc-heading);
-}
-
-.hc-use-picker {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.6rem;
-}
-
-.hc-use-tile {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  min-height: 76px;
-  padding: 0.75rem 0.8rem;
-  text-align: left;
-  background: var(--hc-bg);
-  color: var(--hc-heading);
-  border: 1px solid var(--hc-border);
-  border-top: 2px solid var(--hc-border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
-}
-
-.hc-use-tile-name {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.95rem;
-  line-height: 1.2;
-}
-
-.hc-use-tile-note {
-  font-size: 0.78rem;
-  line-height: 1.3;
-  color: var(--hc-text-muted);
-}
-
-.hc-use-tile:hover,
-.hc-use-tile:focus-visible,
-.hc-use-tile.is-active {
-  border-color: var(--hc-heading);
-  border-top-color: var(--hc-signal-text);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-soft);
-}
-
-.hc-use-tile.is-active {
-  background: var(--hc-bg-soft);
-}
-
-.hc-use-hint {
-  margin-top: 0.8rem;
-  font-size: 0.82rem;
-  color: var(--hc-text-muted);
-}
-
-.hc-use-reset {
-  margin-left: 0.4rem;
-  padding: 0;
-  background: none;
-  border: 0;
-  font: inherit;
-  font-weight: 600;
-  color: var(--hc-heading);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-/* The stage: black object on white, light from above, in both themes. */
-.hc-shop-stage {
-  position: relative;
-  aspect-ratio: 5 / 4;
-  background: #ffffff;
-  border-radius: 14px;
-  overflow: hidden;
-  outline: 1px solid rgba(0, 0, 0, 0.08);
-  outline-offset: -1px;
-}
-
-:root[data-theme="dark"] .hc-shop-stage {
-  outline-color: rgba(255, 255, 255, 0.16);
-}
-
-.hc-shop-stage::before {
-  content: "";
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 13%;
-  height: 9%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.15) 55%, transparent 100%);
-  filter: blur(6px);
-}
-
-.hc-shop-stage-scene {
-  position: absolute;
-  inset: 0 0 12% 0;
-  display: none;
-}
-
-.hc-shop-stage-scene.is-active {
-  display: block;
-  animation: hcStageIn 420ms var(--ease) both;
-}
-
-@keyframes hcStageIn {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: none; }
-}
-
-.hc-shop-stage-caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-  padding: 0.7rem 1rem;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  color: #000000;
-  background: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.hc-shop-stage:has(.hc-3d--fallback) {
-  display: none;
-}
-
-.hc-shop-hero-inner:has(.hc-3d--fallback) {
-  grid-template-columns: 1fr;
-}
-
-/* --- product card: the picture gives way to the use --- */
 .hc-product-figure {
   position: relative;
-  height: 128px;
+  height: 196px;
+  background: none;
+  overflow: visible;
   cursor: pointer;
 }
 
-.hc-product-art {
+:root[data-theme="dark"] .hc-product-figure {
+  background: none;
+}
+
+.hc-product-photo {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--hc-bg-soft);
+  border: 1px solid var(--hc-border);
+  transition: transform var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
+}
+
+.hc-product-photo svg {
+  width: 52px;
+  height: 52px;
+}
+
+.hc-product-photo img {
   width: 100%;
   height: 100%;
-  transition: opacity var(--dur-base) var(--ease);
+  object-fit: cover;
 }
 
-.hc-product-use {
-  position: absolute;
-  inset: 0;
-  display: none;
-  background: #ffffff;
-}
-
-.hc-product-card.is-use-open .hc-product-use {
-  display: block;
-  animation: hcStageIn 320ms var(--ease) both;
-}
-
-.hc-product-card.is-use-open .hc-product-art {
-  opacity: 0;
-}
-
-.hc-product-use-scene {
-  position: absolute;
-  inset: 0;
-}
-
-.hc-product-use::before {
+/* the track the uses travel on */
+.hc-product-figure::before {
   content: "";
   position: absolute;
-  left: 30%;
-  right: 30%;
-  bottom: 8%;
-  height: 9%;
+  left: 50%;
+  top: 50%;
+  width: 148px;
+  height: 148px;
+  margin: -74px 0 0 -74px;
+  border: 1px dashed var(--hc-border);
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.36), transparent);
-  filter: blur(4px);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
 }
 
-.hc-product-use-label {
+.hc-orbit {
   position: absolute;
-  left: 8px;
-  bottom: 8px;
-  z-index: 2;
-  padding: 0.28rem 0.55rem;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  --hc-orbit-r: 0px;
+  transition: --hc-orbit-r 520ms var(--ease);
+}
+
+.hc-orbit-item {
+  position: absolute;
+  left: -17px;
+  top: -17px;
+  width: 34px;
+  height: 34px;
+  opacity: 0;
+  transform: rotate(calc(var(--a) + var(--hc-orbit-spin))) translateX(var(--hc-orbit-r)) rotate(calc(-1 * (var(--a) + var(--hc-orbit-spin))));
+  transition: opacity 320ms var(--ease);
+  transition-delay: calc(var(--n) * 50ms);
+}
+
+.hc-orbit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--hc-bg);
+  color: var(--hc-heading);
+  border: 1px solid var(--hc-heading);
+  transition: background var(--dur-fast, 150ms) var(--ease), color var(--dur-fast, 150ms) var(--ease), border-color var(--dur-fast, 150ms) var(--ease);
+}
+
+.hc-orbit-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hc-orbit-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  padding: 0.25rem 0.5rem;
   font: 600 0.6875rem/1.2 var(--font-heading);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
   color: #ffffff;
   background: #000000;
   border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms var(--ease);
+  z-index: 5;
 }
 
-.hc-product-use-label::before {
-  content: "Used in \00b7  ";
-  color: #a78bfa;
+:root[data-theme="dark"] .hc-orbit-label {
+  color: #000000;
+  background: #ffffff;
+}
+
+.hc-orbit-item:hover {
+  z-index: 6;
+}
+
+.hc-orbit-item:hover .hc-orbit-icon {
+  background: var(--hc-signal);
+  border-color: var(--hc-signal);
+  color: #ffffff;
+}
+
+.hc-orbit-item:hover .hc-orbit-label {
+  opacity: 1;
+}
+
+.hc-product-card.is-orbit-open .hc-orbit,
+.hc-product-card:focus-within .hc-orbit {
+  --hc-orbit-r: 74px;
+}
+
+.hc-product-card.is-orbit-open .hc-orbit-item,
+.hc-product-card:focus-within .hc-orbit-item {
+  opacity: 1;
+}
+
+.hc-product-card.is-orbit-open .hc-product-figure::before,
+.hc-product-card:focus-within .hc-product-figure::before {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) {
+  .hc-product-card:hover .hc-orbit {
+    --hc-orbit-r: 74px;
+  }
+
+  .hc-product-card:hover .hc-orbit-item {
+    opacity: 1;
+  }
+
+  .hc-product-card:hover .hc-product-figure::before {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hc-product-card:hover .hc-product-photo {
+    transform: scale(0.94);
+    border-color: var(--hc-heading);
+  }
+
+  .hc-product-card:hover .hc-product-figure svg {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hc-product-card:hover .hc-orbit,
+  .hc-product-card.is-orbit-open .hc-orbit {
+    animation: hcOrbit 26s linear infinite;
+  }
+
+  .hc-product-figure:hover .hc-orbit {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes hcOrbit {
+  to { --hc-orbit-spin: 360deg; }
 }
 
 .hc-product-usedin {
@@ -4814,30 +4784,7 @@ select:focus-visible {
   color: var(--hc-text-muted);
 }
 
-@media (max-width: 1000px) {
-  .hc-shop-hero-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .hc-shop-stage {
-    order: -1;
-    aspect-ratio: 16 / 10;
-  }
-}
-
-@media (max-width: 560px) {
-  .hc-use-picker {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hc-shop-stage-scene.is-active,
-  .hc-product-card.is-use-open .hc-product-use {
-    animation: none;
-  }
-}
-
 main section.hc-section[id] {
   scroll-margin-top: 150px;
 }
+

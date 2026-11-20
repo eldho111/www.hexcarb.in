@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ffffff" />
   <script>try{var t=localStorage.getItem("hc-theme-mode");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
   <noscript><style>.hc-reveal,.hc-word{opacity:1!important;transform:none!important}</style></noscript>
-  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg?v=20261122b" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg?v=20261122c" />
   <link rel="manifest" href="/assets/icons/site.webmanifest" />
   <title>Carbon Nanotube and Graphene Materials | HexCarb™ Products</title>
   <meta name="description" content="Nanotube and graphene powders, dispersions, inks, fibres and films from HexCarb™. Available as evaluation samples; volumes on request." />
@@ -28,9 +28,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20261122b" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20261122b" />
-  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261122b" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-design-system.css?v=20261122c" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-components.css?v=20261122c" />
+  <link rel="stylesheet" href="/assets/css/hexcarb-signature.css?v=20261122c" />
 
   <script type="application/ld+json">
   {
@@ -47,7 +47,7 @@
   <header class="hc-header">
     <div class="container hc-nav">
       <a class="hc-brand" href="/index.html" aria-label="HexCarb™ home">
-        <img class="hc-brand-logo" src="/logo-mono.svg?v=20261122b" alt="HexCarb™" />
+        <img class="hc-brand-logo" src="/logo-mono.svg?v=20261122c" alt="HexCarb™" />
         <span class="hc-visually-hidden">HexCarb™</span>
       </a>
 
@@ -82,32 +82,24 @@
   </header>
 
   <main id="main-content">
-    <section class="hc-shop-hero">
-      <div class="container hc-shop-hero-inner">
-        <div class="hc-shop-hero-copy hc-reveal">
-          <span class="hc-kicker">Products</span>
-          <h1>Nanotubes, in the form you need.</h1>
-          <p>Powders, dispersions, inks, fibres and films. Available as evaluation samples; volumes on request.</p>
-          <p class="hc-use-ask" id="hc-use-ask">What are you making?</p>
-          <div class="hc-use-picker" id="toc" role="group" aria-labelledby="hc-use-ask" data-hc-use-picker>
-            <button type="button" class="hc-use-tile" data-use="battery" aria-pressed="false"><span class="hc-use-tile-name">Batteries</span><span class="hc-use-tile-note">Electrodes and slurries</span></button>
-            <button type="button" class="hc-use-tile" data-use="coating" aria-pressed="false"><span class="hc-use-tile-name">Coatings and inks</span><span class="hc-use-tile-note">Conductive, antistatic, printed</span></button>
-            <button type="button" class="hc-use-tile" data-use="composite" aria-pressed="false"><span class="hc-use-tile-name">Composites and plastics</span><span class="hc-use-tile-note">Stronger, conductive parts</span></button>
-            <button type="button" class="hc-use-tile" data-use="thermal" aria-pressed="false"><span class="hc-use-tile-name">Thermal management</span><span class="hc-use-tile-note">Chip to heat sink</span></button>
-            <button type="button" class="hc-use-tile" data-use="textile" aria-pressed="false"><span class="hc-use-tile-name">Fibres and textiles</span><span class="hc-use-tile-note">Yarns, cables, sensors</span></button>
-            <button type="button" class="hc-use-tile" data-use="construction" aria-pressed="false"><span class="hc-use-tile-name">Concrete and rubber</span><span class="hc-use-tile-note">Tougher bulk materials</span></button>
-          </div>
-          <p class="hc-use-hint"><span data-hc-use-hint>Point at one to see it. Click to show only the products for it.</span> <button type="button" class="hc-use-reset" data-hc-use-reset hidden>Show all products</button></p>
-        </div>
-        <div class="hc-shop-stage" aria-hidden="true">
-          <div class="hc-3d hc-shop-stage-scene is-active" data-hc-3d="mwcnt" data-use-scene="all" data-caption="Multi-walled carbon nanotube: the starting material"></div>
-          <div class="hc-3d hc-shop-stage-scene" data-hc-3d="use-battery" data-use-scene="battery" data-caption="Battery electrode: nanotubes wire the active particles together"></div>
-          <div class="hc-3d hc-shop-stage-scene" data-hc-3d="use-film" data-use-scene="coating" data-caption="Coated film: a nanotube network carries current across the surface"></div>
-          <div class="hc-3d hc-shop-stage-scene" data-hc-3d="use-composite" data-use-scene="composite" data-caption="Composite: nanotubes bridge the matrix between fibres"></div>
-          <div class="hc-3d hc-shop-stage-scene" data-hc-3d="tim" data-use-scene="thermal" data-caption="Thermal interface: heat travels along aligned nanotubes"></div>
-          <div class="hc-3d hc-shop-stage-scene" data-hc-3d="use-textile" data-use-scene="textile" data-caption="Woven nanotube yarn: conductive and flexible"></div>
-          <div class="hc-3d hc-shop-stage-scene" data-hc-3d="use-concrete" data-use-scene="construction" data-caption="Concrete: nanotubes stitch across microcracks"></div>
-          <p class="hc-shop-stage-caption" data-hc-use-caption>Multi-walled carbon nanotube: the starting material</p>
+    <section class="hc-page-hero hc-page-hero--scene">
+      <div class="hc-3d hc-page-hero-scene" data-hc-3d="dispersion"></div>
+      <div class="container hc-reveal">
+        <span class="hc-kicker">Products</span>
+        <h1>Nanotubes, in the form you need.</h1>
+        <p>Dispersions, inks, fibres, films and blends. Available as evaluation samples; volumes on request.</p>
+        <div class="hc-shop-toc" id="toc">
+          <a href="#hexflow-a">HexFlow A</a>
+          <a href="#hexflow-s">HexFlow S</a>
+          <a href="#hexweave">HexWeave</a>
+          <a href="#hextim">HexTIM</a>
+          <a href="#hexsheets-powders">HexSheets Powders</a>
+          <a href="#hexsheets-disp">HexSheets Disp.</a>
+          <a href="#hexlayers-m">HexLayers-M</a>
+          <a href="#hexink">HexInk</a>
+          <a href="#hexblend">HexBlend</a>
+          <a href="#hexlab">HexLab</a>
+          <a href="#hexrubber">HexRubber</a>
         </div>
       </div>
     </section>
@@ -132,8 +124,6 @@
 
     <nav class="hc-family-nav" id="family-nav" aria-label="Product families">
       <div class="container hc-family-nav-inner">
-        <a href="#hextubes-s" data-family-target="hextubes-s">HexTubes SW</a>
-        <a href="#hextubes-m" data-family-target="hextubes-m">HexTubes MW</a>
         <a href="#hexflow-a" data-family-target="hexflow-a">HexFlow A</a>
         <a href="#hexflow-s" data-family-target="hexflow-s">HexFlow S</a>
         <a href="#hexweave" data-family-target="hexweave">HexWeave</a>
@@ -151,7 +141,7 @@
     <template id="hc-product-template">
       <article class="hc-card hc-product-card">
         <span class="hc-product-badge"></span>
-        <div class="hc-product-figure" aria-hidden="true"><div class="hc-product-art"></div><div class="hc-product-use"><span class="hc-product-use-label"></span></div></div>
+        <div class="hc-product-figure"><div class="hc-product-photo" aria-hidden="true"></div><ul class="hc-orbit" aria-label="Where it is used"></ul></div>
         <div class="hc-product-price"></div>
         <h3></h3>
         <p class="hc-unit"></p>
@@ -164,63 +154,6 @@
         </div>
       </article>
     </template>
-
-    <section id="hextubes-s" class="hc-section">
-      <div class="container">
-        <span class="hc-kicker">High Purity Nanotubes</span>
-        <h2><span class="hc-family-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="5"/><line x1="12" y1="6" x2="12" y2="18"/></svg></span>HexTubes SW - Single Walled Carbon Nanotube (SWCNT)</h2>
-        <p class="hc-muted">High-purity SWCNT formats for conductivity networks, lightweight reinforcement, and advanced hybrid system development.</p>
-
-        <article class="hc-card hc-reveal">
-          <h3 id="hextubes-rd">R&amp;D Powders</h3>
-          <p class="hc-muted">Low-volume SWCNT packs for screening, characterization, and early formulation studies.</p>
-          <div class="hc-product-grid" data-section="hextubes-sw-rd">
-            <div class="hc-shop-item" data-name="HexTubes SW - 1 g" data-unit="1 g vial" data-price="Sample on request" data-features='["High-purity SWCNT","Batch traceability","R&D characterization support"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_sw_1g"></div>
-            <div class="hc-shop-item" data-name="HexTubes SW - 5 g" data-unit="5 g pack" data-price="Sample on request" data-features='["Screening bundle","COA/SDS on request","Stable handling route"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_sw_5g"></div>
-            <div class="hc-shop-item" data-name="HexTubes SW - 10 g" data-unit="10 g pack" data-price="Sample on request" data-features='["Pilot-lab bridge volume","Dispersion notes","Technical support"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_sw_10g"></div>
-          </div>
-        </article>
-
-        <article class="hc-card hc-reveal">
-          <h3 id="hextubes-ind">Industrial Powders</h3>
-          <p class="hc-muted">Scale-oriented SWCNT packs for industrial evaluation and qualification planning.</p>
-          <div class="hc-product-grid" data-section="hextubes-sw-ind">
-            <div class="hc-shop-item" data-name="HexTubes SW - 100 g" data-unit="100 g pouch" data-price="Sample on request" data-features='["High-purity SWCNT","Blend-ready profile","Industrial screening"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_sw_100g"></div>
-            <div class="hc-shop-item" data-name="HexTubes SW - 500 g" data-unit="500 g pouch" data-price="Sample on request" data-features='["Scale trial quantity","Process notes","Qualification route"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_sw_500g"></div>
-            <div class="hc-shop-item" data-name="HexTubes SW - 1 kg" data-unit="1 kg bag" data-price="Sample on request" data-features='["Pilot volume","Batch lot continuity","Commercial onboarding"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_sw_1kg"></div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="hextubes-m" class="hc-section hc-soft-bg">
-      <div class="container">
-        <span class="hc-kicker">High Purity Nanotubes</span>
-        <h2><span class="hc-family-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="6" height="20" rx="3"/><rect x="13" y="2" width="6" height="20" rx="3"/></svg></span>HexTubes MW - Multi Walled Carbon Nanotube (MWCNT)</h2>
-        <p class="hc-muted">High-purity MWCNT formats for reinforcement-focused composites, conductivity tuning and matrix integration.</p>
-        <span id="hextubes-multiwalled" class="hc-visually-hidden">HexTubes Multiwalled</span>
-
-        <article class="hc-card hc-reveal">
-          <h3 id="hextubes-m-rd">R&amp;D Powders</h3>
-          <p class="hc-muted">MWCNT R&amp;D packs for dispersion experiments and comparative morphology studies.</p>
-          <div class="hc-product-grid" data-section="hextubes-mw-rd">
-            <div class="hc-shop-item" data-name="HexTubes MW - 1 g" data-unit="1 g vial" data-price="Sample on request" data-features='["High-purity MWCNT","R&D screening","Morphology reference"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_mw_1g"></div>
-            <div class="hc-shop-item" data-name="HexTubes MW - 5 g" data-unit="5 g pack" data-price="Sample on request" data-features='["Formulation trial bundle","COA/SDS on request","Support-ready"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_mw_5g"></div>
-            <div class="hc-shop-item" data-name="HexTubes MW - 10 g" data-unit="10 g pack" data-price="Sample on request" data-features='["Pilot-lab volume","Dispersion pathway notes","Evaluation support"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_mw_10g"></div>
-          </div>
-        </article>
-
-        <article class="hc-card hc-reveal">
-          <h3 id="hextubes-m-ind">Industrial Powders</h3>
-          <p class="hc-muted">MWCNT industrial packs for reinforcement and conductivity deployment programs.</p>
-          <div class="hc-product-grid" data-section="hextubes-mw-ind">
-            <div class="hc-shop-item" data-name="HexTubes MW - 100 g" data-unit="100 g pouch" data-price="Sample on request" data-features='["Industrial screening grade","Blend compatibility","Batch traceability"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_mw_100g"></div>
-            <div class="hc-shop-item" data-name="HexTubes MW - 500 g" data-unit="500 g pouch" data-price="Sample on request" data-features='["Scale-trial ready","Process-window guidance","Qualification support"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_mw_500g"></div>
-            <div class="hc-shop-item" data-name="HexTubes MW - 1 kg" data-unit="1 kg bag" data-price="Sample on request" data-features='["Pilot production quantity","Documentation route","Commercial pipeline onboarding"]' data-app="/applications/swcnt-graphene-hybrid.html" data-buy-option="true" data-buy-sku="hextubes_mw_1kg"></div>
-          </div>
-        </article>
-      </div>
-    </section>
 
     <section id="hexflow-a" class="hc-section">
       <div class="container">
@@ -424,7 +357,7 @@
     <div class="container hc-footer-grid">
       <div>
         <a class="hc-brand hc-brand-on-dark" href="/index.html" aria-label="HexCarb™ home">
-          <img class="hc-brand-logo" src="/logo-mono.svg?v=20261122b" alt="HexCarb™" width="600" height="321" />
+          <img class="hc-brand-logo" src="/logo-mono.svg?v=20261122c" alt="HexCarb™" width="600" height="321" />
         </a>
         <p>Carbon nanotubes, formulated to work in real products.</p>
       </div>
@@ -457,10 +390,10 @@
     </div>
   </footer>
 
-  <script src="/assets/js/hexcarb-config.js?v=20261122b"></script>
-  <script src="/assets/js/hexcarb-ui.js?v=20261122b"></script>
-  <script src="/assets/js/hexcarb-signature.js?v=20261122b"></script>
-  <script src="/assets/js/hexcarb-3d.js?v=20261122b"></script>
+  <script src="/assets/js/hexcarb-config.js?v=20261122c"></script>
+  <script src="/assets/js/hexcarb-ui.js?v=20261122c"></script>
+  <script src="/assets/js/hexcarb-signature.js?v=20261122c"></script>
+  <script src="/assets/js/hexcarb-3d.js?v=20261122c"></script>
   <script>
     (function () {
       var template = document.getElementById("hc-product-template");
@@ -541,28 +474,45 @@
           '</svg>'
       };
 
-      // Where each family goes to work: the scene shown on hover, the label over it,
-      // the plain line under the pack size, and which "What are you making?" tiles it answers.
-      var HC_USE = {
-        "hextubes-sw": { scene: "use-battery", label: "Battery electrodes", line: "Battery electrodes, transparent conductive films, composites", uses: "battery coating composite" },
-        "hextubes-mw": { scene: "use-composite", label: "Conductive composites", line: "Conductive plastics, composites, battery additives", uses: "battery composite construction" },
-        "hexflow-a": { scene: "use-film", label: "Conductive coatings", line: "Water-based coatings, antistatic films, battery slurries", uses: "coating battery" },
-        "hexflow-s": { scene: "use-battery", label: "Battery slurries", line: "Battery slurries, solvent-based coatings", uses: "battery coating" },
-        "hexweave": { scene: "use-textile", label: "Smart textiles", line: "Conductive yarns, light cables, strain-sensing fabric", uses: "textile composite" },
-        "hextim": { scene: "tim", label: "Chip to heat sink", line: "Thermal pads and films between chip and heat sink", uses: "thermal" },
-        "hexsheets-powders": { scene: "use-concrete", label: "Concrete and composites", line: "Concrete, composites, thermal fillers", uses: "construction composite thermal" },
-        "hexsheets-disp": { scene: "use-film", label: "Barrier coatings", line: "Barrier and conductive coatings", uses: "coating" },
-        "hexlayers-m": { scene: "hybrid", label: "Layered hybrid films", line: "Layered nanotube and graphene films", uses: "coating thermal" },
-        "hexink": { scene: "use-film", label: "Printed electronics", line: "Printed circuits, heaters, sensors", uses: "coating" },
-        "hexblend": { scene: "use-composite", label: "Moulded conductive parts", line: "Moulded and extruded conductive parts", uses: "composite" },
-        "hexlab": { scene: "dispersion", label: "Your formulation", line: "Development work on your own formulation", uses: "battery coating composite thermal textile construction" },
-        "hexrubber": { scene: "use-concrete", label: "Tougher rubber", line: "Tyres, seals, antistatic rubber parts", uses: "construction composite" }
+      // Small line icons for the uses that circle a product on hover.
+      var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+      var HC_USE_ICON = {
+        battery: IC + '<rect x="3" y="8" width="16" height="9" rx="1.5"/><path d="M21 11v3M7 11v3M10.5 11v3"/></svg>',
+        coating: IC + '<path d="M3 9l9-4 9 4-9 4z"/><path d="M3 13l9 4 9-4M3 17l9 4 9-4"/></svg>',
+        antistatic: IC + '<path d="M13 3L6 13h5l-1 8 8-11h-5z"/></svg>',
+        display: IC + '<rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M9 21h6M12 17v4"/></svg>',
+        textile: IC + '<path d="M4 7h16M4 12h16M4 17h16M7 4v16M12 4v16M17 4v16"/></svg>',
+        composite: IC + '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>',
+        print: IC + '<circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 6h6v6h4v4"/><circle cx="6" cy="18" r="2"/><path d="M6 16v-4"/></svg>',
+        cable: IC + '<path d="M4 20c0-8 5-4 8-8s2-8 8-8"/><path d="M2.5 18.5l3 3M18.5 2.5l3 3"/></svg>',
+        sensor: IC + '<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9M16.5 7.5a6.4 6.4 0 0 1 0 9M4.5 4.5a10.6 10.6 0 0 0 0 15M19.5 4.5a10.6 10.6 0 0 1 0 15"/></svg>',
+        chip: IC + '<rect x="7" y="7" width="10" height="10" rx="1"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/></svg>',
+        led: IC + '<path d="M9 18h6M10 21h4"/><path d="M8 14a6 6 0 1 1 8 0c-.7.7-1 1.5-1 2.5H9c0-1-.3-1.8-1-2.5z"/></svg>',
+        power: IC + '<circle cx="12" cy="13" r="7"/><path d="M12 3v8"/></svg>',
+        concrete: IC + '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 12h18M9 5v7M15 12v7"/></svg>',
+        thermal: IC + '<path d="M7 20c-2-3 2-5 0-8s2-5 0-8M12 20c-2-3 2-5 0-8s2-5 0-8M17 20c-2-3 2-5 0-8s2-5 0-8"/></svg>',
+        tyre: IC + '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/></svg>',
+        heater: IC + '<path d="M4 6h13a3 3 0 0 1 0 6H7a3 3 0 0 0 0 6h13"/></svg>',
+        plastic: IC + '<path d="M8 4h8v3l2 3v9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19v-9l2-3z"/><path d="M6 13h12"/></svg>',
+        flask: IC + '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></svg>',
+        seal: IC + '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/></svg>'
       };
 
-      function useFor(section) {
-        var key = section.replace(/-(rd|ind)$/, "");
-        return HC_USE[key] || null;
-      }
+      // Where each family goes to work: [icon, label] pairs, shown in orbit on hover
+      // and listed in plain words under the pack size.
+      var HC_USE = {
+        "hexflow-a": [["battery", "Battery slurries"], ["coating", "Conductive coatings"], ["antistatic", "Antistatic films"], ["textile", "Coated textiles"], ["display", "Transparent films"]],
+        "hexflow-s": [["battery", "Battery slurries"], ["coating", "Solvent coatings"], ["composite", "Resin systems"], ["print", "Ink bases"]],
+        "hexweave": [["textile", "Smart textiles"], ["cable", "Light cables"], ["sensor", "Strain sensors"], ["composite", "Reinforcement"]],
+        "hextim": [["chip", "Processors"], ["led", "LED lighting"], ["battery", "Battery packs"], ["power", "Power electronics"]],
+        "hexsheets-powders": [["composite", "Composites"], ["concrete", "Concrete"], ["thermal", "Thermal fillers"], ["tyre", "Rubber"], ["battery", "Battery additives"]],
+        "hexsheets-disp": [["coating", "Barrier coatings"], ["print", "Inks"], ["antistatic", "Antistatic films"], ["thermal", "Heat-spreading coats"]],
+        "hexlayers-m": [["thermal", "Heat spreaders"], ["coating", "Conductive films"], ["sensor", "Sensors"], ["display", "Flexible electronics"]],
+        "hexink": [["print", "Printed circuits"], ["heater", "Printed heaters"], ["sensor", "Sensors"], ["display", "Touch panels"]],
+        "hexblend": [["plastic", "Moulded parts"], ["antistatic", "ESD packaging"], ["cable", "Cable jackets"], ["composite", "Composites"]],
+        "hexlab": [["flask", "Dispersion trials"], ["coating", "Coating trials"], ["composite", "Sample parts"]],
+        "hexrubber": [["tyre", "Tyres"], ["seal", "Seals and gaskets"], ["antistatic", "Antistatic parts"], ["cable", "Hoses and belts"]]
+      };
 
       function artFor(section, unit) {
         var u = String(unit).toLowerCase();
@@ -605,7 +555,8 @@
         clone.querySelector(".hc-product-price").textContent = price;
 
         var figure = clone.querySelector(".hc-product-figure");
-        if (figure) {
+        var photo = figure ? figure.querySelector(".hc-product-photo") : null;
+        if (figure && photo) {
           if (item.dataset.img) {
             // Real product photography wins when provided via data-img.
             var artImg = document.createElement("img");
@@ -613,10 +564,32 @@
             artImg.alt = "";
             artImg.loading = "lazy";
             artImg.decoding = "async";
-            (figure.querySelector(".hc-product-art") || figure).appendChild(artImg);
+            photo.appendChild(artImg);
           } else {
-            (figure.querySelector(".hc-product-art") || figure).innerHTML = HC_PRODUCT_ART[artFor(section, unit)] || HC_PRODUCT_ART.pack;
+            photo.innerHTML = HC_PRODUCT_ART[artFor(section, unit)] || HC_PRODUCT_ART.pack;
           }
+        }
+
+        // Uses: small icons that circle the picture on hover, and a plain line of words.
+        var uses = HC_USE[section] || [];
+        var orbit = clone.querySelector(".hc-orbit");
+        var usedIn = clone.querySelector(".hc-product-usedin");
+        if (uses.length && orbit) {
+          uses.forEach(function (u, n) {
+            var li = document.createElement("li");
+            li.className = "hc-orbit-item";
+            li.style.setProperty("--a", (360 / uses.length * n - 90) + "deg");
+            li.style.setProperty("--n", n);
+            li.innerHTML = '<span class="hc-orbit-icon">' + (HC_USE_ICON[u[0]] || "") + '</span><span class="hc-orbit-label">' + u[1] + '</span>';
+            orbit.appendChild(li);
+          });
+          if (usedIn) usedIn.textContent = "Used in: " + uses.map(function (u) { return u[1].toLowerCase(); }).join(", ");
+          if (figure) figure.addEventListener("click", function () {
+            figure.closest(".hc-product-card").classList.toggle("is-orbit-open");
+          });
+        } else {
+          if (orbit) orbit.remove();
+          if (usedIn) usedIn.remove();
         }
 
         // Tier badge
@@ -634,21 +607,6 @@
           }
           badge.setAttribute("data-tier", tier);
           badge.textContent = tier === "rd" ? "R&D" : tier === "scale" ? "Scale" : tier === "service" ? "Service" : "Product";
-        }
-
-        var use = useFor(section);
-        var usedIn = clone.querySelector(".hc-product-usedin");
-        var useLayer = clone.querySelector(".hc-product-use");
-        if (use) {
-          if (usedIn) usedIn.textContent = "Used in: " + use.line;
-          if (useLayer) {
-            useLayer.setAttribute("data-scene", use.scene);
-            useLayer.querySelector(".hc-product-use-label").textContent = use.label;
-          }
-          if (cardEl) cardEl.dataset.uses = use.uses;
-        } else {
-          if (usedIn) usedIn.remove();
-          if (useLayer) useLayer.remove();
         }
 
         if (cardEl) {
@@ -735,37 +693,7 @@
         item.replaceWith(clone);
       });
 
-      initUseHover();
       initShopFilter();
-
-      // Hovering a product shows where it goes to work. The 3D scene is only
-      // built the first time a card is pointed at, and only runs while shown.
-      function initUseHover() {
-        function open(card) {
-          var layer = card.querySelector(".hc-product-use");
-          if (!layer) return;
-          if (!layer.querySelector(".hc-3d")) {
-            var el = document.createElement("div");
-            el.className = "hc-3d hc-product-use-scene";
-            el.setAttribute("data-hc-3d", layer.getAttribute("data-scene"));
-            layer.insertBefore(el, layer.firstChild);
-            if (!window.hexcarb3d || !window.hexcarb3d.mount(el)) el.remove();
-          }
-          card.classList.add("is-use-open");
-        }
-        function close(card) { card.classList.remove("is-use-open"); }
-
-        document.querySelectorAll(".hc-product-card").forEach(function (card) {
-          card.addEventListener("pointerenter", function (e) { if (e.pointerType !== "touch") open(card); });
-          card.addEventListener("pointerleave", function (e) { if (e.pointerType !== "touch") close(card); });
-          card.addEventListener("focusin", function () { open(card); });
-          card.addEventListener("focusout", function (e) { if (!card.contains(e.relatedTarget)) close(card); });
-          var figure = card.querySelector(".hc-product-figure");
-          if (figure) figure.addEventListener("click", function () {
-            if (card.classList.contains("is-use-open")) close(card); else open(card);
-          });
-        });
-      }
 
       function initShopFilter() {
         var cards = Array.prototype.slice.call(document.querySelectorAll(".hc-product-card"));
@@ -776,7 +704,6 @@
 
         var total = cards.length;
         var activeTier = "all";
-        var activeUse = "";
         var query = "";
         var debounceTimer = null;
 
@@ -803,8 +730,7 @@
           cards.forEach(function (card) {
             var matchTier = activeTier === "all" || card.dataset.tier === activeTier;
             var matchQuery = !query || (card.dataset.search || "").indexOf(query) !== -1;
-            var matchUse = !activeUse || (" " + (card.dataset.uses || "") + " ").indexOf(" " + activeUse + " ") !== -1;
-            var show = matchTier && matchQuery && matchUse;
+            var show = matchTier && matchQuery;
             if (show) visible += 1;
             shown.push(show);
             setCardVisible(card, show);
@@ -835,7 +761,7 @@
           });
 
           if (countNode) {
-            countNode.textContent = (query || activeTier !== "all" || activeUse)
+            countNode.textContent = (query || activeTier !== "all")
               ? visible + " of " + total + " products"
               : total + " products";
           }
@@ -867,59 +793,6 @@
             }
           });
         });
-
-        // "What are you making?": pointing at a tile shows that use on the stage;
-        // clicking it keeps only the products that answer it.
-        var picker = document.querySelector("[data-hc-use-picker]");
-        if (picker) {
-          var tiles = Array.prototype.slice.call(picker.querySelectorAll(".hc-use-tile"));
-          var stageScenes = Array.prototype.slice.call(document.querySelectorAll(".hc-shop-stage-scene"));
-          var caption = document.querySelector("[data-hc-use-caption]");
-          var reset = document.querySelector("[data-hc-use-reset]");
-          var hint = document.querySelector("[data-hc-use-hint]");
-          var hintText = hint ? hint.textContent : "";
-
-          function stage(use) {
-            stageScenes.forEach(function (sc) {
-              var on = sc.getAttribute("data-use-scene") === (use || "all");
-              sc.classList.toggle("is-active", on);
-              if (on && caption) caption.textContent = sc.getAttribute("data-caption") || "";
-            });
-          }
-
-          function choose(use) {
-            activeUse = use;
-            tiles.forEach(function (t) {
-              var on = t.getAttribute("data-use") === use;
-              t.classList.toggle("is-active", on);
-              t.setAttribute("aria-pressed", on ? "true" : "false");
-            });
-            stage(use);
-            var visible = apply();
-            if (reset) reset.hidden = !use;
-            if (hint) hint.textContent = use ? visible + " products for this." : hintText;
-            return visible;
-          }
-
-          tiles.forEach(function (t) {
-            var use = t.getAttribute("data-use");
-            t.addEventListener("pointerenter", function (e) { if (e.pointerType !== "touch") stage(use); });
-            t.addEventListener("focus", function () { stage(use); });
-            t.addEventListener("click", function () {
-              var visible = choose(activeUse === use ? "" : use);
-              if (typeof window.hexTrack === "function") {
-                window.hexTrack("hc_shop_filter", { use: activeUse || "all", tier: activeTier, results: visible });
-              }
-              if (activeUse) {
-                var bar = document.querySelector("main section.hc-section[id]:not(.is-section-empty)") || document.querySelector("[data-hc-shop-filterbar]");
-                if (bar && bar.scrollIntoView) bar.scrollIntoView({ behavior: "smooth", block: "start" });
-              }
-            });
-          });
-          picker.addEventListener("pointerleave", function () { stage(activeUse); });
-          picker.addEventListener("focusout", function (e) { if (!picker.contains(e.relatedTarget)) stage(activeUse); });
-          if (reset) reset.addEventListener("click", function () { choose(""); });
-        }
 
         apply();
       }

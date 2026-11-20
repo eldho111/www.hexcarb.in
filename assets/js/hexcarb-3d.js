@@ -1886,17 +1886,6 @@
       schedule();
     }, { rootMargin: "120px" });
     scenes.forEach(function (s) { io.observe(s.el); });
-    /* A page may add a scene later (the catalogue does, on hover). */
-    window.hexcarb3d = {
-      mount: function (el) {
-        var s = makeScene(el);
-        if (!s) return false;
-        scenes.push(s);
-        io.observe(el);
-        schedule();
-        return true;
-      }
-    };
 
     var resizeTimer = 0;
     window.addEventListener("resize", function () {
