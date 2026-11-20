@@ -5,6 +5,8 @@
   --hc-accent-bright: #2e2e2e;
   --hc-accent-glow: rgba(0, 0, 0, 0.1);
   --hc-on-accent: #ffffff;
+  /* The one colour on the site. It marks energy in motion and nothing else. */
+  --hc-signal: #ff5a1f;
   --hc-green: #8c8c8c; /* secondary data tone for canvas demos (neutral) */
   --hc-active: #000000;
   --hc-bg: #ffffff;

@@ -4380,3 +4380,203 @@ a.hc-filter-chip {
   color: #474747;
 }
 
+/* ===================================================================
+   Signal colour
+   One hue, used only where something is live: energy moving in the 3D
+   scenes, progress, the active page, focus and hover on the main action.
+   Never body text. Same hue in light and dark.
+   =================================================================== */
+:root[data-signal="cobalt"] { --hc-signal: #2f5bff; }
+:root[data-signal="purple"] { --hc-signal: #8a3ffc; }
+:root[data-signal="gold"] { --hc-signal: #d1a12c; }
+:root[data-signal="lime"] { --hc-signal: #b6f000; }
+:root[data-signal="none"] { --hc-signal: #8c8c8c; }
+
+.hc-film-bar {
+  background: var(--hc-signal);
+}
+
+.hc-nav-links a::after {
+  height: 2px;
+  background: var(--hc-signal);
+}
+
+.hc-kicker::before {
+  background: var(--hc-signal);
+  height: 2px;
+}
+
+.hc-btn-primary:hover,
+.hc-btn-accent:hover,
+:root[data-theme="dark"] .hc-btn-primary:hover,
+:root[data-theme="dark"] .hc-btn-accent:hover,
+.hc-graphite .hc-btn-accent:hover,
+.hc-command-strip .hc-btn-accent:hover,
+.hc-quote-panel .hc-btn-accent:hover,
+.hc-closing .hc-btn-accent:hover {
+  background: var(--hc-signal);
+  border-color: var(--hc-signal);
+  color: #000000;
+  box-shadow: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline-color: var(--hc-signal);
+}
+
+.hc-tag {
+  border-color: var(--hc-signal);
+  color: var(--hc-signal);
+}
+
+.hc-quote-progress-fill {
+  background: var(--hc-signal);
+}
+
+/* --- AI Engine: the brain picture, with a pulse of energy moving through it ---
+   The render stays exactly as it is. A soft light in the signal colour is laid
+   over it with a blend that only brightens the dark object, so the white
+   around it never changes. It travels circuit half -> lattice -> nanotube. */
+@property --hc-ex { syntax: "<percentage>"; inherits: false; initial-value: 26%; }
+@property --hc-ey { syntax: "<percentage>"; inherits: false; initial-value: 24%; }
+@property --hc-ea { syntax: "<number>"; inherits: false; initial-value: 0; }
+
+.hc-brain-scene {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.hc-brain-scene img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hc-brain-energy {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: var(--hc-ea);
+  background: radial-gradient(circle 17cqw at var(--hc-ex) var(--hc-ey),
+    color-mix(in srgb, var(--hc-signal) 62%, transparent) 0%,
+    color-mix(in srgb, var(--hc-signal) 26%, transparent) 38%,
+    transparent 100%);
+}
+
+.hc-brain-scene { container-type: inline-size; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hc-brain-energy {
+    animation: hcBrainEnergy 14s linear infinite;
+  }
+
+  .hc-brain-energy--late {
+    animation-delay: -7s;
+  }
+}
+
+@keyframes hcBrainEnergy {
+  0%   { --hc-ex: 24%; --hc-ey: 22%; --hc-ea: 0; }
+  5%   { --hc-ex: 26%; --hc-ey: 26%; --hc-ea: 1; }
+  16%  { --hc-ex: 30%; --hc-ey: 46%; --hc-ea: 1; }
+  26%  { --hc-ex: 40%; --hc-ey: 36%; --hc-ea: 1; }
+  36%  { --hc-ex: 53%; --hc-ey: 26%; --hc-ea: 1; }
+  48%  { --hc-ex: 66%; --hc-ey: 38%; --hc-ea: 1; }
+  58%  { --hc-ex: 58%; --hc-ey: 58%; --hc-ea: 1; }
+  68%  { --hc-ex: 60%; --hc-ey: 74%; --hc-ea: 1; }
+  80%  { --hc-ex: 76%; --hc-ey: 63%; --hc-ea: 1; }
+  92%  { --hc-ex: 92%; --hc-ey: 51%; --hc-ea: 1; }
+  100% { --hc-ex: 97%; --hc-ey: 49%; --hc-ea: 0; }
+}
+
+/* The four loop steps light in turn, in time with the pulse in the picture. */
+@media (prefers-reduced-motion: no-preference) {
+  .hc-ai-loop-step {
+    animation: hcLoopStep 14s linear infinite;
+  }
+
+  .hc-ai-loop-step:nth-child(2) { animation-delay: 3s; }
+  .hc-ai-loop-step:nth-child(3) { animation-delay: 6s; }
+  .hc-ai-loop-step:nth-child(4) { animation-delay: 9.8s; }
+}
+
+@keyframes hcLoopStep {
+  0%, 22%, 100% { box-shadow: inset 0 0 0 0 var(--hc-signal); }
+  4%, 16% { box-shadow: inset 0 3px 0 0 var(--hc-signal); }
+}
+
+/* --- When 3D cannot run: no empty windows, no orphan shadows --- */
+.hc-3d--fallback::before {
+  content: none !important;
+}
+
+.hc-app-card-scene.hc-3d--fallback,
+.hc-use-scene.hc-3d--fallback,
+.hc-showcase-scene.hc-3d--fallback,
+.hc-page-hero-scene.hc-3d--fallback,
+.hc-stage-scene.hc-3d--fallback,
+.hc-closing-scene.hc-3d--fallback {
+  display: none;
+}
+
+.hc-prop-stage:has(.hc-3d--fallback),
+.hc-stage:has(.hc-3d--fallback) .hc-film,
+.hc-stage:has(.hc-3d--fallback) .hc-film-scale {
+  display: none;
+}
+
+.hc-prop-row:has(.hc-3d--fallback),
+.hc-showcase:has(.hc-3d--fallback) {
+  grid-template-columns: 1fr;
+}
+
+.hc-page-hero--scene:has(.hc-3d--fallback) > .container > * {
+  max-width: none;
+}
+
+.hc-stage:has(.hc-3d--fallback)::before {
+  content: none;
+}
+
+/* --- TEMPORARY (local preview only): accent colour chooser --- */
+.hc-signal-picker {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 999px;
+  font: 600 11px/1 var(--font-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.hc-signal-picker button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #000000;
+  cursor: pointer;
+}
+
+.hc-signal-picker button[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px #000000;
+}
+

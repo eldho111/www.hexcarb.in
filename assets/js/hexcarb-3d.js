@@ -861,7 +861,7 @@
     "    float env = c.y>uCoat ? 1.0 : exp((c.y-uCoat)*2.6);",
     "    c.x += uAmp*env*sin(c.y*1.9 + uTime*3.4 + c.z);",
     "    r *= 0.45 + 0.55*env;",
-    "    g = 0.0;",
+    "    g = env;",
     "  }",
     "  r *= (1.0 + 0.3*g*(uPulse>1.5 ? 0.0 : uPulse))*grow(iAtom.xyz)*rs;",
     "  vec4 mv = uMV*vec4(c + aPos*r, 1.0);",
@@ -917,7 +917,7 @@
     "in vec3 vN; in vec3 vP; in float vGlow;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
-    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut; uniform float uSheen; uniform float uFogMax; uniform float uShine;",
+    "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut; uniform float uSheen; uniform float uFogMax; uniform float uShine; uniform vec3 uSignal;",
     "out vec4 o;",
     "float env(vec3 r){",
     "  float v = mix(uEnvLo, uEnvHi, smoothstep(-0.35,0.75,r.y));",
@@ -946,7 +946,7 @@
     "  float band = smoothstep(0.45,0.98,rr.y);",
     "  float hot = pow(max(dot(n,normalize(l1+v)),0.0),34.0);",
     "  c += uSheen*(0.16*band*band*band + 0.7*hot + 0.1*fres);",
-    "  c += uGlow*vGlow;",
+    "  c = mix(c, pow(uSignal, vec3(2.2)), clamp(uGlow*vGlow, 0.0, 1.0));",
     "  c *= 1.0 - uCut*vGlow;",
     "  float f = uFogMax*smoothstep(uNear,uFar,-vP.z);",
     "  c = mix(c, pow(uFog, vec3(2.2)), f);",
@@ -1019,6 +1019,7 @@
     "    float env = c.z>150.0 ? 1.0 : exp((c.z-150.0)*0.03);",
     "    c.x += 34.0*env*sin(c.z*0.03 + uTime*4.0 + c.y*0.02);",
     "    rad *= 0.25 + 0.75*env;",
+    "    g = env;",
     "  }",
     "  vec4 mv = uMV*vec4(c + aPos*rad, 1.0);",
     "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
@@ -1223,6 +1224,7 @@
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
       gl.uniform1f(prog.u.uAmb, look.amb);
       gl.uniform1f(prog.u.uGlow, look.glow);
+      gl.uniform3fv(prog.u.uSignal, SIGNAL);
       gl.uniform1f(prog.u.uCut, look.cut || 0);
       gl.uniform1f(prog.u.uSheen, look.sheen || 0);
       gl.uniform1f(prog.u.uShine, look.shine === undefined ? 1 : look.shine);
@@ -1442,7 +1444,8 @@
       gl.uniform1f(prog.u.uEnvLo, look.envLo);
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
       gl.uniform1f(prog.u.uAmb, look.amb);
-      gl.uniform1f(prog.u.uGlow, look.heat === undefined ? 0.7 : look.heat);
+      gl.uniform1f(prog.u.uGlow, 1.0);
+      gl.uniform3fv(prog.u.uSignal, SIGNAL);
       gl.uniform1f(prog.u.uCut, 0);
       gl.uniform1f(prog.u.uSheen, look.sheen || 0);
       gl.uniform1f(prog.u.uShine, look.shine === undefined ? 1 : look.shine);
@@ -1612,7 +1615,14 @@
     if (el.getAttribute("data-hc-3d") === "dunes") {
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
-    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 0.3, cut: 0, sheen: 0.16, shine: 0.22, depth: 0.07 };
+    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 1.0, cut: 0, sheen: 0.16, shine: 0.22, depth: 0.07 };
+  }
+
+  /* The one accent colour, read from the page (--hc-signal). */
+  var SIGNAL = [1, 0.35, 0.12];
+  function readSignal() {
+    var c = parse(getComputedStyle(document.documentElement).getPropertyValue("--hc-signal"));
+    if (c) SIGNAL = c;
   }
 
   /* ---------- scenes ---------- */
@@ -1850,6 +1860,7 @@
   function init() {
     var nodes = document.querySelectorAll("[data-hc-3d]");
     if (!nodes.length) return;
+    readSignal();
 
     var probe = document.createElement("canvas");
     if (!probe.getContext || !window.WebGL2RenderingContext) {
@@ -1897,9 +1908,10 @@
     });
 
     new MutationObserver(function () {
+      readSignal();
       scenes.forEach(function (s) { s.look = lookFor(s.el); s.drawn = false; });
       schedule();
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-signal"] });
 
     scenes.forEach(function (s) {
       if (!s.hero) return;

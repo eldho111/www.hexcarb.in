@@ -1104,3 +1104,41 @@
     initFamilyNav();
   });
 })();
+
+/* TEMPORARY: accent colour chooser. It only appears on the local preview
+   (localhost) and must be deleted before the choice is published. */
+(function () {
+  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+  var options = [["ember", "#ff5a1f"], ["cobalt", "#2f5bff"], ["purple", "#8a3ffc"], ["gold", "#d1a12c"], ["lime", "#b6f000"], ["none", "#8c8c8c"]];
+  var saved = null;
+  try { saved = localStorage.getItem("hc-signal-preview"); } catch (e) {}
+  function apply(name) {
+    if (name && name !== "ember") document.documentElement.setAttribute("data-signal", name);
+    else document.documentElement.removeAttribute("data-signal");
+    try { localStorage.setItem("hc-signal-preview", name || "ember"); } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll(".hc-signal-picker button"), function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-name") === (name || "ember")));
+    });
+  }
+  function build() {
+    var bar = document.createElement("div");
+    bar.className = "hc-signal-picker";
+    bar.appendChild(document.createTextNode("Accent"));
+    options.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.title = o[0];
+      b.setAttribute("aria-label", "Accent colour: " + o[0]);
+      b.setAttribute("data-name", o[0]);
+      b.style.background = o[1];
+      b.addEventListener("click", function () { apply(o[0]); });
+      bar.appendChild(b);
+    });
+    document.body.appendChild(bar);
+    apply(saved || "ember");
+  }
+  if (saved && saved !== "ember") document.documentElement.setAttribute("data-signal", saved);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+  else build();
+})();
+
