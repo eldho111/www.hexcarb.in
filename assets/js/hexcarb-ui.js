@@ -1109,7 +1109,7 @@
    (localhost) and must be deleted before the choice is published. */
 (function () {
   if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
-  var options = [["ember", "#ff5a1f"], ["cobalt", "#2f5bff"], ["purple", "#8a3ffc"], ["gold", "#d1a12c"], ["lime", "#b6f000"], ["none", "#8c8c8c"]];
+  var options = [["ember", "#ff5a1f", "Ember (current)"], ["cobalt", "#2563eb", "Cobalt blue"], ["teal", "#007f86", "Deep teal"], ["burnt", "#c2410c", "Burnt orange"], ["copper", "#b87333", "Copper"], ["emerald", "#047857", "Emerald green"], ["cyan", "#0891b2", "Electric cyan"], ["violet", "#6d28d9", "Deep violet"], ["crimson", "#be123c", "Crimson red"], ["none", "#8c8c8c", "No colour"]];
   var saved = null;
   try { saved = localStorage.getItem("hc-signal-preview"); } catch (e) {}
   function apply(name) {
@@ -1127,8 +1127,8 @@
     options.forEach(function (o) {
       var b = document.createElement("button");
       b.type = "button";
-      b.title = o[0];
-      b.setAttribute("aria-label", "Accent colour: " + o[0]);
+      b.title = o[2] + " " + o[1];
+      b.setAttribute("aria-label", "Accent colour: " + o[2]);
       b.setAttribute("data-name", o[0]);
       b.style.background = o[1];
       b.addEventListener("click", function () { apply(o[0]); });

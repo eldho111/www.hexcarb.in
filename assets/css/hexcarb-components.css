@@ -4386,10 +4386,14 @@ a.hc-filter-chip {
    scenes, progress, the active page, focus and hover on the main action.
    Never body text. Same hue in light and dark.
    =================================================================== */
-:root[data-signal="cobalt"] { --hc-signal: #2f5bff; }
-:root[data-signal="purple"] { --hc-signal: #8a3ffc; }
-:root[data-signal="gold"] { --hc-signal: #d1a12c; }
-:root[data-signal="lime"] { --hc-signal: #b6f000; }
+:root[data-signal="cobalt"] { --hc-signal: #2563eb; }
+:root[data-signal="teal"] { --hc-signal: #007f86; }
+:root[data-signal="burnt"] { --hc-signal: #c2410c; }
+:root[data-signal="copper"] { --hc-signal: #b87333; }
+:root[data-signal="emerald"] { --hc-signal: #047857; }
+:root[data-signal="cyan"] { --hc-signal: #0891b2; }
+:root[data-signal="violet"] { --hc-signal: #6d28d9; }
+:root[data-signal="crimson"] { --hc-signal: #be123c; }
 :root[data-signal="none"] { --hc-signal: #8c8c8c; }
 
 .hc-film-bar {
@@ -4549,6 +4553,8 @@ select:focus-visible {
 
 /* --- TEMPORARY (local preview only): accent colour chooser --- */
 .hc-signal-picker {
+  flex-wrap: wrap;
+  max-width: calc(100vw - 24px);
   position: fixed;
   left: 12px;
   bottom: 12px;
