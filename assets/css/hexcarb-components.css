@@ -4546,7 +4546,7 @@ select:focus-visible {
   --hc-signal-text: #a78bfa;
 }
 
-.hc-heading-hero[data-hc-signal-last] .hc-word:last-child,
+.hc-heading-hero[data-hc-signal-word="3"] .hc-word:nth-child(3),
 .hc-signal-word {
   color: var(--hc-signal-text);
 }
