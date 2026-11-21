@@ -1026,7 +1026,19 @@
      uStrand scales the radius in; uHeat sends bright points up the forest. */
   var MORPH_COMMON = [
     "uniform mat4 uProj; uniform mat4 uMV; uniform float uW[6]; uniform float uStrand;",
-    "uniform float uHeat; uniform float uTime; uniform float uWave; uniform float uCrack;",
+    "uniform float uHeat; uniform float uTime; uniform float uWave; uniform float uCrack; uniform float uBrown;",
+    /* Brownian motion in the liquid: every rope is knocked about on its own
+       (s is its seed), drifting, jittering and flexing along its length. */
+    "vec3 brown(vec3 p, float s){",
+    "  float t = uTime, k = s*37.0;",
+    "  vec3 j = vec3(sin(t*1.3+k)+0.6*sin(t*3.1+k*1.7)+0.4*sin(t*7.3+k*2.3)+0.25*sin(t*13.1+k*4.1),",
+    "                sin(t*1.1+k*1.3)+0.6*sin(t*2.7+k*0.7)+0.4*sin(t*6.1+k*3.1)+0.25*sin(t*11.7+k*5.3),",
+    "                sin(t*0.9+k*2.1)+0.6*sin(t*3.7+k*1.1)+0.4*sin(t*8.3+k*0.3)+0.25*sin(t*12.3+k*2.9));",
+    "  vec3 f = vec3(sin(dot(p,vec3(0.004,0.003,0.002))+t*1.7+k),",
+    "                sin(dot(p,vec3(0.002,0.005,0.003))+t*2.1+k*1.9),",
+    "                sin(dot(p,vec3(0.003,0.002,0.005))+t*1.9+k*0.6));",
+    "  return uBrown*(20.0*j + 30.0*f);",
+    "}",
     /* the panel parts along x=0, widest at its lower face; tubes that cross stretch over the gap */
     "vec3 crack(vec3 p){ p.x += sign(p.x)*0.5*uCrack*clamp(1.0-p.z/118.0,0.0,1.0); return p; }",
     "float heat(vec3 c, vec3 seed){",
@@ -1094,6 +1106,7 @@
     "  t = t*t*t*(t*(t*6.0-15.0)+10.0);",
     "  vec3 a = crack(mix(pick(uFrom,iA0,iA1,iA2,iA3,iA4,iA5), pick(uTo,iA0,iA1,iA2,iA3,iA4,iA5), t));",
     "  vec3 b = crack(mix(pick(uFrom,iB0,iB1,iB2,iB3,iB4,iB5), pick(uTo,iB0,iB1,iB2,iB3,iB4,iB5), t));",
+    "  if(uBrown>0.001){ a += brown(iA0, iSeed); b += brown(iB0, iSeed); }",
     "  vec3 ax = b-a; float len = length(ax); ax /= max(len,1e-5);",
     "  vec3 up = abs(ax.y)<0.95 ? vec3(0.,1.,0.) : vec3(1.,0.,0.);",
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
@@ -1126,6 +1139,52 @@
     }
     return { p: p, u: u };
   }
+
+  /* ---------- depth of field ----------
+     The film is drawn into an off-screen target with its depth kept. A second
+     pass then blurs every pixel by how far it lies from the plane in focus,
+     the way a lens does: sharp at the subject, soft before and behind it. */
+  var VS_LENS = [
+    "#version 300 es",
+    "void main(){ vec2 p = vec2(float((gl_VertexID<<1)&2), float(gl_VertexID&2)); gl_Position = vec4(p*2.0-1.0, 0.0, 1.0); }"
+  ].join("\n");
+
+  var FS_LENS = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
+    "uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uAper; uniform float uMax;",
+    "out vec4 o;",
+    "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
+    /* x: distance from the camera, y: blur radius in pixels (the circle of confusion) */
+    "vec2 look(vec2 uv){",
+    "  float d = textureLod(uD, uv, 0.0).r;",
+    "  if(d>=1.0) return vec2(1e9, uMax);",
+    "  float z = lin(d);",
+    "  return vec2(z, min(uMax, uAper*abs(z-uFocus)/z));",
+    "}",
+    "void main(){",
+    "  vec2 uv = gl_FragCoord.xy*uPx;",
+    "  vec2 c = look(uv);",
+    "  vec4 acc = textureLod(uC, uv, 0.0); float sum = 1.0;",
+    /* empty paper with nothing near it needs no lens: a coarse copy of the picture says so at once */
+    "  float nearby = textureLod(uC, uv, 5.0).a + textureLod(uC, uv + vec2(24.0,0.0)*uPx, 5.0).a + textureLod(uC, uv - vec2(24.0,0.0)*uPx, 5.0).a",
+    "               + textureLod(uC, uv + vec2(0.0,24.0)*uPx, 5.0).a + textureLod(uC, uv - vec2(0.0,24.0)*uPx, 5.0).a;",
+    "  if(c.y>0.6 && nearby>0.0){",
+    "    float spin = 6.2832*fract(52.9829189*fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));",
+    "    for(int i=0;i<30;i++){",
+    "      float fi = float(i)+0.5;",
+    "      float r = sqrt(fi/30.0)*c.y, a = fi*2.39996323 + spin;",
+    "      vec2 suv = uv + vec2(cos(a), sin(a))*r*uPx;",
+    "      vec2 s = look(suv);",
+    /* something nearer than this pixel only spills onto it as far as its own blur reaches */
+    "      float w = s.x>=c.x-0.5 ? 1.0 : smoothstep(r-1.0, r+1.0, s.y);",
+    "      acc += textureLod(uC, suv, 0.0)*w; sum += w;",
+    "    }",
+    "  }",
+    "  o = acc/sum;",
+    "}"
+  ].join("\n");
 
   /* ---------- engine: one WebGL2 context ---------- */
 
@@ -1176,6 +1235,98 @@
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.idx, gl.STATIC_DRAW);
     gl.bindVertexArray(null);
     return { vao: vao, count: m.idx.length };
+  };
+
+  /* Off-screen target for the lens pass: multisampled to draw into, then
+     resolved to textures the blur can read. Returns false if it cannot be made. */
+  Engine.prototype.lensBegin = function (w, h) {
+    var gl = this.gl;
+    this.lensOn = false;
+    if (this.lensFail) return false;
+    try {
+      if (!this.lens || this.lens.w !== w || this.lens.h !== h) {
+        var old = this.lens;
+        if (old) {
+          gl.deleteFramebuffer(old.ms); gl.deleteFramebuffer(old.fbo);
+          gl.deleteRenderbuffer(old.rc); gl.deleteRenderbuffer(old.rd);
+          gl.deleteTexture(old.tc); gl.deleteTexture(old.td);
+        }
+        var n = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) || 1);
+        var rc = gl.createRenderbuffer(), rd = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, rc);
+        gl.renderbufferStorageMultisample(gl.RENDERBUFFER, n, gl.RGBA8, w, h);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, rd);
+        gl.renderbufferStorageMultisample(gl.RENDERBUFFER, n, gl.DEPTH_COMPONENT24, w, h);
+        var ms = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, ms);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rc);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rd);
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("ms");
+        var tc = gl.createTexture(), td = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tc);
+        gl.texStorage2D(gl.TEXTURE_2D, 6, gl.RGBA8, w, h);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 5);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, td);
+        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.DEPTH_COMPONENT24, w, h);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        var fbo = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tc, 0);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, td, 0);
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("fbo");
+        if (!this.lensProg) { this.lensProg = compile(gl, VS_LENS, FS_LENS); this.lensVao = gl.createVertexArray(); }
+        this.lens = { w: w, h: h, ms: ms, fbo: fbo, rc: rc, rd: rd, tc: tc, td: td };
+      }
+    } catch (e) {
+      this.lensFail = true;
+      this.lens = null;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      return false;
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.lens.ms);
+    this.lensOn = true;
+    return true;
+  };
+
+  /* focus: distance of the plane in focus; near/far: the projection's clip planes */
+  Engine.prototype.lensEnd = function (focus, near, far) {
+    var gl = this.gl, L = this.lens, p = this.lensProg;
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, L.ms);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, L.fbo);
+    gl.blitFramebuffer(0, 0, L.w, L.h, 0, 0, L.w, L.h, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, L.w, L.h);
+    var blend = gl.isEnabled(gl.BLEND);
+    gl.disable(gl.BLEND);
+    gl.disable(gl.DEPTH_TEST);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.useProgram(p.p);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, L.tc);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, L.td);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.uniform1i(p.u.uC, 0);
+    gl.uniform1i(p.u.uD, 1);
+    gl.uniform2f(p.u.uPx, 1 / L.w, 1 / L.h);
+    gl.uniform1f(p.u.uNear, near);
+    gl.uniform1f(p.u.uFar, far);
+    gl.uniform1f(p.u.uFocus, focus);
+    gl.uniform1f(p.u.uAper, L.h * 0.05);
+    gl.uniform1f(p.u.uMax, L.h * 0.026);
+    gl.bindVertexArray(this.lensVao);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindVertexArray(null);
+    gl.enable(gl.DEPTH_TEST);
+    if (blend) gl.enable(gl.BLEND);
+    this.lensOn = false;
   };
 
   /* GPU buffers for a model, built once per engine. */
@@ -1463,7 +1614,8 @@
     var far = ease(90, 420, dist);
     var fogNear = (dist - d.radius * 1.1) * (1 - far) + dist * 0.75 * far;
     var fogFar = (dist + d.radius * 5.5) * (1 - far) + dist * 2.6 * far;
-    var fogMax = 1 - 0.78 * far;
+    var fogMax = (1 - 0.78 * far) * (this.lensOn ? 0.3 : 1);
+    var lensOn = this.lensOn;
     var sheet = look.sheet || [0.82, 0.82, 0.82];
     var part = look.part || [0.42, 0.42, 0.42];
 
@@ -1542,23 +1694,42 @@
             use(this.atomProg, mul(view, mul(place, translation(0, sg * d.tubeSpan, 0))));
             gl.uniform1f(this.atomProg.u.uCoat, 0);
             gl.uniform1f(this.atomProg.u.uLen, 1);
-            gl.uniform1f(this.atomProg.u.uNear, dist - 6 - (1 - st.crowd) * 260);
-            gl.uniform1f(this.atomProg.u.uFar, dist + 30 + 190 * st.crowd);
-            gl.uniform1f(this.atomProg.u.uFogMax, 1);
+            if (lensOn) {                       // no haze: they leave by fading out, and distance shows as blur
+              gl.uniform1f(this.atomProg.u.uNear, 0);
+              gl.uniform1f(this.atomProg.u.uFar, 1);
+              gl.uniform1f(this.atomProg.u.uFogMax, 1 - st.crowd);
+            } else {
+              gl.uniform1f(this.atomProg.u.uNear, dist - 6 - (1 - st.crowd) * 260);
+              gl.uniform1f(this.atomProg.u.uFar, dist + 30 + 190 * st.crowd);
+              gl.uniform1f(this.atomProg.u.uFogMax, 1);
+            }
             gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
           }
         }
       }
+
+      /* without haze to hide them the tube's ends would show, so it carries on
+         out of frame: the same lattice, joined end to end, going soft with distance */
+      var runs = lensOn && st.gate < 0.01 ? [-2, -1, 1, 2] : [];
+      gl.bindVertexArray(lite.atomVao);
+      runs.forEach(function (k) {
+        use(self.atomProg, mul(mv, translation(0, k * d.tubeSpan, 0)));
+        gl.uniform1f(self.atomProg.u.uCoat, 0);
+        gl.uniform1f(self.atomProg.u.uLen, 1);
+        gl.drawElementsInstanced(gl.TRIANGLES, self.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+      });
 
       /* six neighbours slide in beside it and lock into a rope */
       if (st.neighbours > 0) {
         gl.bindVertexArray(lite.atomVao);
         for (var nb = 0; nb < 6; nb++) {
           var ang = nb * 1.0472 + 0.5;
-          use(this.atomProg, mul(mv, translation(Math.cos(ang) * st.neighbours, 0, Math.sin(ang) * st.neighbours)));
-          gl.uniform1f(this.atomProg.u.uCoat, 0);
-          gl.uniform1f(this.atomProg.u.uLen, 1);
-          gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+          for (var rk = lensOn ? -1 : 0; rk <= (lensOn ? 1 : 0); rk++) {
+            use(this.atomProg, mul(mv, translation(Math.cos(ang) * st.neighbours, rk * d.tubeSpan, Math.sin(ang) * st.neighbours)));
+            gl.uniform1f(this.atomProg.u.uCoat, 0);
+            gl.uniform1f(this.atomProg.u.uLen, 1);
+            gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+          }
         }
       }
 
@@ -1636,6 +1807,7 @@
       gl.uniform1f(this.mBondProg.u.uT, st.t);
       gl.uniform1f(this.mBondProg.u.uStrand, strand);
       gl.uniform1f(this.mBondProg.u.uHeat, st.heat);
+      gl.uniform1f(this.mBondProg.u.uBrown, st.w[0] * ease(250, 1400, dist));
       gl.uniform1f(this.mBondProg.u.uWave, 0);
       gl.uniform1f(this.mBondProg.u.uCrack, st.crack);
       gl.bindVertexArray(buf.bonds);
@@ -1769,7 +1941,8 @@
     var r = scene.el.getBoundingClientRect();
     var px = window.devicePixelRatio || 1;
     /* the film is drawn sharper than the screen when the machine allows; see tune() */
-    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : 1.5;
+    /* through the lens the film is multisampled, so it needs no extra pixels for smooth edges */
+    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : scene.data.journey ? 1.0 : 1.5;
     var dpr = scene.data.journey ? Math.min(px * scene.quality, mobile() ? 2 : 2.6) : scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
     var w = Math.max(1, Math.round(r.width * dpr));
     var h = Math.max(1, Math.round(r.height * dpr));
@@ -1793,12 +1966,15 @@
     if (scene.hero) {
       var gl = scene.engine.gl;
       gl.disable(gl.SCISSOR_TEST);
+      /* the film goes through a lens on larger screens; phones keep the plain picture */
+      var lens = !!scene.data.journey && !mobile() && scene.engine.lensBegin(scene.w, scene.h);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       if (scene.data.journey) {
         /* data-hc-film-at="seconds" freezes the film at one moment (stills, checks). */
         var hold = scene.el.getAttribute("data-hc-film-at");
         scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 12.5 : (performance.now() - (scene.born || performance.now())) / 1000);
+        if (lens) scene.engine.lensEnd(scene.film.dist, scene.film.dist * 0.06, scene.film.dist * 6 + 6000);
         caption(scene);
       } else {
         scene.engine.draw(scene, 0, 0, scene.w, scene.h, time);
@@ -1874,7 +2050,7 @@
     scene.load = scene.load === undefined ? dt : scene.load * 0.94 + dt * 0.06;
     scene.settle = (scene.settle || 0) + 1;
     if (scene.settle < 90) return;
-    var top = mobile() ? 1.15 : 1.5;
+    var top = mobile() ? 1.15 : 1.2;
     if (scene.load > 1 / 40 && scene.quality > 0.7) {
       scene.quality = Math.max(0.7, scene.quality - 0.15);
     } else if (scene.load < 1 / 57 && scene.quality < top && scene.settle > 420) {
