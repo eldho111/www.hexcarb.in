@@ -185,7 +185,13 @@
 
   /* ---------- lattice and strand builders ---------- */
 
-  var ATOM_R = 0.2, BOND_R = 0.085;
+  /* Scale. One unit is one carbon-carbon bond: 0.142 nm.
+       A zigzag (n,0) tube is n x 0.0783 nm across, so (19,0) is the 1.49 nm
+       single-walled tube, and walls nest 0.34-0.35 nm apart (9 steps of n).
+       Atoms are drawn at half their covalent radius (0.073 nm) so the bonds
+       between them stay visible; at full size neighbours would touch. */
+  var ATOM_R = 0.26, BOND_R = 0.1;
+  var SW = 19;
 
   /* Honeycomb sheet (bond length 1). nx cells of width sqrt(3) across, ny
      cells of height 3 along. wrap=true joins the long edges to roll a tube. */
@@ -216,12 +222,14 @@
     this.plates = [];
   }
 
-  Builder.prototype.lattice = function (atoms3, bonds) {
-    var self = this;
-    atoms3.forEach(function (p) { self.a.push(p[0], p[1], p[2], ATOM_R); });
-    bonds.forEach(function (k) {
-      var p = atoms3[k[0]], q = atoms3[k[1]];
-      self.b.push(p[0], p[1], p[2], q[0], q[1], q[2], BOND_R);
+  /* s scales the atom and bond thickness with a scaled lattice. bondOnly draws
+     the bonds alone, a little heavier: for walls too large to show every atom. */
+  Builder.prototype.lattice = function (atoms3, bonds, s, bondOnly) {
+    var self = this, k = s || 1, br = bondOnly ? bondOnly : BOND_R * k;
+    if (!bondOnly) atoms3.forEach(function (p) { self.a.push(p[0], p[1], p[2], ATOM_R * k); });
+    bonds.forEach(function (bd) {
+      var p = atoms3[bd[0]], q = atoms3[bd[1]];
+      self.b.push(p[0], p[1], p[2], q[0], q[1], q[2], br);
     });
   };
 
@@ -254,18 +262,21 @@
     return m;
   };
 
-  /* Zigzag tube (n,0): the sheet's short axis wraps the circumference. */
-  function tube(n, cells) {
-    var h = honeycomb(n, cells, true);
+  /* Zigzag tube (n,0): the sheet's short axis wraps the circumference.
+     s shrinks the whole tube (a scene that needs it to fit a set space);
+     the proportions between atom, bond and diameter never change. */
+  function tube(n, cells, s) {
+    var h = honeycomb(n, cells, true), k = s || 1;
     var radius = h.width / (Math.PI * 2);
     return {
       atoms: h.atoms.map(function (p) {
         var th = (p[0] / h.width) * Math.PI * 2;
-        return [radius * Math.cos(th), p[1] - h.length / 2, radius * Math.sin(th)];
+        return [k * radius * Math.cos(th), k * (p[1] - h.length / 2), k * radius * Math.sin(th)];
       }),
       bonds: h.bonds,
-      radius: radius,
-      length: h.length
+      radius: radius * k,
+      length: h.length * k,
+      s: k
     };
   }
 
@@ -296,9 +307,11 @@
 
   var MODELS = {
     nanotube: function (opts) {
-      var t = tube(opts.hero ? 14 : 10, opts.hero ? 30 : 6);
+      /* (19,0): 1.49 nm across. The hero keeps its old footprint, so one of its
+         units is 0.142 x 19/14 = 0.193 nm (see NM_NEAR). */
+      var t = opts.hero ? tube(SW, 41, 14 / SW) : tube(SW, 11);
       var b = new Builder();
-      b.lattice(t.atoms, t.bonds);
+      b.lattice(t.atoms, t.bonds, t.s);
       return b.done({
         radius: opts.hero ? t.radius : Math.hypot(t.radius, t.length / 2),
         mode: 2,
@@ -307,13 +320,34 @@
       });
     },
 
+    /* Multi-walled tube at true proportions: 15 nm outside, 10 nm bore, eight
+       walls 0.35 nm apart, (128,0) to (191,0), about 35 nm of its length. Each
+       wall stops short of the one inside it so the nesting shows. At this size
+       single atoms are below what the picture can resolve, so the walls are
+       drawn as bonds, and an inner wall is only drawn where it is not covered.
+       Beside it, to the same scale, lies one 1.5 nm single-walled tube. */
     mwcnt: function () {
-      var b = new Builder();
-      var walls = [tube(7, 6), tube(12, 5), tube(17, 4)];
-      walls.forEach(function (w) { b.lattice(w.atoms, w.bonds); });
+      var b = new Builder(), lite = mobile();
+      var OUTER = lite ? 22 : 40, STEP = lite ? 4 : 6, WALLS = 8, i;
+      var total = OUTER * 3 + (WALLS - 1) * STEP * 3, mid = total / 2;
+      function wall(n, cells, top) {
+        var w = tube(n, cells), lift = top - w.length / 2 - mid;
+        b.lattice(w.atoms.map(function (a) { return [a[0], -(a[1] + lift), a[2]]; }), w.bonds, 1, 0.19);
+        return w;
+      }
+      var outer = wall(128 + 9 * (WALLS - 1), OUTER, OUTER * 3);
+      for (i = 0; i < WALLS - 1; i++) {
+        var n = 128 + 9 * i;
+        wall(n, STEP + 2, OUTER * 3 + (WALLS - 1 - i) * STEP * 3);   // the exposed step
+        wall(n, 2, 5);                                                // its far end, seen down the bore
+      }
+      var sw = tube(SW, Math.round(total / 3)), off = outer.radius + 16;
+      b.lattice(sw.atoms.map(function (a) { return [a[0] + off, a[1], a[2] - outer.radius * 0.55]; }), sw.bonds);
       return b.done({
-        radius: Math.hypot(walls[2].radius, walls[0].length / 2),
-        orient: mul(rotZ(-0.9), rotX(0.5))
+        fine: true,
+        radius: Math.hypot(outer.radius + 12, mid) * 1.12,
+        orient: mul(rotZ(-0.95), rotX(0.45)),
+        speed: 0.35
       });
     },
 
@@ -344,8 +378,8 @@
        is compared with (lower). Both lie along local y; the comparison object
        sits at positive local x, which the shaders test against uSplit. */
     stretch: function () {
-      var t = tube(10, 7), b = new Builder(), GAP = 4.6;
-      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      var t = tube(SW, 13, 10 / SW), b = new Builder(), GAP = 4.6;
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds, t.s);
       [-1, 1].forEach(function (side) {          // steel bar in two halves so it can part
         var pts = [];
         for (var i = 0; i < 20; i++) pts.push([GAP, side * (0.26 + i * 0.51), 0]);
@@ -355,8 +389,8 @@
     },
 
     current: function () {
-      var t = tube(10, 8), b = new Builder(), rand = rng(3), GAP = 4.6;
-      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      var t = tube(SW, 15, 10 / SW), b = new Builder(), rand = rng(3), GAP = 4.6;
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds, t.s);
       for (var i = 0; i < 14; i++) {
         var a = rand() * 6.28, r = rand() * t.radius * 0.5;
         b.a.push(-GAP + r * Math.cos(a), (rand() - 0.5) * t.length, r * Math.sin(a), -0.3);
@@ -373,8 +407,8 @@
     },
 
     heat: function () {
-      var t = tube(10, 8), b = new Builder(), rand = rng(9), GAP = 4.6;
-      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      var t = tube(SW, 15, 10 / SW), b = new Builder(), rand = rng(9), GAP = 4.6;
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds, t.s);
       for (var i = 0; i < 5; i++) {              // polymer: a few tangled chains
         var p = [GAP + (rand() - 0.5) * 1.6, 0, (rand() - 0.5) * 1.6];
         b.strand(wavy(rand, p, [0, 1, 0], t.length, 46, 0.55), 0.5);
@@ -383,8 +417,8 @@
     },
 
     bend: function () {
-      var t = tube(8, 9), b = new Builder(), GAP = 3.6, pts = [];
-      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds);
+      var t = tube(SW, 21, 8 / SW), b = new Builder(), GAP = 3.6, pts = [];
+      b.lattice(t.atoms.map(function (a) { return [a[0] - GAP, a[1], a[2]]; }), t.bonds, t.s);
       for (var i = 0; i <= 48; i++) pts.push([GAP, (i / 48 - 0.5) * 25, 0]);
       b.strand(pts, 0.85);                       // steel rod
       return b.done({ radius: 12.4, mode: 6, amp: 0.02, split: 0, orient: PROP_VIEW, spin: "none" });
@@ -487,10 +521,10 @@
 
     /* Water filtration: water passes down the bores, larger particles do not. */
     "use-water": function () {
-      var rand = rng(107), b = new Builder(), t = tube(6, 2), pitch = 4.1, i, j;
+      var rand = rng(107), b = new Builder(), t = tube(SW, 6, 6 / SW), pitch = 4.1, i, j;
       for (i = -1; i <= 1; i++) {
         for (j = -1; j <= 1; j++) {
-          b.lattice(t.atoms.map(function (a) { return [a[0] + i * pitch, a[1], a[2] + j * pitch]; }), t.bonds);
+          b.lattice(t.atoms.map(function (a) { return [a[0] + i * pitch, a[1], a[2] + j * pitch]; }), t.bonds, t.s);
           for (var k = 0; k < 2; k++) b.a.push(i * pitch + (rand() - 0.5) * 0.9, (rand() - 0.5) * 13, j * pitch + (rand() - 0.5) * 0.9, -0.3);
         }
       }
@@ -1107,6 +1141,7 @@
     this.sphereLo = this.mesh(icosphere(1));
     this.sphere = this.mesh(icosphere(lowDetail ? 2 : 3));
     this.cyl = this.mesh(cylinder(sides || (lowDetail ? 12 : 20)));
+    this.cylLo = this.mesh(cylinder(5));
     this.box = this.boxMesh(cube());
     this.cache = {};
     gl.enable(gl.DEPTH_TEST);
@@ -1177,7 +1212,7 @@
     var out = {
       pointVao: pointVao,
       atomVao: data.atomCount ? vao(this.sphere, data.atoms, [[1, 4, 0]], 16) : null,
-      bondVao: data.bondCount ? vao(this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12], [3, 1, 24]], 28) : null
+      bondVao: data.bondCount ? vao(data.fine ? this.cylLo : this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12], [3, 1, 24]], 28) : null
     };
     this.cache[key] = out;
     return out;
@@ -1266,9 +1301,10 @@
     if (gpu.bondVao) {
       use(this.bondProg);
       gl.bindVertexArray(gpu.bondVao);
-      gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.bondCount);
+      gl.drawElementsInstanced(gl.TRIANGLES, (d.fine ? this.cylLo : this.cyl).count, gl.UNSIGNED_SHORT, 0, d.bondCount);
     }
 
+    if (!gpu.atomVao) { gl.bindVertexArray(null); return; }
     use(this.atomProg);
     gl.uniform1f(this.atomProg.u.uCoat, d.coat || 0);
     gl.uniform1f(this.atomProg.u.uLen, d.len || 1);
@@ -1288,7 +1324,7 @@
   var FILM_MORPH = [[9.0, 12.0], [13.6, 16.6], [18.1, 21.0], [24.4, 27.0], [31.6, 34.6]];
   var FILM_RETURN = [36.2, 38.6];
   /* far stages are drawn at 0.2 micrometre per unit; the atom tube at 0.194 nm per unit */
-  var NM_FAR = 200, NM_NEAR = 0.194;
+  var NM_FAR = 200, NM_NEAR = 0.142 * SW / 14;
 
   /* smootherstep: zero speed and zero acceleration at both ends */
   function ease(a, b, x) {
@@ -1911,7 +1947,7 @@
       readSignal();
       scenes.forEach(function (s) { s.look = lookFor(s.el); s.drawn = false; });
       schedule();
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-signal"] });
 
     scenes.forEach(function (s) {
       if (!s.hero) return;
