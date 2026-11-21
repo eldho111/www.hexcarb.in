@@ -792,18 +792,42 @@
       };
     },
 
-    /* Backdrop: a rolling landscape made of thousands of short nanotubes standing
-       on a slow travelling surface, each one swaying. The shader lifts and sways them. */
+    /* Backdrop: a jittered grid of points; the shader lifts it into dunes. */
     dunes: function () {
-      var rand = rng(77), b = new Builder(), lite = mobile(), nx = lite ? 90 : 150, nz = lite ? 48 : 80;
+      var rand = rng(77), pts = [], nx = 230, nz = 120;
       for (var i = 0; i < nx; i++) {
-        for (var k = 0; k < nz; k++) {
-          var x = (i / (nx - 1) - 0.5) * 34 + (rand() - 0.5) * 0.3, z = (k / (nz - 1) - 0.5) * 22 + (rand() - 0.5) * 0.3;
-          var len = 0.26 + rand() * 0.34;
-          b.b.push(x, 0, z, x + (rand() - 0.5) * 0.16, len, z + (rand() - 0.5) * 0.16, 0.017 + rand() * 0.011);
+        for (var j = 0; j < nz; j++) {
+          pts.push((i / (nx - 1) - 0.5) * 34 + (rand() - 0.5) * 0.3, (j / (nz - 1) - 0.5) * 22 + (rand() - 0.5) * 0.3, rand());
         }
       }
-      return b.done({ radius: 5.2, mode: 9, orient: rotX(0.3), spin: "none", offsetY: -0.1 });
+      var m = new Builder().done({ radius: 5.2, orient: rotX(0.3), spin: "none", offsetY: -0.1 });
+      m.points = new Float32Array(pts);
+      m.pointCount = pts.length / 3;
+      return m;
+    },
+
+    /* Dispersion: long tubes at every angle, suspended and slowly drifting. */
+    dispersion: function () {
+      var rand = rng(11), b = new Builder();
+      for (var i = 0; i < 54; i++) {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        var d = [q * Math.cos(th), z, q * Math.sin(th)];
+        var p = [(rand() - 0.5) * 7, (rand() - 0.5) * 7, (rand() - 0.5) * 7];
+        b.strand(wavy(rand, p, d, 13 + rand() * 9, 96, 0.7 + rand() * 0.9), 0.085);
+      }
+      return b.done({ radius: 7.4, mode: 3, amp: 0.34, orient: rotX(0.25), speed: 0.45 });
+    },
+
+    /* Raw in, working out: the same tubes as a tight tangle, then free in the
+       liquid, then gathering again. The shader moves each point between the two. */
+    debundle: function () {
+      var rand = rng(77), b = new Builder();
+      for (var i = 0; i < 64; i++) {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        var p = [(rand() - 0.5) * 9, (rand() - 0.5) * 8, (rand() - 0.5) * 8];
+        b.strand(wavy(rand, p, [q * Math.cos(th), z, q * Math.sin(th)], 11 + rand() * 7, 80, 0.6 + rand() * 0.7), 0.085);
+      }
+      return b.done({ radius: 8.4, mode: 8, amp: 0.34, orient: rotX(0.2), speed: 0.3 });
     },
 
     /* Dispersion: long tubes at every angle, suspended and slowly drifting. */
@@ -947,14 +971,6 @@
     "    float ph = fract(uTime/7.0); float up = smoothstep(0.0,0.3,ph); float gone = smoothstep(0.92,1.0,ph);",
     "    if(p.x<uSplit){ p.x -= uAmp*up*(1.0-smoothstep(0.36,0.62,ph))*p.y*p.y; }",
     "    else { p.x += 9.0*uAmp*up*(1.0-gone)*abs(p.y); }",
-    "  } else if(uMode>8.5){",                // a field of short tubes on a rolling surface; p.y is height up the tube
-    "    float up = p.y;",
-    "    float h = 1.5*sin(p.x*0.24 + uTime*0.16)*cos(p.z*0.3 - uTime*0.11)",
-    "            + 0.9*sin(p.x*0.52 - p.z*0.38 + uTime*0.22)",
-    "            + 0.35*sin(p.x*1.3 + p.z*0.9 + uTime*0.4);",
-    "    p.x += up*0.55*sin(uTime*1.1 + p.x*0.8 + p.z*1.3);",       // each one sways from its foot
-    "    p.z += up*0.45*cos(uTime*0.9 + p.x*1.1 - p.z*0.7);",
-    "    p.y = h + up;",
     "  } else if(uMode>7.5 && uMode<8.5){",   // debundling: a tight tangle opens into free tubes, then gathers again
     "    float ph = fract(uTime/18.0);",
     "    float open = smoothstep(0.12,0.5,ph)*(1.0-smoothstep(0.84,0.98,ph));",
@@ -1040,7 +1056,6 @@
     "  vec3 n = u*aPos.x + w*aPos.z;",
     "  float g = pulse(mix(iA,iB,aPos.y));",
     "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*iR*rs*(1.0+0.3*g*(uPulse>1.5 ? 0.0 : uPulse))*grow(0.5*(iA+iB)), 1.0);",
-    "  if(uMode>8.5) vShade = 0.06 + 0.74*pow(smoothstep(-1.2, 2.3, a.y), 2.6);",   // crests catch the light
     "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
@@ -2189,8 +2204,8 @@
      plays on a white backdrop that fades into the black page. */
   function lookFor(el) {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
-    if (el.getAttribute("data-hc-3d") === "dunes") {     // pale tubes on a dark band, sinking into it with distance
-      return { keep: true, base: [0.95, 0.95, 0.97], plate: [1, 1, 1], fog: [0, 0, 0], metal: 0, envLo: 0, envHi: 1, amb: 0.95, glow: 1, cut: 0, sheen: 0, shine: 0, depth: 1 };
+    if (el.getAttribute("data-hc-3d") === "dunes") {
+      return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
     return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.42, amb: 0.34, glow: 1.0, cut: 0, sheen: 0.07, shine: 0.08, depth: 0.07 };
   }
