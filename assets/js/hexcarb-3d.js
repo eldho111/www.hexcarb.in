@@ -188,9 +188,9 @@
   /* Scale. One unit is one carbon-carbon bond: 0.142 nm.
        A zigzag (n,0) tube is n x 0.0783 nm across, so (19,0) is the 1.49 nm
        single-walled tube, and walls nest 0.34-0.35 nm apart (9 steps of n).
-       Atoms are drawn at half their covalent radius (0.073 nm) so the bonds
-       between them stay visible; at full size neighbours would touch. */
-  var ATOM_R = 0.26, BOND_R = 0.1;
+       Atoms are drawn at their covalent radius (0.073 nm, 0.51 of a bond),
+       so neighbours just touch and a wall reads as a beaded skin. */
+  var ATOM_R = 0.514, BOND_R = 0.16;
   var SW = 19;
 
   /* Honeycomb sheet (bond length 1). nx cells of width sqrt(3) across, ny
@@ -700,6 +700,8 @@
       return {
         journey: true,
         tube: tubeModel,
+        tubeLite: { atoms: tubeModel.atoms, atomCount: tubeModel.atomCount, bonds: new Float32Array(0), bondCount: 0, lite: true, plates: [] },
+        tubeSpan: 41 * 3 * 14 / SW,   // one tube's length, lattice to lattice, so copies join end to end
         carriers: carriers.done({}),
         mBonds: new Float32Array(bonds),
         mBondCount: bonds.length / 38,
@@ -1211,7 +1213,7 @@
     }
     var out = {
       pointVao: pointVao,
-      atomVao: data.atomCount ? vao(this.sphere, data.atoms, [[1, 4, 0]], 16) : null,
+      atomVao: data.atomCount ? vao(data.lite ? this.sphereLo : this.sphere, data.atoms, [[1, 4, 0]], 16) : null,
       bondVao: data.bondCount ? vao(data.fine ? this.cylLo : this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12], [3, 1, 24]], 28) : null
     };
     this.cache[key] = out;
@@ -1379,7 +1381,10 @@
       t: t,
       turn: turn,
       stage: stage,
-      neighbours: c > 3 && c < 12 ? 8.3 + 70 * (1 - ease(3, 5, c)) : 0,   // six tubes close in to form a rope
+      /* six tubes close in to form a rope: centres one diameter plus the 0.34 nm gap apart */
+      neighbours: c > 3 && c < 12 ? 9.5 + 70 * (1 - ease(3, 5, c)) : 0,
+      /* the other tubes around it: there at the opening, gone as the camera pulls back */
+      crowd: c < 5.2 ? 1 - ease(2.6, 5.0, c) : ease(44.0, 45, c),
       heat: w[3] * ease(20.3, 21.2, c),
       crack: w[4] * 64 * ease(29.3, 30.6, c) * (1 - ease(31.6, 32.2, c)),
       gate: ease(38.2, 39.2, c) * (1 - ease(43, 44.4, c)),
@@ -1516,13 +1521,44 @@
       gl.bindVertexArray(gpu.atomVao);
       gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
 
-      /* six neighbours slide in beside it and lock into a rope (bonds only) */
+      var lite = this.model("journey:tubeLite", d.tubeLite);
+
+      /* the opening shot: other tubes cross behind, each a true copy, fading
+         with distance into the white. They are placed in the camera's frame so
+         none passes in front of the one in focus. */
+      if (st.crowd > 0.01) {
+        var CROWD = [
+          /* x, y, depth behind, angle on screen, lean in depth */
+          [10, 6, -22, 0.95, 0.10], [-6, -14, -40, -0.35, -0.22], [26, -4, -62, 1.45, 0.30],
+          [-2, 18, -86, 0.30, 0.18], [18, 10, -118, -0.90, -0.12], [34, -20, -150, 0.62, 0.26]
+        ];
+        var crowdN = mobile() ? 3 : CROWD.length, reach = mobile() ? 1 : 1;
+        gl.bindVertexArray(lite.atomVao);
+        for (var cw = 0; cw < crowdN; cw++) {
+          var q = CROWD[cw];
+          var place = mul(translation(q[0] + Math.sin(clock * 0.11 + cw) * 1.2, q[1] + Math.cos(clock * 0.09 + cw * 2.1) * 1.2, q[2]),
+                          mul(rotZ(q[3]), mul(rotX(q[4]), rotY(clock * 0.06 * (cw % 2 ? 1 : -1) + cw))));
+          for (var sg = -reach; sg <= reach; sg++) {
+            use(this.atomProg, mul(view, mul(place, translation(0, sg * d.tubeSpan, 0))));
+            gl.uniform1f(this.atomProg.u.uCoat, 0);
+            gl.uniform1f(this.atomProg.u.uLen, 1);
+            gl.uniform1f(this.atomProg.u.uNear, dist - 6 - (1 - st.crowd) * 260);
+            gl.uniform1f(this.atomProg.u.uFar, dist + 30 + 190 * st.crowd);
+            gl.uniform1f(this.atomProg.u.uFogMax, 1);
+            gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+          }
+        }
+      }
+
+      /* six neighbours slide in beside it and lock into a rope */
       if (st.neighbours > 0) {
-        gl.bindVertexArray(gpu.bondVao);
+        gl.bindVertexArray(lite.atomVao);
         for (var nb = 0; nb < 6; nb++) {
           var ang = nb * 1.0472 + 0.5;
-          use(this.bondProg, mul(mv, translation(Math.cos(ang) * st.neighbours, 0, Math.sin(ang) * st.neighbours)));
-          gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.tube.bondCount);
+          use(this.atomProg, mul(mv, translation(Math.cos(ang) * st.neighbours, 0, Math.sin(ang) * st.neighbours)));
+          gl.uniform1f(this.atomProg.u.uCoat, 0);
+          gl.uniform1f(this.atomProg.u.uLen, 1);
+          gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
         }
       }
 
@@ -1651,7 +1687,7 @@
     if (el.getAttribute("data-hc-3d") === "dunes") {
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
-    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.5, amb: 0.3, glow: 1.0, cut: 0, sheen: 0.16, shine: 0.22, depth: 0.07 };
+    return { base: [0.03, 0.03, 0.03], plate: [0.1, 0.1, 0.1], fog: [1, 1, 1], metal: 1, envLo: 0.0, envHi: 0.42, amb: 0.34, glow: 1.0, cut: 0, sheen: 0.07, shine: 0.08, depth: 0.07 };
   }
 
   /* The one accent colour, read from the page (--hc-signal). */
