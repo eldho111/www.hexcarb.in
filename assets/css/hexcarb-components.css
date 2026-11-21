@@ -5051,6 +5051,105 @@ main section.hc-section[id] {
   }
 }
 
+/* ===================================================================
+   Rendered film and loops (see hexcarb-film.js)
+   The videos are shot on a black stage. --hc-film-lift brightens them a
+   little on the page; set it to 1 to see them exactly as rendered.
+   =================================================================== */
+:root {
+  --hc-film-lift: 1.45;
+}
+
+.hc-loop,
+:root[data-theme="dark"] .hc-loop {
+  background: #000000;
+  overflow: hidden;
+}
+
+.hc-loop::before,
+.hc-loop::after {
+  content: none !important;
+}
+
+.hc-loop video,
+.hc-film-video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(var(--hc-film-lift)) contrast(1.05);
+}
+
+.hc-film-video video {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.hc-film-video video.is-on {
+  opacity: 1;
+}
+
+/* the home hero becomes a dark stage for the film */
+.hc-stage:has(.hc-film-video),
+:root[data-theme="dark"] .hc-stage:has(.hc-film-video) {
+  background: #000000;
+}
+
+.hc-stage:has(.hc-film-video) .hc-heading-hero,
+.hc-stage:has(.hc-film-video) .hc-kicker,
+.hc-stage:has(.hc-film-video) .hc-film-caption {
+  color: #ffffff;
+}
+
+.hc-stage:has(.hc-film-video) .hc-stage-copy p {
+  color: #d6d6d6;
+}
+
+.hc-stage:has(.hc-film-video) .hc-signal-word {
+  --hc-signal-text: #a78bfa;
+}
+
+.hc-stage:has(.hc-film-video) .hc-btn-accent {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
+.hc-stage:has(.hc-film-video) .hc-btn-ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #ffffff;
+}
+
+.hc-stage:has(.hc-film-video) .hc-film-track {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.hc-film-window--video,
+:root[data-theme="dark"] .hc-film-window--video {
+  background: none;
+}
+
+/* the video carries no measured scale, so only the stage name is shown beside it */
+.hc-film-window--video .hc-film-scalebar,
+.hc-film-window--video .hc-film-scalelabel,
+.hc-film-window--video .hc-film-note {
+  display: none;
+}
+
+.hc-film-window--video .hc-film-scale,
+:root[data-theme="dark"] .hc-film-window--video .hc-film-scale {
+  min-width: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.hc-film-window--video .hc-film-scale .hc-film-what,
+:root[data-theme="dark"] .hc-film-window--video .hc-film-scale .hc-film-what {
+  color: #ffffff;
+}
+
 /* --- TEMPORARY (local preview only): accent colour chooser --- */
 :root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
 :root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
