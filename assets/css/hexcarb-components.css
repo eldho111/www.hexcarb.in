@@ -5062,6 +5062,11 @@ main section.hc-section[id] {
   background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.82) 62%, #000000 100%);
 }
 
+.hc-closing > *:not(.hc-closing-scene) {
+  position: relative;
+  z-index: 3;
+}
+
 /* --- TEMPORARY (local preview only): accent colour chooser --- */
 :root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
 :root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
