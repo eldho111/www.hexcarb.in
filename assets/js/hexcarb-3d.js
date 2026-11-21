@@ -1153,7 +1153,7 @@
     "#version 300 es",
     "precision highp float;",
     "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
-    "uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uAper; uniform float uMax;",
+    "uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uRange; uniform float uAper; uniform float uMax;",
     "out vec4 o;",
     "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
     /* x: distance from the camera, y: blur radius in pixels (the circle of confusion) */
@@ -1161,7 +1161,8 @@
     "  float d = textureLod(uD, uv, 0.0).r;",
     "  if(d>=1.0) return vec2(1e9, uMax);",
     "  float z = lin(d);",
-    "  return vec2(z, min(uMax, uAper*abs(z-uFocus)/z));",
+    /* everything within uRange of the focal plane is perfectly sharp: the subject itself never blurs */
+    "  return vec2(z, min(uMax, uAper*max(0.0, abs(z-uFocus)-uRange)/z));",
     "}",
     "void main(){",
     "  vec2 uv = gl_FragCoord.xy*uPx;",
@@ -1295,8 +1296,9 @@
     return true;
   };
 
-  /* focus: distance of the plane in focus; near/far: the projection's clip planes */
-  Engine.prototype.lensEnd = function (focus, near, far) {
+  /* focus: distance of the plane in focus; range: how far either side of it stays
+     fully sharp; near/far: the projection's clip planes */
+  Engine.prototype.lensEnd = function (focus, range, near, far) {
     var gl = this.gl, L = this.lens, p = this.lensProg;
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, L.ms);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, L.fbo);
@@ -1319,6 +1321,7 @@
     gl.uniform1f(p.u.uNear, near);
     gl.uniform1f(p.u.uFar, far);
     gl.uniform1f(p.u.uFocus, focus);
+    gl.uniform1f(p.u.uRange, range);
     gl.uniform1f(p.u.uAper, L.h * 0.05);
     gl.uniform1f(p.u.uMax, L.h * 0.026);
     gl.bindVertexArray(this.lensVao);
@@ -1536,6 +1539,12 @@
       neighbours: c > 3 && c < 12 ? 9.5 + 70 * (1 - ease(3, 5, c)) : 0,
       /* the other tubes around it: there at the opening, gone as the camera pulls back */
       crowd: c < 5.2 ? 1 - ease(2.6, 5.0, c) : ease(44.0, 45, c),
+      /* the lens: how deep the sharp zone is, as a share of the camera distance.
+         The subject is always wholly in focus; only what lies behind or before it
+         goes soft. Close up that is the one tube (the others blur); in the liquid
+         the middle of the dispersion; from the fibre on, the whole object. */
+      sharp: c < 20 ? 0.34 + (0.09 - 0.34) * ease(5.6, 7.2, c) + (0.7 - 0.09) * ease(9.2, 11.6, c)
+                    : 0.7 + (0.34 - 0.7) * ease(43.6, 45, c),
       heat: w[3] * ease(20.3, 21.2, c),
       crack: w[4] * 64 * ease(29.3, 30.6, c) * (1 - ease(31.6, 32.2, c)),
       gate: ease(38.2, 39.2, c) * (1 - ease(43, 44.4, c)),
@@ -1974,7 +1983,7 @@
         /* data-hc-film-at="seconds" freezes the film at one moment (stills, checks). */
         var hold = scene.el.getAttribute("data-hc-film-at");
         scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 12.5 : (performance.now() - (scene.born || performance.now())) / 1000);
-        if (lens) scene.engine.lensEnd(scene.film.dist, scene.film.dist * 0.06, scene.film.dist * 6 + 6000);
+        if (lens) scene.engine.lensEnd(scene.film.dist, scene.film.dist * scene.film.sharp, scene.film.dist * 0.06, scene.film.dist * 6 + 6000);
         caption(scene);
       } else {
         scene.engine.draw(scene, 0, 0, scene.w, scene.h, time);
