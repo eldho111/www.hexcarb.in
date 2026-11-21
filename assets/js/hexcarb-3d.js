@@ -313,6 +313,7 @@
       var b = new Builder();
       b.lattice(t.atoms, t.bonds, t.s);
       return b.done({
+        tubeShade: true,
         radius: opts.hero ? t.radius : Math.hypot(t.radius, t.length / 2),
         mode: 2,
         amp: 1.1,
@@ -1230,20 +1231,21 @@
     "precision highp float;",
     "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
     "uniform float uNear; uniform float uFar; uniform float uK; uniform float uR1; uniform float uR2; uniform float uCap;",
+    "uniform vec2 uOff;",
     "out vec4 o;",
     "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
     "float depthAt(vec2 uv){ float d = textureLod(uD, uv, 0.0).r; return d>=1.0 ? 1e9 : lin(d); }",
     "float occ(vec2 uv, float z, float rw, float spin){",
     "  float pr = min(uCap, rw*uK/z), sum = 0.0;",
-    "  for(int i=0;i<9;i++){",
+    "  for(int i=0;i<12;i++){",
     "    float fi = float(i)+0.5, a = fi*2.39996323 + spin;",
-    "    float dz = z - depthAt(uv + vec2(cos(a), sin(a))*pr*sqrt(fi/9.0)*uPx);",
+    "    float dz = z - depthAt(uv + vec2(cos(a), sin(a))*pr*sqrt(fi/12.0)*uPx);",
     "    sum += smoothstep(0.04*rw, 0.5*rw, dz)*(1.0 - smoothstep(rw, 2.6*rw, dz));",
     "  }",
-    "  return sum/9.0;",
+    "  return sum/12.0;",
     "}",
     "void main(){",
-    "  vec2 uv = gl_FragCoord.xy*uPx;",
+    "  vec2 uv = (gl_FragCoord.xy-uOff)*uPx;",
     "  vec4 col = textureLod(uC, uv, 0.0);",
     "  float d = textureLod(uD, uv, 0.0).r;",
     "  if(d>=1.0){ o = col; return; }",
@@ -1259,6 +1261,7 @@
     "precision highp float;",
     "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
     "uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uRange; uniform float uAper; uniform float uMax;",
+    "uniform vec2 uOff;",
     "out vec4 o;",
     "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
     /* x: distance from the camera, y: blur radius in pixels (the circle of confusion) */
@@ -1270,7 +1273,7 @@
     "  return vec2(z, min(uMax, uAper*max(0.0, abs(z-uFocus)-uRange)/z));",
     "}",
     "void main(){",
-    "  vec2 uv = gl_FragCoord.xy*uPx;",
+    "  vec2 uv = (gl_FragCoord.xy-uOff)*uPx;",
     "  vec2 c = look(uv);",
     "  vec4 acc = textureLod(uC, uv, 0.0); float sum = 1.0;",
     /* empty paper with nothing near it needs no lens: a coarse copy of the picture says so at once */
@@ -1278,9 +1281,9 @@
     "               + textureLod(uC, uv + vec2(0.0,24.0)*uPx, 5.0).a + textureLod(uC, uv - vec2(0.0,24.0)*uPx, 5.0).a;",
     "  if(c.y>0.6 && nearby>0.0){",
     "    float spin = 6.2832*fract(52.9829189*fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));",
-    "    for(int i=0;i<30;i++){",
+    "    for(int i=0;i<40;i++){",
     "      float fi = float(i)+0.5;",
-    "      float r = sqrt(fi/30.0)*c.y, a = fi*2.39996323 + spin;",
+    "      float r = sqrt(fi/40.0)*c.y, a = fi*2.39996323 + spin;",
     "      vec2 suv = uv + vec2(cos(a), sin(a))*r*uPx;",
     "      vec2 s = look(suv);",
     /* something nearer than this pixel only spills onto it as far as its own blur reaches */
@@ -1345,19 +1348,29 @@
 
   /* Off-screen target for the lens pass: multisampled to draw into, then
      resolved to textures the blur can read. Returns false if it cannot be made. */
-  Engine.prototype.lensBegin = function (w, h) {
+  Engine.prototype.lensFree = function (L) {
+    var gl = this.gl;
+    gl.deleteFramebuffer(L.ms); gl.deleteFramebuffer(L.fbo); gl.deleteFramebuffer(L.shaded);
+    gl.deleteRenderbuffer(L.rc); gl.deleteRenderbuffer(L.rd);
+    gl.deleteTexture(L.tc); gl.deleteTexture(L.td); gl.deleteTexture(L.ts);
+  };
+
+  /* keep: this engine draws many scenes of different sizes, so hold a target for each size */
+  Engine.prototype.lensBegin = function (w, h, keep) {
     var gl = this.gl;
     this.lensOn = false;
     if (this.lensFail) return false;
+    if (keep) {
+      this.lensKept = this.lensKept || {};
+      this.lens = this.lensKept[w + "x" + h] || null;
+      if (!this.lens && Object.keys(this.lensKept).length > 14) {
+        for (var kk in this.lensKept) this.lensFree(this.lensKept[kk]);
+        this.lensKept = {};
+      }
+    }
     try {
       if (!this.lens || this.lens.w !== w || this.lens.h !== h) {
-        var old = this.lens;
-        if (old) {
-          gl.deleteFramebuffer(old.ms); gl.deleteFramebuffer(old.fbo);
-          gl.deleteRenderbuffer(old.rc); gl.deleteRenderbuffer(old.rd);
-          gl.deleteTexture(old.tc); gl.deleteTexture(old.td);
-          gl.deleteTexture(old.ts); gl.deleteFramebuffer(old.shaded);
-        }
+        if (this.lens && !keep) this.lensFree(this.lens);
         var n = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) || 1);
         var rc = gl.createRenderbuffer(), rd = gl.createRenderbuffer();
         gl.bindRenderbuffer(gl.RENDERBUFFER, rc);
@@ -1406,6 +1419,7 @@
           this.lensVao = gl.createVertexArray();
         }
         this.lens = { w: w, h: h, ms: ms, fbo: fbo, rc: rc, rd: rd, tc: tc, td: td, ts: ts, shaded: shaded };
+        if (keep) this.lensKept[w + "x" + h] = this.lens;
       }
     } catch (e) {
       this.lensFail = true;
@@ -1420,12 +1434,14 @@
 
   /* focus: distance of the plane in focus; range: how far either side of it stays
      fully sharp; near/far: the projection's clip planes */
-  Engine.prototype.lensEnd = function (focus, range, near, far) {
+  Engine.prototype.lensEnd = function (focus, range, near, far, ox, oy) {
     var gl = this.gl, L = this.lens, p = this.lensProg;
+    ox = ox || 0; oy = oy || 0;
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, L.ms);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, L.fbo);
     gl.blitFramebuffer(0, 0, L.w, L.h, 0, 0, L.w, L.h, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
     gl.viewport(0, 0, L.w, L.h);
+    gl.scissor(0, 0, L.w, L.h);
     var blend = gl.isEnabled(gl.BLEND);
     gl.disable(gl.BLEND);
     gl.disable(gl.DEPTH_TEST);
@@ -1446,10 +1462,13 @@
     gl.uniform1f(s.u.uR1, focus * 0.011);
     gl.uniform1f(s.u.uR2, focus * 0.085);
     gl.uniform1f(s.u.uCap, L.h * 0.06);
+    gl.uniform2f(s.u.uOff, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     /* then the lens, onto the page */
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(ox, oy, L.w, L.h);
+    gl.scissor(ox, oy, L.w, L.h);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(p.p);
@@ -1466,6 +1485,7 @@
     gl.uniform1f(p.u.uRange, range);
     gl.uniform1f(p.u.uAper, L.h * 0.05);
     gl.uniform1f(p.u.uMax, L.h * 0.026);
+    gl.uniform2f(p.u.uOff, ox, oy);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.bindVertexArray(null);
     gl.enable(gl.DEPTH_TEST);
@@ -1538,6 +1558,10 @@
 
     var near = scene.hero ? dist - d.radius * 1.1 : dist - d.radius * 0.5;
     var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 1.1;
+    /* lit like the film when the lens is on: matte charcoal, not a flat black cut-out */
+    var lensOn = this.lensOn;
+    var carbon = lensOn ? [0.2, 0.2, 0.205] : look.base;
+    this.view = { dist: dist, near: Math.max(0.1, dist - d.radius * 4), far: dist + d.radius * 12 };
 
     function use(prog) {
       gl.useProgram(prog.p);
@@ -1547,14 +1571,15 @@
       gl.uniform1f(prog.u.uMode, d.mode);
       gl.uniform1f(prog.u.uAmp, d.amp);
       gl.uniform1f(prog.u.uPulse, d.pulse);
-      gl.uniform3fv(prog.u.uBase, look.base);
+      gl.uniform1f(prog.u.uTubeShade, lensOn && d.tubeShade ? 1 : 0);
+      gl.uniform3fv(prog.u.uBase, carbon);
       gl.uniform3fv(prog.u.uFog, look.fog);
       gl.uniform1f(prog.u.uNear, near);
       gl.uniform1f(prog.u.uFar, far);
-      gl.uniform1f(prog.u.uMetal, look.metal);
+      gl.uniform1f(prog.u.uMetal, lensOn ? 0.12 : look.metal);
       gl.uniform1f(prog.u.uEnvLo, look.envLo);
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
-      gl.uniform1f(prog.u.uAmb, look.amb);
+      gl.uniform1f(prog.u.uAmb, lensOn ? 0.55 : look.amb);
       gl.uniform1f(prog.u.uGlow, look.glow);
       gl.uniform3fv(prog.u.uSignal, SIGNAL);
       gl.uniform1f(prog.u.uCut, look.cut || 0);
@@ -2112,7 +2137,7 @@
     var px = window.devicePixelRatio || 1;
     /* the film is drawn sharper than the screen when the machine allows; see tune() */
     /* through the lens the film is multisampled, so it needs no extra pixels for smooth edges */
-    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : scene.data.journey ? 1.0 : 1.5;
+    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : 1.5;
     var dpr = scene.data.journey ? Math.min(px * scene.quality, mobile() ? 2 : 2.6) : scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
     var w = Math.max(1, Math.round(r.width * dpr));
     var h = Math.max(1, Math.round(r.height * dpr));
@@ -2159,10 +2184,21 @@
       var g = shared.gl;
       g.enable(g.SCISSOR_TEST);
       g.clearColor(0, 0, 0, 0);
-      g.viewport(0, c.height - scene.h, scene.w, scene.h);
-      g.scissor(0, c.height - scene.h, scene.w, scene.h);
-      g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
-      shared.draw(scene, 0, c.height - scene.h, scene.w, scene.h, time);
+      /* the same shading passes as the film, where the machine allows */
+      var lit = !mobile() && !scene.data.points && shared.lensBegin(scene.w, scene.h, true);
+      if (lit) {
+        g.viewport(0, 0, scene.w, scene.h);
+        g.scissor(0, 0, scene.w, scene.h);
+        g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
+        shared.draw(scene, 0, 0, scene.w, scene.h, time);
+        shared.lensEnd(shared.view.dist, scene.data.radius * 6, shared.view.near, shared.view.far, 0, c.height - scene.h);
+        g.enable(g.SCISSOR_TEST);
+      } else {
+        g.viewport(0, c.height - scene.h, scene.w, scene.h);
+        g.scissor(0, c.height - scene.h, scene.w, scene.h);
+        g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
+        shared.draw(scene, 0, c.height - scene.h, scene.w, scene.h, time);
+      }
       scene.ctx2d.clearRect(0, 0, scene.w, scene.h);
       scene.ctx2d.drawImage(c, 0, 0, scene.w, scene.h, 0, 0, scene.w, scene.h);
     }
@@ -2218,10 +2254,13 @@
      lower the render scale a step; a long smooth run raises it again. */
   function tune(scene, dt) {
     if (STATIC || !scene.data.journey || scene.el.hasAttribute("data-hc-film-at")) return;
+    /* a frame that took far too long was the browser holding the page back
+       (a hidden or unfocused tab), not the picture being heavy: ignore it */
+    if (dt > 0.1) return;
     scene.load = scene.load === undefined ? dt : scene.load * 0.94 + dt * 0.06;
     scene.settle = (scene.settle || 0) + 1;
     if (scene.settle < 90) return;
-    var top = mobile() ? 1.15 : 1.2;
+    var top = mobile() ? 1.15 : 1.7;
     if (scene.load > 1 / 40 && scene.quality > 0.7) {
       scene.quality = Math.max(0.7, scene.quality - 0.15);
     } else if (scene.load < 1 / 57 && scene.quality < top && scene.settle > 420) {
@@ -2238,7 +2277,8 @@
   var lastScroll = window.scrollY || 0;
   function frame(now) {
     running = false;
-    var dt = Math.min(0.05, (now - last) / 1000 || 0);
+    var gap = (now - last) / 1000 || 0;
+    var dt = Math.min(0.05, gap);
     last = now;
     var time = (now - start) / 1000;
     var any = false;
@@ -2253,7 +2293,7 @@
         any = true;
         s.spin += dt * (s.hero ? 0.16 : 0.34) * (s.data.speed || 1);
         if (s.hero) {
-          tune(s, dt);
+          tune(s, gap);
           /* Build-in on first sight, then turn with the page scroll. */
           if (!s.born) s.born = now;
           s.grow = -52 + ((now - s.born) / 1000) * 62;

@@ -4896,6 +4896,111 @@ main section.hc-section[id] {
   }
 }
 
+/* ===================================================================
+   Home hero film: a framed 16:9 window, never cropped.
+   It is as wide as the page's content and keeps its shape; on a short
+   screen it shrinks to fit rather than being cut off.
+   =================================================================== */
+.hc-stage {
+  overflow: visible;
+}
+
+.hc-stage-inner {
+  padding-block: clamp(2.4rem, 6.5vh, 5rem) clamp(2rem, 5vh, 4rem);
+}
+
+.hc-film-window {
+  position: relative;
+  margin: clamp(1.8rem, 4.5vh, 3rem) auto 0;
+  width: min(100%, calc((100vh - var(--nav-height) - 2.5rem) * 16 / 9));
+  width: min(100%, calc((100svh - var(--nav-height) - 2.5rem) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  background: #ffffff;
+  border: 1px solid var(--hc-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lift);
+}
+
+.hc-film-window .hc-stage-scene,
+:root[data-theme="dark"] .hc-film-window .hc-stage-scene {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  border: 0;
+  background: #ffffff;
+}
+
+/* the scale bar sits in the corner of the film, as on a micrograph */
+.hc-film-window .hc-film-scale,
+:root[data-theme="dark"] .hc-film-window .hc-film-scale {
+  position: absolute;
+  right: clamp(0.7rem, 2vw, 1.4rem);
+  bottom: clamp(0.7rem, 2vw, 1.4rem);
+  z-index: 2;
+  margin: 0;
+  display: grid;
+  justify-items: end;
+  gap: 0.35rem;
+  min-width: 11.5rem;
+  padding: 0.7rem 0.9rem;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.hc-film-window .hc-film-scale .hc-film-what,
+.hc-film-window .hc-film-scale .hc-film-scalelabel,
+:root[data-theme="dark"] .hc-film-window .hc-film-scale .hc-film-what,
+:root[data-theme="dark"] .hc-film-window .hc-film-scale .hc-film-scalelabel {
+  color: #000000;
+}
+
+.hc-film-window .hc-film-scale .hc-film-scalebar,
+:root[data-theme="dark"] .hc-film-window .hc-film-scale .hc-film-scalebar {
+  height: 9px;
+  border: 2px solid #000000;
+  border-top: 0;
+}
+
+.hc-film-window .hc-film-scale .hc-film-scalelabel {
+  min-width: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.hc-film-window .hc-film-scale .hc-film-note,
+:root[data-theme="dark"] .hc-film-window .hc-film-scale .hc-film-note {
+  font-size: 0.66rem;
+  color: #5c5c5c;
+}
+
+@media (max-width: 900px) {
+  .hc-film-window {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+
+  .hc-film-window .hc-film-scale {
+    min-width: 0;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .hc-stage-inner {
+    padding-block: 1.8rem 2rem;
+  }
+}
+
+.hc-film-window:has(.hc-3d--fallback) {
+  display: none;
+}
+
 /* --- TEMPORARY (local preview only): accent colour chooser --- */
 :root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
 :root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
