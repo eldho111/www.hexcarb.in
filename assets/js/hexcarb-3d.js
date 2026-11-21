@@ -567,11 +567,11 @@
        for far larger real numbers. */
     journey: function () {
       var small = window.innerWidth < 760;
-      var TARGET = small ? 220 : 1700, S = small ? 14 : 20, R = 2.6;
+      var TARGET = small ? 220 : 1300, S = small ? 14 : 20, R = 2.6;
       var rand = rng(2026), tubeModel = MODELS.nanotube({ hero: true });
       /* far stages: one tube is TUBE units long, and 7,500 times its 1.5 nm width is 11.25 micrometres */
       var bonds = [], i, j, n;
-      var BUNDLE = small ? 70 : 96, FW = 1000, FH = 760, TUBE = 500;
+      var BUNDLE = small ? 70 : 86, FW = 1000, FH = 760, TUBE = 500;
       var MW = 720, MH = 540;   // the film: a smaller sheet, so the same ropes pack it densely
 
       function unit() {
@@ -776,6 +776,7 @@
         journey: true,
         tube: tubeModel,
         tubeLite: { atoms: tubeModel.atoms, atomCount: tubeModel.atomCount, bonds: new Float32Array(0), bondCount: 0, lite: true, plates: [] },
+        tubeTiny: { atoms: tubeModel.atoms, atomCount: tubeModel.atomCount, bonds: new Float32Array(0), bondCount: 0, tiny: true, plates: [] },
         tubeSpan: 41 * 3 * 14 / SW,   // one tube's length, lattice to lattice, so copies join end to end
         mBonds: new Float32Array(bonds),
         mBondCount: bonds.length / 43,
@@ -815,6 +816,29 @@
         b.strand(wavy(rand, p, d, 13 + rand() * 9, 96, 0.7 + rand() * 0.9), 0.085);
       }
       return b.done({ radius: 7.4, mode: 3, amp: 0.34, orient: rotX(0.25), speed: 0.45 });
+    },
+
+    /* Raw in, working out: the same tubes as a tight tangle, then free in the
+       liquid, then gathering again. The shader moves each point between the two. */
+    debundle: function () {
+      var rand = rng(77), b = new Builder();
+      for (var i = 0; i < 64; i++) {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        var p = [(rand() - 0.5) * 9, (rand() - 0.5) * 8, (rand() - 0.5) * 8];
+        b.strand(wavy(rand, p, [q * Math.cos(th), z, q * Math.sin(th)], 11 + rand() * 7, 80, 0.6 + rand() * 0.7), 0.085);
+      }
+      return b.done({ radius: 8.4, mode: 8, amp: 0.34, orient: rotX(0.2), speed: 0.3 });
+    },
+
+    /* Backdrop: a wide field of free tubes, drifting, fading into the dark behind. */
+    field: function () {
+      var rand = rng(88), b = new Builder(), lite = mobile();
+      for (var i = 0; i < (lite ? 60 : 150); i++) {
+        var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
+        var p = [(rand() - 0.5) * 46, (rand() - 0.5) * 13, (rand() - 0.5) * 16];
+        b.strand(wavy(rand, p, [q * Math.cos(th), z * 0.6, q * Math.sin(th)], 12 + rand() * 9, 60, 0.5 + rand() * 0.8), 0.075);
+      }
+      return b.done({ radius: 9.5, mode: 3, amp: 0.3, orient: rotX(0.1), spin: "none", speed: 0.4 });
     },
 
     /* Fibre: many aligned tubes twisted together into one yarn. */
@@ -934,6 +958,14 @@
     "    float ph = fract(uTime/7.0); float up = smoothstep(0.0,0.3,ph); float gone = smoothstep(0.92,1.0,ph);",
     "    if(p.x<uSplit){ p.x -= uAmp*up*(1.0-smoothstep(0.36,0.62,ph))*p.y*p.y; }",
     "    else { p.x += 9.0*uAmp*up*(1.0-gone)*abs(p.y); }",
+    "  } else if(uMode>7.5 && uMode<8.5){",   // debundling: a tight tangle opens into free tubes, then gathers again
+    "    float ph = fract(uTime/18.0);",
+    "    float open = smoothstep(0.12,0.5,ph)*(1.0-smoothstep(0.84,0.98,ph));",
+    "    open = clamp(open - 0.25*(1.0-open)*length(p)/9.0, 0.0, 1.0);",      // the outside comes away first
+    "    vec3 knot = p*0.24 + 1.35*vec3(sin(p.y*1.3+p.z*0.7), sin(p.z*1.1+p.x*1.7), sin(p.x*1.2+p.y*0.9));",
+    "    vec3 loose = p + uAmp*vec3(sin(p.y*0.5+uTime*0.6), sin(p.z*0.45+uTime*0.5+1.7), sin(p.x*0.55+uTime*0.55+3.1))",
+    "               + uAmp*0.3*vec3(sin(uTime*5.3+p.x*0.9+p.z*1.7), sin(uTime*6.1+p.y*0.8+p.x*1.3), sin(uTime*4.7+p.z*0.9+p.y*1.1));",
+    "    p = mix(knot, loose, open);",
     "  }",
     "  return p;",
     "}",
@@ -1062,10 +1094,15 @@
     "  vec3 base = pow(uBase, vec3(2.2));",
     "  vec3 diffuse = base*(uAmb*(0.4+0.6*hemi) + 0.9*d1);",
     "  float fres = pow(1.0-ndv,5.0);",
-    "  float mirror = env(reflect(-v,n));",
-    "  float sharp = pow(max(dot(n,normalize(l1+v)),0.0),120.0);",
-    "  vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(uShine*(0.9*sharp + 0.25*fres));",
-    "  vec3 c = mix(diffuse + vec3(0.08*mirror*fres), metal, uMetal);",
+    "  vec3 c;",
+    "  if(uMetal<0.01){",
+    "    c = diffuse + vec3(0.05*fres*(0.5+0.5*n.y));",
+    "  } else {",
+    "    float mirror = env(reflect(-v,n));",
+    "    float sharp = pow(max(dot(n,normalize(l1+v)),0.0),120.0);",
+    "    vec3 metal = base*mirror*(1.0+0.6*fres) + vec3(uShine*(0.9*sharp + 0.25*fres));",
+    "    c = mix(diffuse + vec3(0.08*mirror*fres), metal, uMetal);",
+    "  }",
     "  vec3 rr = reflect(-v,n);",
     /* Piano-black gloss: a long overhead softbox, a tight hot spot, a thin rim. */
     "  float band = smoothstep(0.45,0.98,rr.y);",
@@ -1121,13 +1158,9 @@
        (s is its seed), drifting, jittering and flexing along its length. */
     "vec3 brown(vec3 p, float s){",
     "  float t = uTime, k = s*37.0;",
-    "  vec3 j = vec3(sin(t*1.3+k)+0.6*sin(t*3.1+k*1.7)+0.4*sin(t*7.3+k*2.3)+0.25*sin(t*13.1+k*4.1),",
-    "                sin(t*1.1+k*1.3)+0.6*sin(t*2.7+k*0.7)+0.4*sin(t*6.1+k*3.1)+0.25*sin(t*11.7+k*5.3),",
-    "                sin(t*0.9+k*2.1)+0.6*sin(t*3.7+k*1.1)+0.4*sin(t*8.3+k*0.3)+0.25*sin(t*12.3+k*2.9));",
-    "  vec3 f = vec3(sin(dot(p,vec3(0.004,0.003,0.002))+t*1.7+k),",
-    "                sin(dot(p,vec3(0.002,0.005,0.003))+t*2.1+k*1.9),",
-    "                sin(dot(p,vec3(0.003,0.002,0.005))+t*1.9+k*0.6));",
-    "  return uBrown*(20.0*j + 30.0*f);",
+    "  vec3 j = sin(t*vec3(1.3,1.1,0.9) + k*vec3(1.0,1.3,2.1)) + 0.55*sin(t*vec3(5.3,4.7,6.1) + k*vec3(1.7,0.7,1.1));",
+    "  vec3 f = sin(vec3(dot(p,vec3(0.004,0.003,0.002)), dot(p,vec3(0.002,0.005,0.003)), dot(p,vec3(0.003,0.002,0.005))) + t*vec3(1.7,2.1,1.9) + k*vec3(1.0,1.9,0.6));",
+    "  return uBrown*(22.0*j + 30.0*f);",
     "}",
     /* the panel parts along x=0, widest at its lower face; tubes that cross stretch over the gap */
     "vec3 crack(vec3 p){ p.x += sign(p.x)*0.5*uCrack*clamp(1.0-p.z/118.0,0.0,1.0); return p; }",
@@ -1185,7 +1218,7 @@
     "layout(location=13) in vec3 iB5;",
     "layout(location=14) in vec3 iB6;",
     "layout(location=15) in float iSeed;",
-    "uniform int uFrom; uniform int uTo; uniform float uT; uniform float uR; uniform float uStag;",
+    "uniform int uFrom; uniform int uTo; uniform float uT; uniform float uR; uniform float uStag; uniform float uNearFade;",
     MORPH_COMMON,
     "vec3 pick(int i, vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec3 p4, vec3 p5, vec3 p6){",
     "  return i==0 ? p0 : i==1 ? p1 : i==2 ? p2 : i==3 ? p3 : i==4 ? p4 : i==5 ? p5 : p6;",
@@ -1207,7 +1240,9 @@
     "  vec3 u = normalize(cross(up,ax)); vec3 w = cross(ax,u);",
     "  vec3 n = u*aPos.x + w*aPos.z;",
     "  float g = heat(mix(a,b,aPos.y), mix(iA3,iB3,aPos.y));",
-    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*uR*uStrand*(1.0+0.9*g), 1.0);",
+    "  float zc = -(uMV*vec4(0.5*(a+b), 1.0)).z;",
+    "  float thin = smoothstep(uNearFade*0.45, uNearFade, zc);",
+    "  vec4 mv = uMV*vec4(a + ax*len*aPos.y + n*uR*uStrand*thin*(1.0+0.9*g), 1.0);",
     "  vN = mat3(uMV)*n; vP = mv.xyz; vGlow = g;",
     "  gl_Position = uProj*mv;",
     "}"
@@ -1252,37 +1287,36 @@
     "precision highp float;",
     "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
     "uniform float uNear; uniform float uFar; uniform float uK; uniform float uR1; uniform float uR2; uniform float uCap;",
-    "uniform vec2 uOff;",
+    "uniform vec2 uOff; uniform vec2 uTex;",   // uPx: this half-size target; uTex: one pixel of the full picture
     "out vec4 o;",
     "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
     "float depthAt(vec2 uv){ float d = textureLod(uD, uv, 0.0).r; return d>=1.0 ? 1e9 : lin(d); }",
     "float occ(vec2 uv, float z, float rw, float spin){",
     "  float pr = min(uCap, rw*uK/z), sum = 0.0;",
-    "  for(int i=0;i<12;i++){",
+    "  for(int i=0;i<8;i++){",
     "    float fi = float(i)+0.5, a = fi*2.39996323 + spin;",
-    "    float dz = z - depthAt(uv + vec2(cos(a), sin(a))*pr*sqrt(fi/12.0)*uPx);",
+    "    float dz = z - depthAt(uv + vec2(cos(a), sin(a))*pr*sqrt(fi/8.0)*uTex);",
     "    sum += smoothstep(0.04*rw, 0.5*rw, dz)*(1.0 - smoothstep(rw, 2.6*rw, dz));",
     "  }",
-    "  return sum/12.0;",
+    "  return sum/8.0;",
     "}",
     "void main(){",
     "  vec2 uv = (gl_FragCoord.xy-uOff)*uPx;",
-    "  vec4 col = textureLod(uC, uv, 0.0);",
     "  float d = textureLod(uD, uv, 0.0).r;",
-    "  if(d>=1.0){ o = col; return; }",
+    "  if(d>=1.0){ o = vec4(1.0); return; }",
     "  float z = lin(d);",
     "  float spin = 6.2832*fract(52.9829189*fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));",
     "  float ao = (1.0 - 0.8*occ(uv, z, uR1, spin))*(1.0 - 0.62*occ(uv, z, uR2, spin + 1.7));",
-    "  o = vec4(col.rgb*ao, col.a);",
+    "  o = vec4(ao);",
     "}"
   ].join("\n");
 
   var FS_LENS = [
     "#version 300 es",
     "precision highp float;",
-    "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
+    "uniform sampler2D uC; uniform sampler2D uD; uniform sampler2D uA; uniform vec2 uPx;",
     "uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uRange; uniform float uAper; uniform float uMax;",
-    "uniform vec2 uOff;",
+    "uniform vec2 uOff; uniform vec2 uTex;",   // uPx: this half-size target; uTex: one pixel of the full picture
     "out vec4 o;",
     "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
     /* x: distance from the camera, y: blur radius in pixels (the circle of confusion) */
@@ -1298,21 +1332,40 @@
     "  vec2 c = look(uv);",
     "  vec4 acc = textureLod(uC, uv, 0.0); float sum = 1.0;",
     /* empty paper with nothing near it needs no lens: a coarse copy of the picture says so at once */
-    "  float nearby = textureLod(uC, uv, 5.0).a + textureLod(uC, uv + vec2(24.0,0.0)*uPx, 5.0).a + textureLod(uC, uv - vec2(24.0,0.0)*uPx, 5.0).a",
-    "               + textureLod(uC, uv + vec2(0.0,24.0)*uPx, 5.0).a + textureLod(uC, uv - vec2(0.0,24.0)*uPx, 5.0).a;",
+    "  float nearby = textureLod(uC, uv, 5.0).a + textureLod(uC, uv + vec2(24.0,0.0)*uTex, 5.0).a + textureLod(uC, uv - vec2(24.0,0.0)*uTex, 5.0).a",
+    "               + textureLod(uC, uv + vec2(0.0,24.0)*uTex, 5.0).a + textureLod(uC, uv - vec2(0.0,24.0)*uTex, 5.0).a;",
     "  if(c.y>0.6 && nearby>0.0){",
     "    float spin = 6.2832*fract(52.9829189*fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));",
-    "    for(int i=0;i<40;i++){",
+    "    for(int i=0;i<24;i++){",
     "      float fi = float(i)+0.5;",
-    "      float r = sqrt(fi/40.0)*c.y, a = fi*2.39996323 + spin;",
-    "      vec2 suv = uv + vec2(cos(a), sin(a))*r*uPx;",
+    "      float r = sqrt(fi/24.0)*c.y, a = fi*2.39996323 + spin;",
+    "      vec2 suv = uv + vec2(cos(a), sin(a))*r*uTex;",
     "      vec2 s = look(suv);",
     /* something nearer than this pixel only spills onto it as far as its own blur reaches */
     "      float w = s.x>=c.x-0.5 ? 1.0 : smoothstep(r-1.0, r+1.0, s.y);",
     "      acc += textureLod(uC, suv, 0.0)*w; sum += w;",
     "    }",
     "  }",
-    "  o = acc/sum;",
+    "  acc /= sum;",
+    "  o = vec4(acc.rgb*texture(uA, uv).r, acc.a);",
+    "}"
+  ].join("\n");
+
+  /* The last pass: sharp picture where things are in focus, the half-size blur where they are not. */
+  var FS_MIX = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform sampler2D uC; uniform sampler2D uD; uniform sampler2D uB; uniform sampler2D uA; uniform vec2 uPx; uniform vec2 uOff;",
+    "uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uRange; uniform float uAper; uniform float uMax;",
+    "out vec4 o;",
+    "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
+    "void main(){",
+    "  vec2 uv = (gl_FragCoord.xy-uOff)*uPx;",
+    "  float d = textureLod(uD, uv, 0.0).r, coc = uMax;",
+    "  if(d<1.0){ float z = lin(d); coc = min(uMax, uAper*max(0.0, abs(z-uFocus)-uRange)/z); }",
+    "  vec4 sharp = textureLod(uC, uv, 0.0);",
+    "  sharp.rgb *= texture(uA, uv).r;",
+    "  o = mix(sharp, texture(uB, uv), smoothstep(0.5, 2.2, coc));",
     "}"
   ].join("\n");
 
@@ -1330,6 +1383,8 @@
     this.mAtomProg = compile(gl, VS_MATOM, FS);
     this.mBondProg = compile(gl, VS_MBOND, FS);
     this.sphereLo = this.mesh(icosphere(1));
+    this.sphereTiny = this.mesh(icosphere(0));
+    this.cylStrand = this.mesh(cylinder(9));
     this.sphere = this.mesh(icosphere(lowDetail ? 2 : 3));
     this.cyl = this.mesh(cylinder(sides || (lowDetail ? 12 : 20)));
     this.cylLo = this.mesh(cylinder(5));
@@ -1374,6 +1429,7 @@
     gl.deleteFramebuffer(L.ms); gl.deleteFramebuffer(L.fbo); gl.deleteFramebuffer(L.shaded);
     gl.deleteRenderbuffer(L.rc); gl.deleteRenderbuffer(L.rd);
     gl.deleteTexture(L.tc); gl.deleteTexture(L.td); gl.deleteTexture(L.ts);
+    gl.deleteTexture(L.th); gl.deleteFramebuffer(L.half);
   };
 
   /* keep: this engine draws many scenes of different sizes, so hold a target for each size */
@@ -1405,8 +1461,9 @@
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("ms");
         var tc = gl.createTexture(), td = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, tc);
-        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, w, h);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texStorage2D(gl.TEXTURE_2D, 6, gl.RGBA8, w, h);       // with a coarse copy of itself, for a quick "is anything near here"
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 5);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -1421,25 +1478,38 @@
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tc, 0);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, td, 0);
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("fbo");
-        /* the shaded picture the lens reads, with a coarse copy of itself */
+        /* contact shadows and blur are both soft, so both are worked out at half
+           size: a quarter of the work, and nothing the eye can tell */
+        var hw = Math.max(1, w >> 1), hh = Math.max(1, h >> 1);
         var ts = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, ts);
-        gl.texStorage2D(gl.TEXTURE_2D, 6, gl.RGBA8, w, h);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, hw, hh);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 5);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         var shaded = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, shaded);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, ts, 0);
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("shade");
+        var th = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, th);
+        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, hw, hh);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        var half = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, half);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, th, 0);
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("half");
         if (!this.lensProg) {
           this.lensProg = compile(gl, VS_LENS, FS_LENS);
           this.shadeProg = compile(gl, VS_LENS, FS_SHADE);
+          this.mixProg = compile(gl, VS_LENS, FS_MIX);
           this.lensVao = gl.createVertexArray();
         }
-        this.lens = { w: w, h: h, ms: ms, fbo: fbo, rc: rc, rd: rd, tc: tc, td: td, ts: ts, shaded: shaded };
+        this.lens = { w: w, h: h, hw: hw, hh: hh, ms: ms, fbo: fbo, rc: rc, rd: rd, tc: tc, td: td, ts: ts, shaded: shaded, th: th, half: half };
         if (keep) this.lensKept[w + "x" + h] = this.lens;
       }
     } catch (e) {
@@ -1455,59 +1525,81 @@
 
   /* focus: distance of the plane in focus; range: how far either side of it stays
      fully sharp; near/far: the projection's clip planes */
-  Engine.prototype.lensEnd = function (focus, range, near, far, ox, oy) {
-    var gl = this.gl, L = this.lens, p = this.lensProg;
+  Engine.prototype.lensEnd = function (focus, range, near, far, ox, oy, blur) {
+    var gl = this.gl, L = this.lens, s = this.shadeProg, p = this.lensProg, m = this.mixProg;
     ox = ox || 0; oy = oy || 0;
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, L.ms);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, L.fbo);
     gl.blitFramebuffer(0, 0, L.w, L.h, 0, 0, L.w, L.h, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
-    gl.viewport(0, 0, L.w, L.h);
-    gl.scissor(0, 0, L.w, L.h);
     var blend = gl.isEnabled(gl.BLEND);
     gl.disable(gl.BLEND);
     gl.disable(gl.DEPTH_TEST);
     gl.bindVertexArray(this.lensVao);
-
-    /* first the contact shadows, into their own picture */
-    var s = this.shadeProg;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, L.shaded);
-    gl.useProgram(s.p);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, L.tc);
+    if (blur) gl.generateMipmap(gl.TEXTURE_2D);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, L.td);
-    gl.uniform1i(s.u.uC, 0);
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, L.th);
+    gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, L.ts);
+    var aper = L.h * 0.05, cap = blur ? L.h * 0.026 : 0;
+
+    /* 1. contact shadows, half size */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, L.shaded);
+    gl.viewport(0, 0, L.hw, L.hh);
+    gl.scissor(0, 0, L.hw, L.hh);
+    gl.useProgram(s.p);
     gl.uniform1i(s.u.uD, 1);
-    gl.uniform2f(s.u.uPx, 1 / L.w, 1 / L.h);
+    gl.uniform2f(s.u.uPx, 1 / L.hw, 1 / L.hh);
+    gl.uniform2f(s.u.uTex, 1 / L.w, 1 / L.h);
+    gl.uniform2f(s.u.uOff, 0, 0);
     gl.uniform1f(s.u.uNear, near);
     gl.uniform1f(s.u.uFar, far);
     gl.uniform1f(s.u.uK, L.h / (2 * Math.tan(0.25)));
     gl.uniform1f(s.u.uR1, focus * 0.011);
     gl.uniform1f(s.u.uR2, focus * 0.085);
     gl.uniform1f(s.u.uCap, L.h * 0.06);
-    gl.uniform2f(s.u.uOff, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-    /* then the lens, onto the page */
+    /* 2. the blur, half size (only where a lens is wanted) */
+    if (blur) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, L.half);
+      gl.useProgram(p.p);
+      gl.uniform1i(p.u.uC, 0);
+      gl.uniform1i(p.u.uD, 1);
+      gl.uniform1i(p.u.uA, 3);
+      gl.uniform2f(p.u.uPx, 1 / L.hw, 1 / L.hh);
+      gl.uniform2f(p.u.uTex, 1 / L.w, 1 / L.h);
+      gl.uniform2f(p.u.uOff, 0, 0);
+      gl.uniform1f(p.u.uNear, near);
+      gl.uniform1f(p.u.uFar, far);
+      gl.uniform1f(p.u.uFocus, focus);
+      gl.uniform1f(p.u.uRange, range);
+      gl.uniform1f(p.u.uAper, aper);
+      gl.uniform1f(p.u.uMax, cap);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    /* 3. onto the page: the sharp picture with its shadows, the blur where things are out of focus */
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(ox, oy, L.w, L.h);
     gl.scissor(ox, oy, L.w, L.h);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.useProgram(p.p);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, L.ts);
-    gl.generateMipmap(gl.TEXTURE_2D);
-    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, L.td);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.uniform1i(p.u.uC, 0);
-    gl.uniform1i(p.u.uD, 1);
-    gl.uniform2f(p.u.uPx, 1 / L.w, 1 / L.h);
-    gl.uniform1f(p.u.uNear, near);
-    gl.uniform1f(p.u.uFar, far);
-    gl.uniform1f(p.u.uFocus, focus);
-    gl.uniform1f(p.u.uRange, range);
-    gl.uniform1f(p.u.uAper, L.h * 0.05);
-    gl.uniform1f(p.u.uMax, L.h * 0.026);
-    gl.uniform2f(p.u.uOff, ox, oy);
+    gl.useProgram(m.p);
+    gl.uniform1i(m.u.uC, 0);
+    gl.uniform1i(m.u.uD, 1);
+    gl.uniform1i(m.u.uB, 2);
+    gl.uniform1i(m.u.uA, 3);
+    gl.uniform2f(m.u.uPx, 1 / L.w, 1 / L.h);
+    gl.uniform2f(m.u.uOff, ox, oy);
+    gl.uniform1f(m.u.uNear, near);
+    gl.uniform1f(m.u.uFar, far);
+    gl.uniform1f(m.u.uFocus, focus);
+    gl.uniform1f(m.u.uRange, range);
+    gl.uniform1f(m.u.uAper, aper);
+    gl.uniform1f(m.u.uMax, cap);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindVertexArray(null);
     gl.enable(gl.DEPTH_TEST);
     if (blend) gl.enable(gl.BLEND);
@@ -1549,7 +1641,7 @@
     }
     var out = {
       pointVao: pointVao,
-      atomVao: data.atomCount ? vao(data.lite ? this.sphereLo : this.sphere, data.atoms, [[1, 4, 0]], 16) : null,
+      atomVao: data.atomCount ? vao(data.tiny ? this.sphereTiny : data.lite ? this.sphereLo : this.sphere, data.atoms, [[1, 4, 0]], 16) : null,
       bondVao: data.bondCount ? vao(data.fine ? this.cylLo : this.cyl, data.bonds, [[1, 3, 0], [2, 3, 12], [3, 1, 24]], 28) : null
     };
     this.cache[key] = out;
@@ -1581,7 +1673,8 @@
     var far = scene.hero ? dist + d.radius * scene.heroFog : dist + d.radius * 1.1;
     /* lit like the film when the lens is on: matte charcoal, not a flat black cut-out */
     var lensOn = this.lensOn;
-    var carbon = lensOn ? [0.2, 0.2, 0.205] : look.base;
+    var matte = lensOn && !look.keep;
+    var carbon = matte ? [0.2, 0.2, 0.205] : look.base;
     this.view = { dist: dist, near: Math.max(0.1, dist - d.radius * 4), far: dist + d.radius * 12 };
 
     function use(prog) {
@@ -1597,10 +1690,10 @@
       gl.uniform3fv(prog.u.uFog, look.fog);
       gl.uniform1f(prog.u.uNear, near);
       gl.uniform1f(prog.u.uFar, far);
-      gl.uniform1f(prog.u.uMetal, lensOn ? 0.12 : look.metal);
+      gl.uniform1f(prog.u.uMetal, matte ? 0 : look.metal);
       gl.uniform1f(prog.u.uEnvLo, look.envLo);
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
-      gl.uniform1f(prog.u.uAmb, lensOn ? 0.55 : look.amb);
+      gl.uniform1f(prog.u.uAmb, matte ? 0.6 : look.amb);
       gl.uniform1f(prog.u.uGlow, look.glow);
       gl.uniform3fv(prog.u.uSignal, SIGNAL);
       gl.uniform1f(prog.u.uCut, look.cut || 0);
@@ -1668,12 +1761,12 @@
   var FILM_LENGTH = 52;
   var FORMS_AT = 21, FORM_CLOCK = 9, FORMS_END = 49.6;
   /* camera distance through the forms: [form-clock second, distance]; eased in log space */
-  var FILM_CAMERA = [[9.5, 330], [12.2, 1150], [14, 1150], [16, 1900], [18.5, 1900], [20.5, 2750], [22.3, 2750],
+  var FILM_CAMERA = [[9.3, 400], [11.3, 1150], [14, 1150], [16, 1900], [18.5, 1900], [20.5, 2750], [22.3, 2750],
                      [23.5, 250000], [24.6, 250000], [26.4, 2650], [32, 2650], [34, 2700], [40, 2700]];
   /* camera distance through the opening: [second, distance] */
   /* It pulls back until the whole clump is in view, then goes in: through the
      clump as it opens and on through the liquid, tubes passing on every side. */
-  var FILM_OPENING = [[0, 50], [3, 46], [5.2, 100], [7, 100], [10.4, 2500], [11.4, 2500], [15.6, 640], [21.5, 330], [22, 330]];
+  var FILM_OPENING = [[0, 50], [3, 46], [5.2, 100], [7, 100], [10.4, 2500], [11.4, 2500], [15.6, 760], [21.3, 400], [22, 400]];
   /* when each form takes over from the one before, on the form clock: [start, end] */
   var FILM_MORPH = [[9.0, 12.0], [13.6, 16.6], [18.1, 21.0], [24.4, 27.0], [31.6, 34.6]];
   var DEBUNDLE = [11.3, 18.2];
@@ -1702,7 +1795,7 @@
     var i, k;
     /* fc: the form clock. It holds at its start through the opening and at its end through the way back. */
     var fc = Math.min(FORMS_END, Math.max(FORMS_AT, c)) - FORMS_AT + FORM_CLOCK;
-    var d = c < FORMS_AT + 0.5 ? track(FILM_OPENING, c) : track(FILM_CAMERA, fc);
+    var d = c < FORMS_AT + 0.3 ? track(FILM_OPENING, c) : track(FILM_CAMERA, fc);
     /* the way back: from the electrode straight down to one tube */
     if (c > FILM_RETURN[0]) d = Math.exp(Math.log(2700) + (Math.log(46) - Math.log(2700)) * ease(FILM_RETURN[0], FILM_LENGTH, c));
     /* the camera never sits perfectly still: a slow breath on every hold */
@@ -1819,7 +1912,7 @@
     for (i = 0; i < 14; i++) bondLayout.push([i + 1, 3, i * 12]);
     bondLayout.push([15, 1, 168]);
     this.film = {
-      bonds: build(self.cyl, d.mBonds, 172, bondLayout),
+      bonds: build(self.cylStrand, d.mBonds, 172, bondLayout),
       grains: build(self.sphere, d.mGrains, 76, atomLayout),
       waves: build(self.sphereLo, d.mWaves, 76, atomLayout)
     };
@@ -1874,10 +1967,10 @@
       gl.uniform3fv(prog.u.uFog, look.fog);
       gl.uniform1f(prog.u.uNear, fogNear);
       gl.uniform1f(prog.u.uFar, fogFar);
-      gl.uniform1f(prog.u.uMetal, lensOn ? 0.12 : look.metal);
+      gl.uniform1f(prog.u.uMetal, lensOn ? 0 : look.metal);
       gl.uniform1f(prog.u.uEnvLo, look.envLo);
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
-      gl.uniform1f(prog.u.uAmb, lensOn ? 0.55 : look.amb);
+      gl.uniform1f(prog.u.uAmb, lensOn ? 0.6 : look.amb);
       gl.uniform1f(prog.u.uGlow, 1.0);
       gl.uniform3fv(prog.u.uSignal, SIGNAL);
       gl.uniform1f(prog.u.uCut, 0);
@@ -1912,10 +2005,14 @@
       gl.uniform1f(this.atomProg.u.uCoat, 0);
       gl.uniform1f(this.atomProg.u.uLen, 1);
       gl.uniform1f(this.atomProg.u.uTubeShade, lensOn ? 1 : 0);
-      gl.bindVertexArray(gpu.atomVao);
-      gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+      var lite0 = this.model("journey:tubeLite", d.tubeLite), far0 = dist > 180;
+      gl.bindVertexArray(far0 ? lite0.atomVao : gpu.atomVao);
+      gl.drawElementsInstanced(gl.TRIANGLES, (far0 ? this.sphereLo : this.sphere).count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
 
       var lite = this.model("journey:tubeLite", d.tubeLite);
+      var tiny = this.model("journey:tubeTiny", d.tubeTiny);
+      /* once the camera has pulled away every bead is a speck: draw them all with few facets */
+      var distant = dist > 180;
 
       /* the opening shot: other tubes cross behind, each a true copy, fading
          with distance into the white. They are placed in the camera's frame so
@@ -1927,9 +2024,11 @@
           [-2, 18, -86, 0.30, 0.18], [18, 10, -118, -0.90, -0.12], [34, -20, -150, 0.62, 0.26]
         ];
         var crowdN = mobile() ? 3 : CROWD.length, reach = mobile() ? 1 : 1;
-        gl.bindVertexArray(lite.atomVao);
         for (var cw = 0; cw < crowdN; cw++) {
           var q = CROWD[cw];
+          /* the nearest keeps round beads; the rest are far and soft, and need few facets */
+          var coarse = lensOn && cw > 0;
+          gl.bindVertexArray(coarse ? tiny.atomVao : lite.atomVao);
           var place = mul(translation(q[0] + Math.sin(clock * 0.11 + cw) * 1.2, q[1] + Math.cos(clock * 0.09 + cw * 2.1) * 1.2, q[2]),
                           mul(rotZ(q[3]), mul(rotX(q[4]), rotY(clock * 0.06 * (cw % 2 ? 1 : -1) + cw))));
           for (var sg = -reach; sg <= reach; sg++) {
@@ -1946,7 +2045,7 @@
               gl.uniform1f(this.atomProg.u.uFar, dist + 30 + 190 * st.crowd);
               gl.uniform1f(this.atomProg.u.uFogMax, 1);
             }
-            gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+            gl.drawElementsInstanced(gl.TRIANGLES, (coarse ? this.sphereTiny : this.sphereLo).count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
           }
         }
       }
@@ -1954,26 +2053,28 @@
       /* without haze to hide them the tube's ends would show, so it carries on
          out of frame: the same lattice, joined end to end, going soft with distance */
       var runs = lensOn ? [-2, -1, 1, 2] : [];
-      gl.bindVertexArray(lite.atomVao);
       runs.forEach(function (k) {
+        var few = distant || Math.abs(k) > 1;
+        gl.bindVertexArray(few ? tiny.atomVao : lite.atomVao);
         use(self.atomProg, mul(mv, translation(0, k * d.tubeSpan, 0)));
         gl.uniform1f(self.atomProg.u.uCoat, 0);
         gl.uniform1f(self.atomProg.u.uLen, 1);
         gl.uniform1f(self.atomProg.u.uTubeShade, 1);
-        gl.drawElementsInstanced(gl.TRIANGLES, self.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+        gl.drawElementsInstanced(gl.TRIANGLES, (few ? self.sphereTiny : self.sphereLo).count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
       });
 
       /* six neighbours slide in beside it and lock into a rope */
       if (st.neighbours > 0) {
-        gl.bindVertexArray(lite.atomVao);
         for (var nb = 0; nb < 6; nb++) {
           var ang = nb * 1.0472 + 0.5;
           for (var rk = lensOn ? -1 : 0; rk <= (lensOn ? 1 : 0); rk++) {
+            var fewN = distant || rk !== 0;
+            gl.bindVertexArray(fewN ? tiny.atomVao : lite.atomVao);
             use(this.atomProg, mul(mv, translation(Math.cos(ang) * st.neighbours, rk * d.tubeSpan, Math.sin(ang) * st.neighbours)));
             gl.uniform1f(this.atomProg.u.uCoat, 0);
             gl.uniform1f(this.atomProg.u.uLen, 1);
             gl.uniform1f(this.atomProg.u.uTubeShade, lensOn ? 1 : 0);
-            gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
+            gl.drawElementsInstanced(gl.TRIANGLES, (fewN ? this.sphereTiny : this.sphereLo).count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
           }
         }
       }
@@ -2027,19 +2128,25 @@
       /* electrode: metal foil (the current collector) under the coated layer */
       if (f5 > 0.01) slab(0, 0, -10, 1060 * f5, 820 * f5, 14, sheet);
 
-      use(this.mBondProg);
-      gl.uniform1i(this.mBondProg.u.uFrom, st.from);
-      gl.uniform1i(this.mBondProg.u.uTo, st.to);
-      gl.uniform1f(this.mBondProg.u.uT, st.t);
-      gl.uniform1f(this.mBondProg.u.uStrand, strand);
-      gl.uniform1f(this.mBondProg.u.uHeat, st.heat);
-      gl.uniform1f(this.mBondProg.u.uBrown, inWorld);
-      gl.uniform1f(this.mBondProg.u.uR, d.strandR);
-      gl.uniform1f(this.mBondProg.u.uStag, st.stag);
-      gl.uniform1f(this.mBondProg.u.uWave, 0);
-      gl.uniform1f(this.mBondProg.u.uCrack, st.crack);
+      var sp = this.mBondProg;
+      use(sp);
+      gl.uniform1i(sp.u.uFrom, st.from);
+      gl.uniform1i(sp.u.uTo, st.to);
+      gl.uniform1f(sp.u.uT, st.t);
+      gl.uniform1f(sp.u.uStrand, strand);
+      gl.uniform1f(sp.u.uHeat, st.heat);
+      gl.uniform1f(sp.u.uBrown, inWorld);
+      gl.uniform1f(sp.u.uR, d.strandR);
+      gl.uniform1f(sp.u.uStag, st.stag);
+      gl.uniform1f(sp.u.uNearFade, dist * 0.4);
+      gl.uniform1f(sp.u.uWave, 0);
+      gl.uniform1f(sp.u.uCrack, st.crack);
       gl.bindVertexArray(buf.bonds);
-      gl.drawElementsInstanced(gl.TRIANGLES, this.cyl.count, gl.UNSIGNED_SHORT, 0, d.mBondCount);
+      /* only the half of each tube that faces the camera is drawn */
+      gl.enable(gl.CULL_FACE);
+      gl.cullFace(gl.BACK);
+      gl.drawElementsInstanced(gl.TRIANGLES, this.cylStrand.count, gl.UNSIGNED_SHORT, 0, d.mBondCount);
+      gl.disable(gl.CULL_FACE);
 
       use(this.mAtomProg);
       gl.uniform1fv(this.mAtomProg.u["uW[0]"], wv);
@@ -2084,6 +2191,9 @@
      plays on a white backdrop that fades into the black page. */
   function lookFor(el) {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (el.getAttribute("data-hc-3d") === "field") {     // pale tubes on a dark band, sinking into it with distance
+      return { keep: true, base: [0.4, 0.4, 0.42], plate: [0.3, 0.3, 0.3], fog: [0, 0, 0], metal: 0.15, envLo: 0, envHi: 0.6, amb: 0.6, glow: 1, cut: 0, sheen: 0.05, shine: 0.05, depth: 0.96 };
+    }
     if (el.getAttribute("data-hc-3d") === "dunes") {
       return { base: [1, 1, 1], plate: [1, 1, 1], fog: [0, 0, 0], metal: 1, envLo: 0, envHi: 1, amb: 0, glow: 1 };
     }
@@ -2170,7 +2280,7 @@
     var px = window.devicePixelRatio || 1;
     /* the film is drawn sharper than the screen when the machine allows; see tune() */
     /* through the lens the film is multisampled, so it needs no extra pixels for smooth edges */
-    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : 1.5;
+    if (scene.quality === undefined) scene.quality = mobile() ? 1.15 : 1.0;
     var dpr = scene.data.journey ? Math.min(px * scene.quality, mobile() ? 2 : 2.6) : scene.hero ? Math.min(px * 1.5, mobile() ? 2 : 2.5) : Math.min(px * 1.6, 3);
     var w = Math.max(1, Math.round(r.width * dpr));
     var h = Math.max(1, Math.round(r.height * dpr));
@@ -2203,7 +2313,7 @@
         /* data-hc-film-at="seconds" freezes the film at one moment (stills, checks). */
         var hold = scene.el.getAttribute("data-hc-film-at");
         scene.engine.journey(scene, scene.w, scene.h, hold !== null ? parseFloat(hold) : STATIC ? 12.5 : (performance.now() - (scene.born || performance.now())) / 1000);
-        if (lens) scene.engine.lensEnd(scene.film.dist, scene.film.dist * scene.film.sharp, scene.film.dist * 0.06, scene.film.dist * 6 + 6000);
+        if (lens) scene.engine.lensEnd(scene.film.dist, scene.film.dist * scene.film.sharp, scene.film.dist * 0.06, scene.film.dist * 6 + 6000, 0, 0, true);
         caption(scene);
       } else {
         scene.engine.draw(scene, 0, 0, scene.w, scene.h, time);
@@ -2224,7 +2334,7 @@
         g.scissor(0, 0, scene.w, scene.h);
         g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
         shared.draw(scene, 0, 0, scene.w, scene.h, time);
-        shared.lensEnd(shared.view.dist, scene.data.radius * 6, shared.view.near, shared.view.far, 0, c.height - scene.h);
+        shared.lensEnd(shared.view.dist, scene.data.radius * 6, shared.view.near, shared.view.far, 0, c.height - scene.h, false);
         g.enable(g.SCISSOR_TEST);
       } else {
         g.viewport(0, c.height - scene.h, scene.w, scene.h);
@@ -2293,10 +2403,13 @@
     scene.load = scene.load === undefined ? dt : scene.load * 0.94 + dt * 0.06;
     scene.settle = (scene.settle || 0) + 1;
     if (scene.settle < 90) return;
-    var top = mobile() ? 1.15 : 1.7;
-    if (scene.load > 1 / 40 && scene.quality > 0.7) {
-      scene.quality = Math.max(0.7, scene.quality - 0.15);
-    } else if (scene.load < 1 / 57 && scene.quality < top && scene.settle > 420) {
+    /* Smoothness comes first. Below about 52 frames a second the picture is drawn a
+       little smaller at once; it is only sharpened again after a long steady spell,
+       because every change of size costs a stumble of its own. */
+    var top = mobile() ? 1.15 : 1.4;
+    if (scene.load > 1 / 52 && scene.quality > 0.75) {
+      scene.quality = Math.max(0.75, scene.quality - (scene.load > 1 / 38 ? 0.3 : 0.15));
+    } else if (scene.load < 1 / 58.5 && scene.quality < top && scene.settle > 900) {
       scene.quality = Math.min(top, scene.quality + 0.1);
     } else {
       return;
