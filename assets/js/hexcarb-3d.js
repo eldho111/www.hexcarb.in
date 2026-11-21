@@ -879,9 +879,11 @@
     "layout(location=1) in vec4 iAtom;",
     "uniform float uCoat;",
     "uniform float uLen;",
+    "uniform float uTubeShade;",
     COMMON,
-    "out vec3 vN; out vec3 vP; out float vGlow;",
+    "out vec3 vN; out vec3 vP; out float vGlow; out float vShade;",
     "void main(){",
+    "  vShade = 1.0;",
     "  vec3 c = deform(iAtom.xyz);",
     "  float r = abs(iAtom.w);",
     "  float g = pulse(iAtom.xyz);",
@@ -902,6 +904,13 @@
     "  r *= (1.0 + 0.3*g*(uPulse>1.5 ? 0.0 : uPulse))*grow(iAtom.xyz)*rs;",
     "  vec4 mv = uMV*vec4(c + aPos*r, 1.0);",
     "  vN = mat3(uMV)*aPos; vP = mv.xyz; vGlow = g;",
+    /* a tube shadows itself: beads on the side away from the light sit in its shade.
+       The tube's axis is the model's y, so a bead's place around it is its x,z. */
+    "  if(uTubeShade>0.5){",
+    "    vec3 tn = normalize(mat3(uMV)*vec3(c.x, 0.0, c.z) + vec3(0.0, 1e-5, 0.0));",
+    "    float lit = dot(tn, normalize(vec3(-0.18,0.95,0.26)));",
+    "    vShade = 0.16 + 0.84*smoothstep(-0.85, 0.75, lit);",
+    "  }",
     "  gl_Position = uProj*mv;",
     "}"
   ].join("\n");
@@ -914,8 +923,9 @@
     "layout(location=2) in vec3 iB;",
     "layout(location=3) in float iR;",
     COMMON,
-    "out vec3 vN; out vec3 vP; out float vGlow;",
+    "out vec3 vN; out vec3 vP; out float vGlow; out float vShade;",
     "void main(){",
+    "  vShade = 1.0;",
     "  vec3 a = deform(iA); vec3 b = deform(iB);",
     "  vec3 ax = b-a; float len = length(ax); ax /= max(len,1e-5);",
     "  vec3 up = abs(ax.y)<0.95 ? vec3(0.,1.,0.) : vec3(1.,0.,0.);",
@@ -935,8 +945,9 @@
     "layout(location=1) in vec3 aNor;",
     "uniform mat4 uProj; uniform mat4 uMV;",
     "uniform vec3 uC; uniform vec3 uS;",
-    "out vec3 vN; out vec3 vP; out float vGlow;",
+    "out vec3 vN; out vec3 vP; out float vGlow; out float vShade;",
     "void main(){",
+    "  vShade = 1.0;",
     "  vec4 mv = uMV*vec4(uC + aPos*uS, 1.0);",
     "  vN = mat3(uMV)*aNor; vP = mv.xyz; vGlow = 0.0;",
     "  gl_Position = uProj*mv;",
@@ -950,7 +961,7 @@
   var FS = [
     "#version 300 es",
     "precision highp float;",
-    "in vec3 vN; in vec3 vP; in float vGlow;",
+    "in vec3 vN; in vec3 vP; in float vGlow; in float vShade;",
     "uniform vec3 uBase; uniform vec3 uFog;",
     "uniform float uNear; uniform float uFar;",
     "uniform float uMetal; uniform float uEnvLo; uniform float uEnvHi; uniform float uAmb; uniform float uGlow; uniform float uCut; uniform float uSheen; uniform float uFogMax; uniform float uShine; uniform vec3 uSignal;",
@@ -982,6 +993,7 @@
     "  float band = smoothstep(0.45,0.98,rr.y);",
     "  float hot = pow(max(dot(n,normalize(l1+v)),0.0),34.0);",
     "  c += uSheen*(0.16*band*band*band + 0.7*hot + 0.1*fres);",
+    "  c *= vShade;",
     "  c = mix(c, pow(uSignal, vec3(2.2)), clamp(uGlow*vGlow, 0.0, 1.0));",
     "  c *= 1.0 - uCut*vGlow;",
     "  float f = uFogMax*smoothstep(uNear,uFar,-vP.z);",
@@ -1058,8 +1070,9 @@
     "layout(location=6) in vec3 iP5;",
     "layout(location=7) in float iR;",
     MORPH_COMMON,
-    "out vec3 vN; out vec3 vP; out float vGlow;",
+    "out vec3 vN; out vec3 vP; out float vGlow; out float vShade;",
     "void main(){",
+    "  vShade = 1.0;",
     "  vec3 c = crack(iP0*uW[0] + iP1*uW[1] + iP2*uW[2] + iP3*uW[3] + iP4*uW[4] + iP5*uW[5]);",
     "  float g = heat(c, iP3);",
     "  float rad = iR*uStrand*(1.0+0.9*g);",
@@ -1098,8 +1111,9 @@
     "vec3 pick(int i, vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec3 p4, vec3 p5){",
     "  return i==0 ? p0 : i==1 ? p1 : i==2 ? p2 : i==3 ? p3 : i==4 ? p4 : p5;",
     "}",
-    "out vec3 vN; out vec3 vP; out float vGlow;",
+    "out vec3 vN; out vec3 vP; out float vGlow; out float vShade;",
     "void main(){",
+    "  vShade = 1.0;",
     /* each rope leaves a little after the last and eases in and out, so a
        change sweeps through the material instead of snapping */
     "  float t = clamp(uT*1.5 - 0.5*iSeed, 0.0, 1.0);",
@@ -1147,6 +1161,38 @@
   var VS_LENS = [
     "#version 300 es",
     "void main(){ vec2 p = vec2(float((gl_VertexID<<1)&2), float(gl_VertexID&2)); gl_Position = vec4(p*2.0-1.0, 0.0, 1.0); }"
+  ].join("\n");
+
+  /* Contact shadow: where a surface has something close in front of it or beside
+     it, less light reaches it. Read from the depth of the picture at two sizes:
+     bead against bead, and tube against tube. */
+  var FS_SHADE = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform sampler2D uC; uniform sampler2D uD; uniform vec2 uPx;",
+    "uniform float uNear; uniform float uFar; uniform float uK; uniform float uR1; uniform float uR2; uniform float uCap;",
+    "out vec4 o;",
+    "float lin(float d){ return 2.0*uNear*uFar/(uFar+uNear-(d*2.0-1.0)*(uFar-uNear)); }",
+    "float depthAt(vec2 uv){ float d = textureLod(uD, uv, 0.0).r; return d>=1.0 ? 1e9 : lin(d); }",
+    "float occ(vec2 uv, float z, float rw, float spin){",
+    "  float pr = min(uCap, rw*uK/z), sum = 0.0;",
+    "  for(int i=0;i<9;i++){",
+    "    float fi = float(i)+0.5, a = fi*2.39996323 + spin;",
+    "    float dz = z - depthAt(uv + vec2(cos(a), sin(a))*pr*sqrt(fi/9.0)*uPx);",
+    "    sum += smoothstep(0.04*rw, 0.5*rw, dz)*(1.0 - smoothstep(rw, 2.6*rw, dz));",
+    "  }",
+    "  return sum/9.0;",
+    "}",
+    "void main(){",
+    "  vec2 uv = gl_FragCoord.xy*uPx;",
+    "  vec4 col = textureLod(uC, uv, 0.0);",
+    "  float d = textureLod(uD, uv, 0.0).r;",
+    "  if(d>=1.0){ o = col; return; }",
+    "  float z = lin(d);",
+    "  float spin = 6.2832*fract(52.9829189*fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));",
+    "  float ao = (1.0 - 0.8*occ(uv, z, uR1, spin))*(1.0 - 0.62*occ(uv, z, uR2, spin + 1.7));",
+    "  o = vec4(col.rgb*ao, col.a);",
+    "}"
   ].join("\n");
 
   var FS_LENS = [
@@ -1251,6 +1297,7 @@
           gl.deleteFramebuffer(old.ms); gl.deleteFramebuffer(old.fbo);
           gl.deleteRenderbuffer(old.rc); gl.deleteRenderbuffer(old.rd);
           gl.deleteTexture(old.tc); gl.deleteTexture(old.td);
+          gl.deleteTexture(old.ts); gl.deleteFramebuffer(old.shaded);
         }
         var n = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) || 1);
         var rc = gl.createRenderbuffer(), rd = gl.createRenderbuffer();
@@ -1265,9 +1312,8 @@
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("ms");
         var tc = gl.createTexture(), td = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, tc);
-        gl.texStorage2D(gl.TEXTURE_2D, 6, gl.RGBA8, w, h);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 5);
+        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, w, h);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -1282,8 +1328,25 @@
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tc, 0);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, td, 0);
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("fbo");
-        if (!this.lensProg) { this.lensProg = compile(gl, VS_LENS, FS_LENS); this.lensVao = gl.createVertexArray(); }
-        this.lens = { w: w, h: h, ms: ms, fbo: fbo, rc: rc, rd: rd, tc: tc, td: td };
+        /* the shaded picture the lens reads, with a coarse copy of itself */
+        var ts = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, ts);
+        gl.texStorage2D(gl.TEXTURE_2D, 6, gl.RGBA8, w, h);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 5);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        var shaded = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, shaded);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, ts, 0);
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("shade");
+        if (!this.lensProg) {
+          this.lensProg = compile(gl, VS_LENS, FS_LENS);
+          this.shadeProg = compile(gl, VS_LENS, FS_SHADE);
+          this.lensVao = gl.createVertexArray();
+        }
+        this.lens = { w: w, h: h, ms: ms, fbo: fbo, rc: rc, rd: rd, tc: tc, td: td, ts: ts, shaded: shaded };
       }
     } catch (e) {
       this.lensFail = true;
@@ -1303,15 +1366,35 @@
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, L.ms);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, L.fbo);
     gl.blitFramebuffer(0, 0, L.w, L.h, 0, 0, L.w, L.h, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, L.w, L.h);
     var blend = gl.isEnabled(gl.BLEND);
     gl.disable(gl.BLEND);
     gl.disable(gl.DEPTH_TEST);
+    gl.bindVertexArray(this.lensVao);
+
+    /* first the contact shadows, into their own picture */
+    var s = this.shadeProg;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, L.shaded);
+    gl.useProgram(s.p);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, L.tc);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, L.td);
+    gl.uniform1i(s.u.uC, 0);
+    gl.uniform1i(s.u.uD, 1);
+    gl.uniform2f(s.u.uPx, 1 / L.w, 1 / L.h);
+    gl.uniform1f(s.u.uNear, near);
+    gl.uniform1f(s.u.uFar, far);
+    gl.uniform1f(s.u.uK, L.h / (2 * Math.tan(0.25)));
+    gl.uniform1f(s.u.uR1, focus * 0.011);
+    gl.uniform1f(s.u.uR2, focus * 0.085);
+    gl.uniform1f(s.u.uCap, L.h * 0.06);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    /* then the lens, onto the page */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(p.p);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, L.tc);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, L.ts);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, L.td);
     gl.activeTexture(gl.TEXTURE0);
@@ -1324,7 +1407,6 @@
     gl.uniform1f(p.u.uRange, range);
     gl.uniform1f(p.u.uAper, L.h * 0.05);
     gl.uniform1f(p.u.uMax, L.h * 0.026);
-    gl.bindVertexArray(this.lensVao);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.bindVertexArray(null);
     gl.enable(gl.DEPTH_TEST);
@@ -1625,6 +1707,9 @@
     var fogFar = (dist + d.radius * 5.5) * (1 - far) + dist * 2.6 * far;
     var fogMax = (1 - 0.78 * far) * (this.lensOn ? 0.3 : 1);
     var lensOn = this.lensOn;
+    /* Through the lens the carbon is lit like a photograph: matte charcoal with a
+       lit side and a shaded side, not a flat black cut-out. */
+    var carbon = lensOn ? [0.2, 0.2, 0.205] : look.base;
     var sheet = look.sheet || [0.82, 0.82, 0.82];
     var part = look.part || [0.42, 0.42, 0.42];
 
@@ -1638,14 +1723,15 @@
       gl.uniform1f(prog.u.uPulse, 0);
       gl.uniform1f(prog.u.uGrow, 1e5);
       gl.uniform1f(prog.u.uSplit, 1e5);
-      gl.uniform3fv(prog.u.uBase, look.base);
+      gl.uniform1f(prog.u.uTubeShade, 0);
+      gl.uniform3fv(prog.u.uBase, carbon);
       gl.uniform3fv(prog.u.uFog, look.fog);
       gl.uniform1f(prog.u.uNear, fogNear);
       gl.uniform1f(prog.u.uFar, fogFar);
-      gl.uniform1f(prog.u.uMetal, look.metal);
+      gl.uniform1f(prog.u.uMetal, lensOn ? 0.12 : look.metal);
       gl.uniform1f(prog.u.uEnvLo, look.envLo);
       gl.uniform1f(prog.u.uEnvHi, look.envHi);
-      gl.uniform1f(prog.u.uAmb, look.amb);
+      gl.uniform1f(prog.u.uAmb, lensOn ? 0.55 : look.amb);
       gl.uniform1f(prog.u.uGlow, 1.0);
       gl.uniform3fv(prog.u.uSignal, SIGNAL);
       gl.uniform1f(prog.u.uCut, 0);
@@ -1679,6 +1765,7 @@
       use(this.atomProg);
       gl.uniform1f(this.atomProg.u.uCoat, 0);
       gl.uniform1f(this.atomProg.u.uLen, 1);
+      gl.uniform1f(this.atomProg.u.uTubeShade, lensOn ? 1 : 0);
       gl.bindVertexArray(gpu.atomVao);
       gl.drawElementsInstanced(gl.TRIANGLES, this.sphere.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
 
@@ -1703,6 +1790,7 @@
             use(this.atomProg, mul(view, mul(place, translation(0, sg * d.tubeSpan, 0))));
             gl.uniform1f(this.atomProg.u.uCoat, 0);
             gl.uniform1f(this.atomProg.u.uLen, 1);
+            gl.uniform1f(this.atomProg.u.uTubeShade, lensOn ? 1 : 0);
             if (lensOn) {                       // no haze: they leave by fading out, and distance shows as blur
               gl.uniform1f(this.atomProg.u.uNear, 0);
               gl.uniform1f(this.atomProg.u.uFar, 1);
@@ -1725,6 +1813,7 @@
         use(self.atomProg, mul(mv, translation(0, k * d.tubeSpan, 0)));
         gl.uniform1f(self.atomProg.u.uCoat, 0);
         gl.uniform1f(self.atomProg.u.uLen, 1);
+        gl.uniform1f(self.atomProg.u.uTubeShade, 1);
         gl.drawElementsInstanced(gl.TRIANGLES, self.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
       });
 
@@ -1737,6 +1826,7 @@
             use(this.atomProg, mul(mv, translation(Math.cos(ang) * st.neighbours, rk * d.tubeSpan, Math.sin(ang) * st.neighbours)));
             gl.uniform1f(this.atomProg.u.uCoat, 0);
             gl.uniform1f(this.atomProg.u.uLen, 1);
+            gl.uniform1f(this.atomProg.u.uTubeShade, lensOn ? 1 : 0);
             gl.drawElementsInstanced(gl.TRIANGLES, this.sphereLo.count, gl.UNSIGNED_SHORT, 0, d.tube.atomCount);
           }
         }
