@@ -4788,6 +4788,114 @@ main section.hc-section[id] {
   scroll-margin-top: 150px;
 }
 
+/* ===================================================================
+   Home hero: the words above, the film beneath them.
+   The film has its own full-width band and never runs behind the text.
+   Together they fill the first screen.
+   =================================================================== */
+.hc-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  isolation: auto;
+}
+
+.hc-stage::before,
+.hc-stage::after,
+:root[data-theme="dark"] .hc-stage::before {
+  content: none;
+}
+
+.hc-stage-inner {
+  order: 0;
+  padding-block: clamp(1.4rem, 3.6vh, 2.8rem) clamp(1rem, 2.4vh, 1.8rem);
+}
+
+.hc-stage-copy {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  grid-template-areas:
+    "kicker kicker"
+    "head   lead"
+    "head   actions"
+    "head   film";
+  column-gap: clamp(1.5rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.hc-stage-copy > .hc-kicker { grid-area: kicker; }
+.hc-stage-copy > .hc-heading-hero { grid-area: head; }
+.hc-stage-copy > p { grid-area: lead; }
+.hc-stage-copy > .hc-btn-row { grid-area: actions; }
+.hc-stage-copy > .hc-film { grid-area: film; }
+
+.hc-stage-copy .hc-heading-hero {
+  margin-top: 0.9rem;
+  font-size: clamp(2.3rem, min(5vw, 8.4vh), 4.6rem);
+  max-width: 13em;
+}
+
+.hc-stage-copy p {
+  margin-top: 1.1rem;
+  max-width: 30em;
+}
+
+.hc-stage-copy .hc-btn-row {
+  margin-top: 1.3rem;
+}
+
+.hc-stage-copy .hc-film {
+  margin-top: 1.3rem;
+}
+
+.hc-stage-scene,
+:root[data-theme="dark"] .hc-stage-scene {
+  order: 1;
+  position: relative;
+  inset: auto;
+  z-index: 0;
+  width: 100%;
+  height: calc(100vh - var(--nav-height) - 20rem);
+  height: calc(100svh - var(--nav-height) - 20rem);
+  min-height: 320px;
+  max-height: 700px;
+  border-top: 1px solid var(--hc-border);
+}
+
+.hc-stage > .hc-film-scale {
+  top: auto;
+  bottom: clamp(0.8rem, 2.4vh, 1.6rem);
+}
+
+@media (max-width: 900px) {
+  .hc-stage-copy {
+    display: block;
+  }
+
+  .hc-stage-copy .hc-heading-hero {
+    font-size: clamp(2.1rem, 9vw, 3.2rem);
+  }
+
+  .hc-stage-inner {
+    padding-block: 1.4rem 1.2rem;
+  }
+
+  .hc-stage-scene,
+  :root[data-theme="dark"] .hc-stage-scene {
+    height: 52vh;
+    min-height: 300px;
+  }
+
+  .hc-stage > .hc-film-scale {
+    top: auto;
+    bottom: 0.8rem;
+  }
+}
+
 /* --- TEMPORARY (local preview only): accent colour chooser --- */
 :root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
 :root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
