@@ -435,7 +435,7 @@
       });
       for (var i = 0; i < 26; i++) {
         var z = rand() * 2 - 1, th = rand() * 6.28, q = Math.sqrt(1 - z * z);
-        b.strand(wavy(rand, [(rand() - 0.5) * 5, (rand() - 0.5) * 5, (rand() - 0.5) * 4], [q * Math.cos(th), z, q * Math.sin(th)], 7 + rand() * 4, 40, 0.8), 0.07);
+        b.strand(wavy(rand, [(rand() - 0.5) * 5, (rand() - 0.5) * 5, (rand() - 0.5) * 4], [q * Math.cos(th), z, q * Math.sin(th)], 11 + rand() * 5, 48, 1.0), 0.055);
       }
       return b.done({ radius: 5.0, orient: rotX(0.25), speed: 0.6 });
     },
@@ -482,16 +482,17 @@
       return b.done({ radius: 4.7, orient: rotX(0.75), spin: "sway" });
     },
 
-    /* Polymer composite: thick polymer chains pinned by fine straight tubes. */
+    /* Polymer composite: stiff straight nanotubes threading a tangle of polymer
+       chains. A chain is about a third as thick as a tube, and far more flexible. */
     "use-composite": function () {
       var rand = rng(105), b = new Builder(), i, z, th, q;
-      for (i = 0; i < 6; i++) {
+      for (i = 0; i < 22; i++) {                     // polymer chains: thin, coiled
         z = rand() * 2 - 1; th = rand() * 6.28; q = Math.sqrt(1 - z * z);
-        b.strand(wavy(rand, [(rand() - 0.5) * 3, (rand() - 0.5) * 3, (rand() - 0.5) * 3], [q * Math.cos(th), z, q * Math.sin(th)], 8.5, 60, 1.2), 0.42);
+        b.strand(wavy(rand, [(rand() - 0.5) * 5, (rand() - 0.5) * 5, (rand() - 0.5) * 5], [q * Math.cos(th), z, q * Math.sin(th)], 7.5, 70, 1.1), 0.055);
       }
-      for (i = 0; i < 12; i++) {
+      for (i = 0; i < 9; i++) {                      // nanotubes: three times thicker, nearly straight
         z = rand() * 2 - 1; th = rand() * 6.28; q = Math.sqrt(1 - z * z);
-        b.strand(wavy(rand, [(rand() - 0.5) * 4, (rand() - 0.5) * 4, (rand() - 0.5) * 4], [q * Math.cos(th), z, q * Math.sin(th)], 9, 20, 0.08), 0.08);
+        b.strand(wavy(rand, [(rand() - 0.5) * 4, (rand() - 0.5) * 4, (rand() - 0.5) * 4], [q * Math.cos(th), z, q * Math.sin(th)], 10, 24, 0.07), 0.17);
       }
       return b.done({ radius: 4.7, orient: rotX(0.25), speed: 0.6 });
     },
@@ -566,11 +567,11 @@
        for far larger real numbers. */
     journey: function () {
       var small = window.innerWidth < 760;
-      var TARGET = small ? 190 : 900, S = small ? 14 : 20, R = 2.6;
+      var TARGET = small ? 220 : 1700, S = small ? 14 : 20, R = 2.6;
       var rand = rng(2026), tubeModel = MODELS.nanotube({ hero: true });
       /* far stages: one tube is TUBE units long, and 7,500 times its 1.5 nm width is 11.25 micrometres */
       var bonds = [], i, j, n;
-      var BUNDLE = 70, FW = 1000, FH = 760, TUBE = 500;
+      var BUNDLE = small ? 70 : 96, FW = 1000, FH = 760, TUBE = 500;
       var MW = 720, MH = 540;   // the film: a smaller sheet, so the same ropes pack it densely
 
       function unit() {
@@ -582,13 +583,13 @@
       /* ---- one centre line, S+1 points, for each form a tube can take ---- */
 
       /* free in the liquid: one tube length, gently curved, anywhere, any way */
-      /* The liquid is laid out as the camera will see it at that moment: wide
-         across the frame and shallow in depth, so it fills the picture and most
-         of it sits near the plane in focus. FACE turns that back into the
-         model's own axes. */
+      /* The liquid is laid out as the camera will see it at that moment: across
+         the frame and deep along the line of sight, because the camera travels
+         into it and tubes must pass on every side. FACE turns that back into
+         the model's own axes. */
       var FACE = mul(tubeModel.orient, rotY(0.7));
       function loose() {
-        return wavy(rand, [(rand() - 0.5) * (small ? 1400 : 4300), (rand() - 0.5) * 1100, (rand() - 0.5) * 820], unit(),
+        return wavy(rand, [(rand() - 0.5) * (small ? 1300 : 2300), (rand() - 0.5) * 1300, (rand() - 0.5) * 1500], unit(),
                     TUBE * (0.85 + rand() * 0.3), S, 34).map(function (v) {
           return [FACE[0] * v[0] + FACE[1] * v[1] + FACE[2] * v[2],
                   FACE[4] * v[0] + FACE[5] * v[1] + FACE[6] * v[2],
@@ -641,35 +642,52 @@
           return [clampTo(q[0], -490, 490), clampTo(q[1], -370, 370), clampTo(q[2], 10, 360)];
         });
       }
-      /* as made: a rope wandering through a dense clump, turning as it goes and
-         held inside it. Returns the line and how deep in the clump it starts. */
-      var CLUMPS = [[0, 0, 0, 330], [640, -250, -190, 195], [-610, 290, -230, 175]];
+      /* As made. Under a microscope an agglomerate is not a ball: it is a lumpy
+         felt of bundles, dense in the middle, ragged at the edge, with loose
+         ends standing off it. Here it is several overlapping lobes; a bundle
+         wanders and curls through them, is turned back when it would leave,
+         and now and then is allowed to trail out. Returns the line and how
+         deep in the clump it starts (the outside comes away first). */
+      var LOBES = [[0, 0, 0, 380], [300, 150, -120, 300], [-330, -110, 90, 280], [80, -300, 160, 240],
+                   [-140, 290, 200, 230], [420, -210, 40, 200], [-470, 180, -200, 190]];
+      function inside(p) {                            // how deep inside the nearest lobe, 1 at a centre, <0 outside
+        var best = -9, q;
+        for (q = 0; q < LOBES.length; q++) {
+          var L = LOBES[q], dd = Math.hypot(p[0] - L[0], p[1] - L[1], p[2] - L[2]);
+          best = Math.max(best, 1 - dd / L[3]);
+        }
+        return best;
+      }
       function tangle(first) {
         var a = [], k;
         if (first) {                                  // the rope the film opens on runs straight through the middle
           for (k = 0; k <= S; k++) a.push([0, (k / S - 0.5) * TUBE, 0]);
           return { line: a, depth: 0.5 };
         }
-        var pickC = rand(), C = CLUMPS[pickC < 0.62 ? 0 : pickC < 0.82 ? 1 : 2];
-        var d0 = unit(), r0 = C[3] * 0.92 * Math.cbrt(rand());
-        var p = [C[0] + d0[0] * r0, C[1] + d0[1] * r0, C[2] + d0[2] * r0];
-        var dir = unit(), step = TUBE * (0.85 + rand() * 0.3) / S;
+        var L = LOBES[Math.floor(rand() * rand() * LOBES.length)];   // the big lobes hold more
+        var d0 = unit(), r0 = L[3] * 0.95 * Math.cbrt(rand());
+        var p = [L[0] + d0[0] * r0, L[1] + d0[1] * r0, L[2] + d0[2] * r0];
+        var dir = unit(), step = TUBE * (0.85 + rand() * 0.4) / S;
+        var stray = rand() < 0.14, curl = 0.45 + rand() * 0.5;       // some ends trail out; some bundles curl harder
+        var depth = Math.max(0, Math.min(1, inside(p) * 1.6));
         a.push(p);
         for (k = 1; k <= S; k++) {
           var tw = unit();
-          dir = [dir[0] + tw[0] * 0.5, dir[1] + tw[1] * 0.5, dir[2] + tw[2] * 0.5];
-          var off = [p[0] + dir[0] * step - C[0], p[1] + dir[1] * step - C[1], p[2] + dir[2] * step - C[2]];
-          var od = Math.hypot(off[0], off[1], off[2]);
-          if (od > C[3] * 0.8) {                      // near the edge: bend back in
-            var pull = 1.3 * (od / C[3]);
-            dir = [dir[0] - off[0] / od * pull, dir[1] - off[1] / od * pull, dir[2] - off[2] / od * pull];
+          dir = [dir[0] + tw[0] * curl, dir[1] + tw[1] * curl, dir[2] + tw[2] * curl];
+          var nx = [p[0] + dir[0] * step, p[1] + dir[1] * step, p[2] + dir[2] * step];
+          var deep = inside(nx);
+          if (deep < 0.16 && !(stray && k > S * 0.55)) {             // near the edge: bend back toward the mass
+            var gx = inside([nx[0] + 6, nx[1], nx[2]]) - deep, gy = inside([nx[0], nx[1] + 6, nx[2]]) - deep,
+                gz = inside([nx[0], nx[1], nx[2] + 6]) - deep, gl2 = Math.hypot(gx, gy, gz) || 1;
+            var pull = 1.5 + (0.16 - deep) * 6;
+            dir = [dir[0] + gx / gl2 * pull, dir[1] + gy / gl2 * pull, dir[2] + gz / gl2 * pull];
           }
           var dl = Math.hypot(dir[0], dir[1], dir[2]) || 1;
           dir = [dir[0] / dl, dir[1] / dl, dir[2] / dl];
           p = [p[0] + dir[0] * step, p[1] + dir[1] * step, p[2] + dir[2] * step];
           a.push(p);
         }
-        return { line: a, depth: 1 - r0 / C[3] };
+        return { line: a, depth: depth };
       }
 
       /* offset a centre line sideways: member m of a rope, twisting slowly */
@@ -702,7 +720,7 @@
         /* the clump comes apart from the outside in: a rope's seed is how deep it starts */
         var ropeSeed = first ? 0.5 : Math.min(0.98, Math.max(0, tg.depth * 0.85 + rand() * 0.15));
         /* rope 0 is the seven-tube rope the film opens on */
-        var size = first ? 7 : [3, 4, 5, 7][Math.floor(rand() * 4)];
+        var size = first ? 7 : [2, 3, 3, 4, 5, 7, 7][Math.floor(rand() * 7)];
         for (j = 0; j < size; j++) {
           var centre = size === 7 && j === 0;
           var rho = centre ? 0 : size === 7 ? R * 2.1 : R / Math.sin(Math.PI / size) * 1.05;
@@ -862,19 +880,18 @@
       return b.done({ radius: 7.2, mode: 4, amp: 0.62, coat: top, orient: rotX(0.3), speed: 0.5, offsetY: -0.28 });
     },
 
-    /* Hybrid: nanotubes lying across a graphene sheet, bridging it. */
+    /* Hybrid: nanotubes lying on a graphene sheet, every atom drawn to the same
+       scale. The tube is 1.49 nm across (more than ten bonds) and rides 0.34 nm
+       above the sheet, the same gap as between two layers of graphite. */
     hybrid: function () {
-      var rand = rng(41), b = new Builder();
-      var h = honeycomb(9, 5, false);
+      var b = new Builder(), lite = mobile();
+      var h = honeycomb(lite ? 20 : 30, lite ? 9 : 13, false);
       b.lattice(h.atoms.map(function (p) { return [p[0] - h.width / 2, 0, p[1] - h.length / 2]; }), h.bonds);
-      [[-0.9, 0.35], [0.5, -0.5], [1.25, 0.2], [-0.3, 1.1]].forEach(function (s, i) {
-        var d = [Math.cos(s[0]), 0, Math.sin(s[0])];
-        var pts = wavy(rand, [s[1] * 3, 0.62, (i - 1.5) * 2.6], d, 19, 44, 0.3).map(function (q) {
-          return [q[0], 0.62 + Math.abs(q[1] - 0.62) * 0.4, q[2]];
-        });
-        b.strand(pts, 0.34);
-      });
-      return b.done({ radius: 10.4, orient: rotX(0.82), spin: "sway" });
+      var t = tube(SW, lite ? 8 : 12), lift = t.radius + 2.39;
+      /* one tube lies along the sheet; a second lies across it, resting on the first */
+      b.lattice(t.atoms.map(function (a) { return [a[0] - 6, a[2] + lift, a[1]]; }), t.bonds);
+      b.lattice(t.atoms.map(function (a) { return [a[1], a[2] + lift + 2 * t.radius + 2.39, a[0] + 3]; }), t.bonds);
+      return b.done({ radius: Math.hypot(h.width, h.length) / 2 * 1.02, orient: rotX(0.72), spin: "sway", speed: 0.6 });
     }
   };
 
@@ -900,6 +917,10 @@
     "    p.z += uAmp*0.6*cos(p.y*0.07+uTime*0.37);",
     "  } else if(uMode>2.5 && uMode<3.5){",   // drifting in a liquid
     "    p += uAmp*vec3(sin(p.y*0.5+uTime*0.6), sin(p.z*0.45+uTime*0.5+1.7), sin(p.x*0.55+uTime*0.55+3.1));",
+    /* Brownian motion: on top of the slow drift, a quick restless jitter that differs from tube to tube */
+    "    p += uAmp*0.3*vec3(sin(uTime*5.3+p.x*0.9+p.z*1.7)+0.6*sin(uTime*9.1+p.y*1.3),",
+    "                       sin(uTime*6.1+p.y*0.8+p.x*1.3)+0.6*sin(uTime*8.3+p.z*1.1),",
+    "                       sin(uTime*4.7+p.z*0.9+p.y*1.1)+0.6*sin(uTime*10.3+p.x*1.5));",
     "  } else if(uMode>4.5 && uMode<5.5){",   // same load on both: steel necks and snaps, the tube holds
     "    float ph = fract(uTime/7.0); float load = smoothstep(0.0,0.5,ph); float gone = smoothstep(0.92,1.0,ph);",
     "    if(p.x<uSplit){ p.y *= 1.0+0.05*load*(1.0-gone); }",
@@ -1647,10 +1668,12 @@
   var FILM_LENGTH = 52;
   var FORMS_AT = 21, FORM_CLOCK = 9, FORMS_END = 49.6;
   /* camera distance through the forms: [form-clock second, distance]; eased in log space */
-  var FILM_CAMERA = [[9.5, 2300], [11.5, 1150], [14, 1150], [16, 1900], [18.5, 1900], [20.5, 2750], [22.3, 2750],
+  var FILM_CAMERA = [[9.5, 330], [12.2, 1150], [14, 1150], [16, 1900], [18.5, 1900], [20.5, 2750], [22.3, 2750],
                      [23.5, 250000], [24.6, 250000], [26.4, 2650], [32, 2650], [34, 2700], [40, 2700]];
   /* camera distance through the opening: [second, distance] */
-  var FILM_OPENING = [[0, 46], [3, 46], [5.2, 100], [7, 100], [10.2, 1080], [11.6, 1080], [18.4, 2300], [22, 2300]];
+  /* It pulls back until the whole clump is in view, then goes in: through the
+     clump as it opens and on through the liquid, tubes passing on every side. */
+  var FILM_OPENING = [[0, 50], [3, 46], [5.2, 100], [7, 100], [10.4, 2500], [11.4, 2500], [15.6, 640], [21.5, 330], [22, 330]];
   /* when each form takes over from the one before, on the form clock: [start, end] */
   var FILM_MORPH = [[9.0, 12.0], [13.6, 16.6], [18.1, 21.0], [24.4, 27.0], [31.6, 34.6]];
   var DEBUNDLE = [11.3, 18.2];
@@ -1683,7 +1706,11 @@
     /* the way back: from the electrode straight down to one tube */
     if (c > FILM_RETURN[0]) d = Math.exp(Math.log(2700) + (Math.log(46) - Math.log(2700)) * ease(FILM_RETURN[0], FILM_LENGTH, c));
     /* the camera never sits perfectly still: a slow breath on every hold */
-    d *= 1 + 0.025 * Math.sin(c * 0.9) * ease(7, 10, c) * (1 - ease(FILM_RETURN[0] - 1, FILM_RETURN[0] + 0.6, c));
+    d *= 1 + 0.025 * Math.sin(c * 0.9) * ease(FORMS_AT + 1, FORMS_AT + 3, c) * (1 - ease(FILM_RETURN[0] - 1, FILM_RETURN[0] + 0.6, c));
+    /* far: 0 while the picture is the atom-by-atom tube, 1 once it is the world of
+       whole tubes. It follows the camera on the way out and on the way back, and
+       stays at 1 between, however close the camera then travels. */
+    var farWorld = (c < 10.4 || c > FILM_RETURN[0]) ? ease(260, 900, d) : 1;
 
     /* which form the tubes hold: w, a weight for each; from/to/t, the change under way */
     var w = [0, 0, 0, 0, 0, 0, 0], from = 6, to = 6, t = 1, stag = 0.5;
@@ -1731,6 +1758,11 @@
       t: t,
       stag: stag,
       fc: fc,
+      far: farWorld,
+      /* while travelling, the camera drifts and banks a little, as a craft would */
+      bankX: 0.05 * Math.sin(c * 0.5) * ease(11.6, 13.5, c) * (1 - ease(FORMS_AT, FORMS_AT + 2.2, c)),
+      bankY: 0.07 * Math.sin(c * 0.37 + 1) * ease(11.6, 13.5, c) * (1 - ease(FORMS_AT, FORMS_AT + 2.2, c)),
+      roll: 0.06 * Math.sin(c * 0.29 + 2) * ease(11.6, 13.5, c) * (1 - ease(FORMS_AT, FORMS_AT + 2.2, c)),
       turn: turn,
       stage: stage,
       /* six tubes close in to form a rope: centres one diameter plus the 0.34 nm gap apart */
@@ -1741,7 +1773,7 @@
          The subject is always wholly in focus; only what lies behind or before it
          goes soft. Close up that is the one tube; then the whole clump; in the
          liquid the middle of the dispersion; from the fibre on, the whole object. */
-      sharp: 0.34 + (0.11 - 0.34) * ease(12.5, 16, c) + (0.7 - 0.11) * ease(FORMS_AT + 0.3, FORMS_AT + 2.6, c)
+      sharp: 0.34 + (0.3 - 0.34) * ease(12.5, 16, c) + (0.7 - 0.3) * ease(FORMS_AT + 0.3, FORMS_AT + 2.6, c)
                   + (0.34 - 0.7) * ease(FILM_RETURN[0] + 0.4, FILM_LENGTH, c),
       heat: w[3] * ease(20.3, 21.2, fc),
       crack: w[4] * 64 * ease(29.3, 30.6, fc) * (1 - ease(31.6, 32.2, fc)),
@@ -1752,7 +1784,7 @@
   /* a true scale bar: pick a round length that is 60-130 px wide right now */
   function filmScale(scene, st) {
     var pxPerUnit = (scene.h / scene.dpr) / (2 * st.dist * Math.tan(0.25));
-    var nmPerUnit = st.dist < 520 ? NM_NEAR : NM_FAR;
+    var nmPerUnit = st.far < 0.5 ? NM_NEAR : NM_FAR;
     var want = (110 / pxPerUnit) * nmPerUnit, pow = Math.pow(10, Math.floor(Math.log(want) / Math.LN10));
     var nice = want / pow >= 5 ? 5 * pow : want / pow >= 2 ? 2 * pow : pow;
     var label = nice < 1 ? nice.toFixed(1) + " nm" : nice < 1000 ? nice + " nm" :
@@ -1804,9 +1836,10 @@
     gl.viewport(0, 0, w, h);
     var fov = 0.5, dist = st.dist;
     var proj = perspective(fov, w / h, dist * 0.06, dist * 6 + 6000);
+    var inWorld = st.far;
     var halfH = dist * Math.tan(fov / 2);
     var view = mul(translation(scene.offX * halfH * (w / h), scene.offY * halfH, -dist),
-                   mul(rotX(scene.tiltX), rotY(scene.tiltY)));
+                   mul(rotZ(st.roll), mul(rotX(scene.tiltX + st.bankX), rotY(scene.tiltY + st.bankY))));
     var world = mul(d.orient, rotY(st.turn + (scene.scrollTurn || 0)));
     /* on the widest shot, aim at the middle of the pad rather than its corner */
     var wide = ease(9000, 120000, dist);
@@ -1815,7 +1848,7 @@
 
     /* close up the tube dissolves with depth, as before; further out the
        whole form keeps its tone. */
-    var far = ease(90, 420, dist);
+    var far = Math.max(ease(90, 420, dist), inWorld);
     var fogNear = (dist - d.radius * 1.1) * (1 - far) + dist * 0.75 * far;
     var fogFar = (dist + d.radius * 5.5) * (1 - far) + dist * 2.6 * far;
     var fogMax = (1 - 0.78 * far) * (this.lensOn ? 0.3 : 1);
@@ -1870,7 +1903,7 @@
     }
 
     /* 1. the atom-by-atom tube, while it is large enough to see */
-    if (dist < 900) {
+    if (inWorld < 0.999) {
       var gpu = this.model("journey:tube", d.tube);
       use(this.bondProg);
       gl.bindVertexArray(gpu.bondVao);
@@ -1948,7 +1981,7 @@
     }
 
     /* 2. the ropes, once the camera is far enough for them to read */
-    var strand = ease(260, 900, dist);
+    var strand = inWorld;
     if (strand > 0.001) {
       var buf = this.filmBuffers(d), wv = new Float32Array(st.w.slice(0, 6));
       var f2 = st.w[2], f3 = st.w[3], f4 = st.w[4], f5 = st.w[5];
@@ -2000,7 +2033,7 @@
       gl.uniform1f(this.mBondProg.u.uT, st.t);
       gl.uniform1f(this.mBondProg.u.uStrand, strand);
       gl.uniform1f(this.mBondProg.u.uHeat, st.heat);
-      gl.uniform1f(this.mBondProg.u.uBrown, ease(250, 1400, dist));
+      gl.uniform1f(this.mBondProg.u.uBrown, inWorld);
       gl.uniform1f(this.mBondProg.u.uR, d.strandR);
       gl.uniform1f(this.mBondProg.u.uStag, st.stag);
       gl.uniform1f(this.mBondProg.u.uWave, 0);

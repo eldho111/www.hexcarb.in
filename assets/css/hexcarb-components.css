@@ -5001,6 +5001,56 @@ main section.hc-section[id] {
   display: none;
 }
 
+/* ===================================================================
+   Home hero film: no frame.
+   It runs the full width of the page and fades out at its top and bottom
+   edges, so there is no window to look through: only the material.
+   =================================================================== */
+.hc-stage {
+  overflow: hidden;
+}
+
+.hc-film-window {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: 0;
+  aspect-ratio: auto;
+  height: min(82vh, 56.25vw);
+  height: min(82svh, 56.25vw);
+  min-height: 340px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.hc-film-window .hc-stage-scene,
+:root[data-theme="dark"] .hc-film-window .hc-stage-scene {
+  background: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 86%, transparent 100%);
+}
+
+/* dark theme: the black tubes need light behind them, as a soft band with no edge */
+:root[data-theme="dark"] .hc-film-window {
+  background: linear-gradient(180deg, transparent 0%, #ffffff 14%, #ffffff 84%, transparent 100%);
+}
+
+.hc-film-window .hc-film-scale,
+:root[data-theme="dark"] .hc-film-window .hc-film-scale {
+  right: max(var(--container-pad), calc((100vw - var(--container-max)) / 2));
+  bottom: 14%;
+}
+
+@media (max-width: 900px) {
+  .hc-film-window {
+    aspect-ratio: auto;
+    height: 62vh;
+    border-radius: 0;
+  }
+}
+
 /* --- TEMPORARY (local preview only): accent colour chooser --- */
 :root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
 :root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
