@@ -10,13 +10,15 @@
 
   var HERO = "/assets/media/hero-film/";
   var BASE = "/assets/media/loops/";
-  var STAMP = "?v=20261201f";
+  var STAMP = "?v=20261201g";
   var LOOPS = { dispersion: 1, debundle: 1, fibre: 1, tim: 1, hybrid: 1, shield: 1, nanotube: 1, mwcnt: 1,
                 stretch: 1, current: 1, heat: 1, bend: 1, "use-battery": 1, "use-concrete": 1, "use-film": 1,
                 "use-textile": 1, "use-composite": 1, "use-sport": 1, "use-water": 1, "use-lightning": 1 };
   var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var PHONE = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
   if (!document.createElement("video").canPlayType) return;
+
+  function dark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
 
   function video(src, loop) {
     var v = document.createElement("video");
@@ -40,7 +42,7 @@
       Array.prototype.forEach.call(vids, function (v) {
         if (e.isIntersecting) {
           if (v.preload === "none") v.preload = "auto";
-          if (!REDUCED && (!el.hcHero || v.classList.contains("is-on"))) v.play().catch(function () {});
+          if (!REDUCED && !(el.hcHero && dark())) v.play().catch(function () {});
         } else {
           v.pause();
         }
@@ -82,23 +84,60 @@
     var barEl = document.querySelector("[data-hc-film-bar]");
     var beat = -1;
 
+    function say(now) {
+      if (now === beat) return;
+      var same = beat >= 0 && STORY[beat][1] === STORY[now][1];
+      beat = now;
+      if (whatEl) whatEl.textContent = STORY[now][1];
+      if (captionEl && !same) {
+        captionEl.classList.remove("is-in");
+        window.setTimeout(function () { captionEl.textContent = STORY[beat][2]; captionEl.classList.add("is-in"); }, 180);
+      }
+    }
+
     function tick() {
+      if (dark()) return;
       var t = v.currentTime || 0, k, now = 0;
       for (k = 0; k < STORY.length; k++) if (t >= STORY[k][0]) now = k;
-      if (now !== beat) {
-        var same = beat >= 0 && STORY[beat][1] === STORY[now][1];
-        beat = now;
-        if (whatEl) whatEl.textContent = STORY[now][1];
-        if (captionEl && !same) {
-          captionEl.classList.remove("is-in");
-          window.setTimeout(function () { captionEl.textContent = STORY[beat][2]; captionEl.classList.add("is-in"); }, 180);
-        }
-      }
+      say(now);
       if (barEl) barEl.style.transform = "scaleX(" + Math.min(1, t / (v.duration || LENGTH)).toFixed(4) + ")";
     }
     v.addEventListener("timeupdate", tick);
-    /* it is at the top of the page: start at once rather than wait to be told it is on screen */
-    if (!REDUCED) v.play().catch(function () {});
+
+    /* dark mode, for now: the ten stages of the film as stills on the dark stage, one after another.
+       The dark-stage film takes their place when it is rendered. */
+    var stills = null, at = 0, timer = null;
+    function stage(i) {
+      at = i;
+      Array.prototype.forEach.call(stills.children, function (img, k) { img.classList.toggle("is-on", k === i); });
+      say(i);
+      if (barEl) barEl.style.transform = "scaleX(" + ((i + 1) / 10).toFixed(4) + ")";
+    }
+    function theme() {
+      if (dark()) {
+        v.pause();
+        if (!stills) {
+          stills = document.createElement("div");
+          stills.className = "hc-film-stills";
+          for (var i = 1; i <= 10; i++) {
+            var img = document.createElement("img");
+            img.alt = "";
+            img.decoding = "async";
+            img.src = HERO + "dark/" + (i < 10 ? "0" : "") + i + ".jpg" + STAMP;
+            stills.appendChild(img);
+          }
+          el.appendChild(stills);
+        }
+        stage(at);
+        if (!timer && !REDUCED) timer = window.setInterval(function () { if (el.hcSeen !== false) stage((at + 1) % 10); }, 4800);
+      } else {
+        if (timer) { window.clearInterval(timer); timer = null; }
+        beat = -1;
+        if (!REDUCED && el.hcSeen !== false) v.play().catch(function () {});
+      }
+    }
+    new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    theme();
     watch.observe(el);
   }
 

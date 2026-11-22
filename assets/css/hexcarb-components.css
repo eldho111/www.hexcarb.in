@@ -5077,10 +5077,43 @@ main section.hc-section[id] {
   mix-blend-mode: multiply;
 }
 
-/* the small scenes sit on white tiles in both themes, so only the hero film is turned inside out */
+/* dark mode, for now: the hero shows the film's ten stages as stills on the dark stage,
+   and the small scenes stay on their white tiles */
 :root[data-theme="dark"] .hc-film-video video {
-  filter: invert(1) hue-rotate(180deg);
-  mix-blend-mode: screen;
+  display: none;
+}
+
+.hc-film-stills {
+  display: none;
+}
+
+:root[data-theme="dark"] .hc-film-stills {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.hc-film-stills img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 1.2s ease, transform 6s ease-out;
+}
+
+.hc-film-stills img.is-on {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-film-stills img {
+    transform: none;
+    transition: opacity 0.4s ease;
+  }
 }
 
 .hc-loop video,
