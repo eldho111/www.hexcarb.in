@@ -1105,10 +1105,9 @@
   });
 })();
 
-/* TEMPORARY: accent colour chooser. It only appears on the local preview
-   (localhost) and must be deleted before the choice is published. */
+/* TEMPORARY: accent colour chooser, kept on the site for now so the colours
+   can be compared in place. Delete this block once the accent is settled. */
 (function () {
-  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
   var options = [["violet", "#6d28d9", "Deep violet (current)"], ["cobalt", "#2563eb", "Cobalt blue"], ["teal", "#007f86", "Deep teal"], ["burnt", "#c2410c", "Burnt orange"], ["copper", "#b87333", "Copper"], ["emerald", "#047857", "Emerald green"], ["cyan", "#0891b2", "Electric cyan"], ["crimson", "#be123c", "Crimson red"], ["ember", "#ff5a1f", "Ember orange"], ["none", "#8c8c8c", "No colour"]];
   var saved = null;
   try { saved = localStorage.getItem("hc-signal-preview2"); } catch (e) {}
