@@ -10,7 +10,7 @@
 
   var HERO = "/assets/media/hero-film/";
   var BASE = "/assets/media/loops/";
-  var STAMP = "?v=20261201a";
+  var STAMP = "?v=20261201b";
   /* loops are added here as their renders are finished */
   var LOOPS = {};
   var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -80,8 +80,14 @@
     var on = 0, beat = -1;
 
     function show(i) {
+      var old = shots[on];
       on = i;
       shots.forEach(function (v, k) { v.classList.toggle("is-on", k === i); });
+      /* the shot that is leaving keeps playing and falls away as the camera seems to pull back */
+      if (old !== shots[i]) {
+        old.classList.add("is-leaving");
+        window.setTimeout(function () { old.classList.remove("is-leaving"); old.pause(); }, 1700);
+      }
       shots[i].currentTime = 0;
       if (el.hcSeen !== false && !REDUCED) shots[i].play().catch(function () {});
     }
@@ -91,10 +97,10 @@
       /* once the opening is under way, fetch the main film behind it */
       if (on === 0 && t > 1 && shots[1].preload !== "auto") shots[1].preload = "auto";
       /* hand over a moment before the end, so one shot dissolves into the next */
-      if (v.duration && v.duration - t < 0.45 && !v.hcLeaving) {
+      if (v.duration && v.duration - t < 1.5 && !v.hcLeaving) {
         v.hcLeaving = true;
         var next = (on + 1) % shots.length;
-        window.setTimeout(function () { v.hcLeaving = false; }, 1500);
+        window.setTimeout(function () { v.hcLeaving = false; }, 3000);
         show(next);
         return;
       }

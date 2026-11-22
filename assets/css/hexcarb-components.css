@@ -5088,13 +5088,36 @@ main section.hc-section[id] {
   background: transparent;
 }
 
+/* one shot hands over to the next as a pull-back: the old one shrinks away into the
+   distance while the new one arrives from close up, and the two dissolve on the way */
+.hc-film-video {
+  overflow: hidden;
+}
+
 .hc-film-video video {
   opacity: 0;
-  transition: opacity 0.7s ease;
+  transform: scale(1.9);
+  transition: none;
 }
 
 .hc-film-video video.is-on {
   opacity: 1;
+  transform: scale(1);
+  transition: opacity 1.4s ease, transform 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.hc-film-video video.is-leaving {
+  opacity: 0;
+  transform: scale(0.45);
+  transition: opacity 1.3s ease-in, transform 1.5s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-film-video video,
+  .hc-film-video video.is-on,
+  .hc-film-video video.is-leaving {
+    transform: none;
+  }
 }
 
 .hc-film-window--video,
