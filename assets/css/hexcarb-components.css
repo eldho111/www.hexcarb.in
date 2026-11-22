@@ -5077,10 +5077,15 @@ main section.hc-section[id] {
   mix-blend-mode: multiply;
 }
 
-:root[data-theme="dark"] .hc-loop video,
+/* the small scenes sit on white tiles in both themes, so only the hero film is turned inside out */
 :root[data-theme="dark"] .hc-film-video video {
   filter: invert(1) hue-rotate(180deg);
   mix-blend-mode: screen;
+}
+
+.hc-loop video,
+:root[data-theme="dark"] .hc-loop video {
+  mix-blend-mode: normal;
 }
 
 .hc-film-video,
@@ -5121,4 +5126,13 @@ main section.hc-section[id] {
 
 :root[data-theme="dark"] .hc-film-window--video .hc-film-scale .hc-film-what {
   color: #ffffff;
+}
+
+/* the home headline gets more room above and below it */
+.hc-stage-inner {
+  padding-block: clamp(2.8rem, 8vh, 6rem) clamp(2rem, 5.5vh, 4.2rem);
+}
+
+.hc-stage-copy {
+  row-gap: 0.4rem;
 }

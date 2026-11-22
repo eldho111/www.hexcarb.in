@@ -10,9 +10,10 @@
 
   var HERO = "/assets/media/hero-film/";
   var BASE = "/assets/media/loops/";
-  var STAMP = "?v=20261201c";
-  /* loops are added here as their renders are finished */
-  var LOOPS = {};
+  var STAMP = "?v=20261201d";
+  var LOOPS = { dispersion: 1, debundle: 1, fibre: 1, tim: 1, hybrid: 1, shield: 1, nanotube: 1, mwcnt: 1,
+                stretch: 1, current: 1, heat: 1, bend: 1, "use-battery": 1, "use-concrete": 1, "use-film": 1,
+                "use-textile": 1, "use-composite": 1, "use-sport": 1, "use-water": 1, "use-lightning": 1 };
   var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var PHONE = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
   if (!document.createElement("video").canPlayType) return;
@@ -108,7 +109,9 @@
     el.removeAttribute("data-hc-3d");
     el.setAttribute("data-hc-loop", kind);
     el.classList.add("hc-loop");
-    el.appendChild(video(BASE + kind, true));
+    var v = video(BASE + kind, true);
+    v.poster = BASE + kind + ".jpg" + STAMP;
+    el.appendChild(v);
     watch.observe(el);
   });
 })();
