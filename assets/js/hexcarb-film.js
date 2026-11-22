@@ -10,7 +10,7 @@
 
   var HERO = "/assets/media/hero-film/";
   var BASE = "/assets/media/loops/";
-  var STAMP = "?v=20261201e";
+  var STAMP = "?v=20261201f";
   var LOOPS = { dispersion: 1, debundle: 1, fibre: 1, tim: 1, hybrid: 1, shield: 1, nanotube: 1, mwcnt: 1,
                 stretch: 1, current: 1, heat: 1, bend: 1, "use-battery": 1, "use-concrete": 1, "use-film": 1,
                 "use-textile": 1, "use-composite": 1, "use-sport": 1, "use-water": 1, "use-lightning": 1 };
