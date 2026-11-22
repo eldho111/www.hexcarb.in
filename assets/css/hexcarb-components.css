@@ -5130,9 +5130,69 @@ main section.hc-section[id] {
 
 /* the home headline gets more room above and below it */
 .hc-stage-inner {
-  padding-block: clamp(2.8rem, 8vh, 6rem) clamp(2rem, 5.5vh, 4.2rem);
+  padding-block: clamp(4rem, 13vh, 9rem) clamp(3rem, 9vh, 6.5rem);
 }
 
 .hc-stage-copy {
-  row-gap: 0.4rem;
+  row-gap: 0.9rem;
 }
+
+.hc-stage-copy .hc-heading-hero {
+  margin-top: 1.5rem;
+}
+
+.hc-stage-copy p {
+  margin-top: 1.6rem;
+}
+
+@media (max-width: 760px) {
+  .hc-stage-inner {
+    padding-block: 2.6rem 2rem;
+  }
+}
+
+/* --- TEMPORARY (local preview only): accent colour chooser --- */
+:root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
+:root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
+:root[data-signal="burnt"], :root[data-signal="burnt"] .hc-app-card, :root[data-signal="burnt"] .hc-graphite { --hc-signal: #c2410c; --hc-signal-text: #c2410c; }
+:root[data-signal="copper"], :root[data-signal="copper"] .hc-app-card, :root[data-signal="copper"] .hc-graphite { --hc-signal: #b87333; --hc-signal-text: #b87333; }
+:root[data-signal="emerald"], :root[data-signal="emerald"] .hc-app-card, :root[data-signal="emerald"] .hc-graphite { --hc-signal: #047857; --hc-signal-text: #047857; }
+:root[data-signal="cyan"], :root[data-signal="cyan"] .hc-app-card, :root[data-signal="cyan"] .hc-graphite { --hc-signal: #0891b2; --hc-signal-text: #0891b2; }
+:root[data-signal="crimson"], :root[data-signal="crimson"] .hc-app-card, :root[data-signal="crimson"] .hc-graphite { --hc-signal: #be123c; --hc-signal-text: #be123c; }
+:root[data-signal="ember"], :root[data-signal="ember"] .hc-app-card, :root[data-signal="ember"] .hc-graphite { --hc-signal: #ff5a1f; --hc-signal-text: #ff5a1f; }
+:root[data-signal="none"], :root[data-signal="none"] .hc-app-card, :root[data-signal="none"] .hc-graphite { --hc-signal: #8c8c8c; --hc-signal-text: #8c8c8c; }
+
+.hc-signal-picker {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 200;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 24px);
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 999px;
+  font: 600 11px/1 var(--font-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.hc-signal-picker button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #000000;
+  cursor: pointer;
+}
+
+.hc-signal-picker button[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px #000000;
+}
+

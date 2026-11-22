@@ -1104,3 +1104,41 @@
     initFamilyNav();
   });
 })();
+
+/* TEMPORARY: accent colour chooser. It only appears on the local preview
+   (localhost) and must be deleted before the choice is published. */
+(function () {
+  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+  var options = [["violet", "#6d28d9", "Deep violet (current)"], ["cobalt", "#2563eb", "Cobalt blue"], ["teal", "#007f86", "Deep teal"], ["burnt", "#c2410c", "Burnt orange"], ["copper", "#b87333", "Copper"], ["emerald", "#047857", "Emerald green"], ["cyan", "#0891b2", "Electric cyan"], ["crimson", "#be123c", "Crimson red"], ["ember", "#ff5a1f", "Ember orange"], ["none", "#8c8c8c", "No colour"]];
+  var saved = null;
+  try { saved = localStorage.getItem("hc-signal-preview2"); } catch (e) {}
+  function apply(name) {
+    if (name && name !== "violet") document.documentElement.setAttribute("data-signal", name);
+    else document.documentElement.removeAttribute("data-signal");
+    try { localStorage.setItem("hc-signal-preview2", name || "violet"); } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll(".hc-signal-picker button"), function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-name") === (name || "violet")));
+    });
+  }
+  function build() {
+    var bar = document.createElement("div");
+    bar.className = "hc-signal-picker";
+    bar.appendChild(document.createTextNode("Accent"));
+    options.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.title = o[2] + " " + o[1];
+      b.setAttribute("aria-label", "Accent colour: " + o[2]);
+      b.setAttribute("data-name", o[0]);
+      b.style.background = o[1];
+      b.addEventListener("click", function () { apply(o[0]); });
+      bar.appendChild(b);
+    });
+    document.body.appendChild(bar);
+    apply(saved || "violet");
+  }
+  if (saved && saved !== "violet") document.documentElement.setAttribute("data-signal", saved);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+  else build();
+})();
+
