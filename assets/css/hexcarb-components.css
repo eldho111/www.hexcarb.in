@@ -5053,22 +5053,18 @@ main section.hc-section[id] {
 
 /* ===================================================================
    Rendered film and loops (see hexcarb-film.js)
-   The videos are shot on a black stage. --hc-film-lift brightens them a
-   little on the page; set it to 1 to see them exactly as rendered.
+   The videos are rendered as black nanotubes on white, which is the light
+   page as it stands. In dark mode the same video is turned inside out
+   (white tubes on black) until the dark-stage renders replace it.
    =================================================================== */
-:root {
-  --hc-film-lift: 1.45;
+.hc-loop::before,
+.hc-loop::after {
+  content: none !important;
 }
 
 .hc-loop,
 :root[data-theme="dark"] .hc-loop {
-  background: #000000;
   overflow: hidden;
-}
-
-.hc-loop::before,
-.hc-loop::after {
-  content: none !important;
 }
 
 .hc-loop video,
@@ -5078,7 +5074,18 @@ main section.hc-section[id] {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(var(--hc-film-lift)) contrast(1.05);
+  mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] .hc-loop video,
+:root[data-theme="dark"] .hc-film-video video {
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: screen;
+}
+
+.hc-film-video,
+:root[data-theme="dark"] .hc-film-window .hc-film-video {
+  background: transparent;
 }
 
 .hc-film-video video {
@@ -5088,42 +5095,6 @@ main section.hc-section[id] {
 
 .hc-film-video video.is-on {
   opacity: 1;
-}
-
-/* the home hero becomes a dark stage for the film */
-.hc-stage:has(.hc-film-video),
-:root[data-theme="dark"] .hc-stage:has(.hc-film-video) {
-  background: #000000;
-}
-
-.hc-stage:has(.hc-film-video) .hc-heading-hero,
-.hc-stage:has(.hc-film-video) .hc-kicker,
-.hc-stage:has(.hc-film-video) .hc-film-caption {
-  color: #ffffff;
-}
-
-.hc-stage:has(.hc-film-video) .hc-stage-copy p {
-  color: #d6d6d6;
-}
-
-.hc-stage:has(.hc-film-video) .hc-signal-word {
-  --hc-signal-text: #a78bfa;
-}
-
-.hc-stage:has(.hc-film-video) .hc-btn-accent {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #000000;
-}
-
-.hc-stage:has(.hc-film-video) .hc-btn-ghost {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.7);
-  color: #ffffff;
-}
-
-.hc-stage:has(.hc-film-video) .hc-film-track {
-  background: rgba(255, 255, 255, 0.25);
 }
 
 .hc-film-window--video,
@@ -5141,57 +5112,13 @@ main section.hc-section[id] {
 .hc-film-window--video .hc-film-scale,
 :root[data-theme="dark"] .hc-film-window--video .hc-film-scale {
   min-width: 0;
-  background: rgba(0, 0, 0, 0.55);
-  border-color: rgba(255, 255, 255, 0.5);
 }
 
-.hc-film-window--video .hc-film-scale .hc-film-what,
+:root[data-theme="dark"] .hc-film-window--video .hc-film-scale {
+  background: #000000;
+  border-color: #ffffff;
+}
+
 :root[data-theme="dark"] .hc-film-window--video .hc-film-scale .hc-film-what {
   color: #ffffff;
 }
-
-/* --- TEMPORARY (local preview only): accent colour chooser --- */
-:root[data-signal="cobalt"], :root[data-signal="cobalt"] .hc-app-card, :root[data-signal="cobalt"] .hc-graphite { --hc-signal: #2563eb; --hc-signal-text: #2563eb; }
-:root[data-signal="teal"], :root[data-signal="teal"] .hc-app-card, :root[data-signal="teal"] .hc-graphite { --hc-signal: #007f86; --hc-signal-text: #007f86; }
-:root[data-signal="burnt"], :root[data-signal="burnt"] .hc-app-card, :root[data-signal="burnt"] .hc-graphite { --hc-signal: #c2410c; --hc-signal-text: #c2410c; }
-:root[data-signal="copper"], :root[data-signal="copper"] .hc-app-card, :root[data-signal="copper"] .hc-graphite { --hc-signal: #b87333; --hc-signal-text: #b87333; }
-:root[data-signal="emerald"], :root[data-signal="emerald"] .hc-app-card, :root[data-signal="emerald"] .hc-graphite { --hc-signal: #047857; --hc-signal-text: #047857; }
-:root[data-signal="cyan"], :root[data-signal="cyan"] .hc-app-card, :root[data-signal="cyan"] .hc-graphite { --hc-signal: #0891b2; --hc-signal-text: #0891b2; }
-:root[data-signal="crimson"], :root[data-signal="crimson"] .hc-app-card, :root[data-signal="crimson"] .hc-graphite { --hc-signal: #be123c; --hc-signal-text: #be123c; }
-:root[data-signal="ember"], :root[data-signal="ember"] .hc-app-card, :root[data-signal="ember"] .hc-graphite { --hc-signal: #ff5a1f; --hc-signal-text: #ff5a1f; }
-:root[data-signal="none"], :root[data-signal="none"] .hc-app-card, :root[data-signal="none"] .hc-graphite { --hc-signal: #8c8c8c; --hc-signal-text: #8c8c8c; }
-
-.hc-signal-picker {
-  position: fixed;
-  left: 12px;
-  bottom: 12px;
-  z-index: 200;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  max-width: calc(100vw - 24px);
-  padding: 8px 10px;
-  background: #ffffff;
-  border: 1px solid #000000;
-  border-radius: 999px;
-  font: 600 11px/1 var(--font-heading);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #000000;
-}
-
-.hc-signal-picker button {
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px #000000;
-  cursor: pointer;
-}
-
-.hc-signal-picker button[aria-pressed="true"] {
-  box-shadow: 0 0 0 2px #000000;
-}
-

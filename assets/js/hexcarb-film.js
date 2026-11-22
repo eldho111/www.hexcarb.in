@@ -2,14 +2,19 @@
    Where a rendered video exists for a scene, it takes the place of the live 3D
    scene. This file must load before hexcarb-3d.js: it claims those elements by
    removing their data-hc-3d attribute, so the 3D engine leaves them alone.
-   Any scene without a video here is still drawn live. */
+   Any scene without a video here is still drawn live.
+   The videos are black nanotubes on white; the stylesheet turns them inside
+   out for dark mode. */
 (function () {
   "use strict";
 
-  var BASE = "/assets/media/film/";
-  var LOOPS = { dispersion: 1, debundle: 1, fibre: 1, tim: 1, hybrid: 1, shield: 1, nanotube: 1,
-                stretch: 1, current: 1, heat: 1, bend: 1, "use-battery": 1 };
+  var HERO = "/assets/media/hero-film/";
+  var BASE = "/assets/media/loops/";
+  var STAMP = "?v=20261201a";
+  /* loops are added here as their renders are finished */
+  var LOOPS = {};
   var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var PHONE = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
   if (!document.createElement("video").canPlayType) return;
 
   function video(src, loop) {
@@ -21,7 +26,7 @@
     v.setAttribute("playsinline", "");
     v.setAttribute("aria-hidden", "true");
     v.preload = "none";
-    v.src = src;
+    v.src = src + (PHONE ? "_phone" : "") + ".mp4" + STAMP;
     return v;
   }
 
@@ -62,8 +67,11 @@
     el.removeAttribute("data-hc-3d");
     el.classList.add("hc-film-video");
     el.hcHero = true;
-    var shots = [video(BASE + "hero_opening.mp4", false), video(BASE + "hero_main.mp4", false)];
-    shots.forEach(function (v) { v.preload = "auto"; el.appendChild(v); });
+    var shots = [video(HERO + "opening", false), video(HERO + "hero", false)];
+    shots[0].poster = HERO + "poster.jpg" + STAMP;
+    shots[0].preload = "auto";
+    shots[1].preload = "metadata";
+    shots.forEach(function (v) { el.appendChild(v); });
     var win = el.closest(".hc-film-window");
     if (win) win.classList.add("hc-film-window--video");
     var captionEl = document.querySelector("[data-hc-film-caption]");
@@ -80,6 +88,8 @@
 
     function tick() {
       var v = shots[on], t = v.currentTime || 0, k, now = 0;
+      /* once the opening is under way, fetch the main film behind it */
+      if (on === 0 && t > 1 && shots[1].preload !== "auto") shots[1].preload = "auto";
       /* hand over a moment before the end, so one shot dissolves into the next */
       if (v.duration && v.duration - t < 0.45 && !v.hcLeaving) {
         v.hcLeaving = true;
@@ -106,7 +116,6 @@
     shots[0].classList.add("is-on");
     /* it is at the top of the page: start at once rather than wait to be told it is on screen */
     if (!REDUCED) shots[0].play().catch(function () {});
-    if (REDUCED) { shots[1].preload = "metadata"; }
     watch.observe(el);
   }
 
@@ -117,7 +126,7 @@
     el.removeAttribute("data-hc-3d");
     el.setAttribute("data-hc-loop", kind);
     el.classList.add("hc-loop");
-    el.appendChild(video(BASE + "loop_" + kind + ".mp4", true));
+    el.appendChild(video(BASE + kind, true));
     watch.observe(el);
   });
 })();
